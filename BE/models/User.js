@@ -1,0 +1,29 @@
+import { DataTypes } from "sequelize";
+import sequelize from "../config/database.js";
+
+const User = sequelize.define('User', {
+    id: {type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true},
+    name: {type: DataTypes.STRING(150), allowNull: false},
+    phone: {type: DataTypes.STRING(30), allowNull: false, unique: true},
+    email: {type: DataTypes.STRING(255), allowNull: false, unique: true},
+    password_hash: {type: DataTypes.TEXT, allowNull: false},
+    introduce: {type: DataTypes.TEXT, allowNull: true},
+    role: {type: DataTypes.ENUM('manager', 'volunteer'), defaultValue: 'volunteer'},
+    status: {type: DataTypes.ENUM('active', 'blocked'), defaultValue: 'active'},
+    created_at: {type: DataTypes.DATE, defaultValue: DataTypes.NOW},
+    updated_at: {type: DataTypes.DATE, defaultValue: DataTypes.NOW},
+}, {
+    tableName: 'users',
+    timestamps: false,
+});
+
+
+export default User;
+
+
+
+
+
+
+
+
