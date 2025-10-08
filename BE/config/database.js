@@ -22,6 +22,7 @@ async function connectToDatabase() {
 }
 
 connectToDatabase();
+// await sequelize.sync({ alter: true });
 
 export default sequelize;
 

@@ -3,15 +3,15 @@ import { userService } from "../services/userService.js";
 class UserController {
 
     async createUser(req, res) {
-        const testuser = {
-            "name": "Test User",
-            "email": "testuser@example.com",
-            "phone": "1234567890",
-            "password_hash": "hashedpassword",
-            "introduce": "Hello, I am a test user.",
-            "role": "volunteer",
-            "status": "active",
-        }
+        // const testuser = {
+        //     "name": "Test User",
+        //     "email": "testuser@example.com",
+        //     "phone": "1234567890",
+        //     "password_hash": "hashedpassword",
+        //     "introduce": "Hello, I am a test user.",
+        //     "role": "volunteer",
+        //     "status": "active",
+        // }
         const user = await userService.createUser(req.body);
         res.status(201).json(user);
 
