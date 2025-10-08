@@ -1,4 +1,4 @@
-import User from "../models/User.js"
+import {User} from "../models/index.js"
 import ApiError from "../utils/ApiError.js"
 import { StatusCodes } from "http-status-codes"
 import { hashPassword, comparePassword } from "../utils/password.js";
@@ -29,16 +29,42 @@ class UserRepository {
         if (!user) {
             throw new ApiError(StatusCodes.NOT_FOUND, "User not found")
         }
-        return user
+        if (user.role === 'volunteer') {
+            return await User.findByPk(id, { include: 'volunteer' });
+        }
+        else {
+            return await User.findByPk(id, { include: 'manager' });
+        }
     }
 
-    // async getUserByEmail(email) {
-    //     const user = await User.findOne({ where: { email } })
-    //     if (!user) {
-    //         throw new ApiError(StatusCodes.NOT_FOUND, "User not found")
-    //     }
-    //     return user
-    // }
+    async updateUser(id, updateData) {
+        const updatedUser = await User.update(updateData, {
+            where: {id: id},
+        })
+        if (updatedUser[0] === 0) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "User not found or no changes made")
+        }
+        return await User.findByPk(id);
+    }
+
+    async changePassword(id, oldPassword, newPassword) {
+        const user = await User.findByPk(id);
+        if (!user) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "User not found");
+        }
+        const isMatch = await comparePassword(oldPassword, user.password);
+        if (!isMatch) {
+            throw new ApiError(StatusCodes.BAD_REQUEST, "Old password is incorrect");
+        }
+        const hashedNewPassword = await hashPassword(newPassword);
+        user.password = hashedNewPassword;
+        const result = await User.update({ password: hashedNewPassword }, { where: { id: id } });
+
+        if (result[0] === 0) {
+            throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, "Failed to change password");
+        }
+        return true;
+    }
 
 }
 export const userRepo = new UserRepository()

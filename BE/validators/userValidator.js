@@ -12,16 +12,21 @@ const createUserSchema = Joi.object({
 
 const updateUserSchema = Joi.object({
   name: Joi.string().min(3).max(150),
-  email: Joi.string().email(),
+  // email: Joi.string().email(),
   phone: Joi.string().pattern(/^[0-9]{9,11}$/),
   introduce: Joi.string().allow(null, ''),
-  role: Joi.string().valid('volunteer', 'manager'),
   status: Joi.string().valid('active', 'blocked'),
+});
+
+const changePasswordSchema = Joi.object({
+  oldPassword: Joi.string().min(6).required(),
+  newPassword: Joi.string().min(6).required(),
 });
 
 export const userValidator = {
     createUser: createUserSchema,
     updateUser: updateUserSchema,
+    changePassword: changePasswordSchema,
 }
 
 

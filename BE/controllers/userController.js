@@ -1,5 +1,5 @@
 import { userService } from "../services/userService.js";
-
+import { StatusCodes } from "http-status-codes";
 class UserController {
 
     async createUser(req, res) {
@@ -13,19 +13,33 @@ class UserController {
         //     "status": "active",
         // }
         const user = await userService.createUser(req.body);
-        res.status(201).json(user);
+        res.status(StatusCodes.CREATED).json(user);
 
     }
 
     async getAllUsers(req, res) {
         const users = await userService.getAllUsers();
-        res.status(200).json(users);
+        res.status(StatusCodes.OK).json(users);
     }
 
     async getUserById(req, res) {
         const id = req.params.id;
         const user = await userService.getUserById(id);
-        res.status(200).json(user);
+        res.status(StatusCodes.OK).json(user);
+    }
+
+    async updateUser(req, res) {
+        const id = req.params.id;
+        const updateData = req.body;
+        const updatedUser = await userService.updateUser(id, updateData);
+        res.status(StatusCodes.OK).json(updatedUser);
+    }
+
+    async changePassword(req, res) {
+        const id = req.params.id;
+        const { oldPassword, newPassword } = req.body;
+        const result = await userService.changePassword(id, oldPassword, newPassword);
+        res.status(StatusCodes.OK).json({ message: "Password changed successfully" });
     }
 
 }
