@@ -4,9 +4,8 @@ import validate from '../../middlewares/validate.js'
 import { userValidator } from '../../validators/userValidator.js'
 const Router = express.Router()
 
-Router.get('/', userController.getAllUsers)
-Router.post('/', validate(userValidator.createUser), userController.createUser)
-Router.get('/:id', userController.getUserById)
+Router.post('/update-profile', validate(userValidator.createUser), userController.createUser)
+Router.get('/profile/:id', userController.getUserById)
 
-export const userRoute = Router
+export const baseRoute = Router
 
