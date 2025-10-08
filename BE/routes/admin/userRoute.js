@@ -7,6 +7,6 @@ const Router = express.Router()
 Router.get('/', userController.getAllUsers)
 Router.post('/', validate(userValidator.createUser), userController.createUser)
 Router.get('/:id', userController.getUserById)
-
+// Router.delete
 export const userRoute = Router
 

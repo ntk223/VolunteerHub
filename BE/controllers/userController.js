@@ -42,6 +42,12 @@ class UserController {
         res.status(StatusCodes.OK).json({ message: "Password changed successfully" });
     }
 
+    async deleteUser(req, res) {
+        const id = req.params.id;
+        const result = await userService.deleteUser(id);
+        res.status(StatusCodes.OK).json({ message: "User deleted successfully" });
+    }
+
 }
 
 export const userController = new UserController();

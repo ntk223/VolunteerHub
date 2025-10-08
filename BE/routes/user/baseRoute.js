@@ -9,5 +9,6 @@ Router.use(verifyTokenMiddleware)
 Router.put('/update-profile/:id', validate(userValidator.updateUser), userController.updateUser)
 Router.get('/profile/:id', userController.getUserById)
 Router.put('/password/:id', validate(userValidator.changePassword), userController.changePassword)
+Router.delete('/delete/:id', userController.deleteUser)
 export const baseRoute = Router
 
