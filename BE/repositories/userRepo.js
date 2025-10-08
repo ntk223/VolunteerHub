@@ -1,7 +1,8 @@
-import {User} from "../models/index.js"
+import {User} from "../models/Model.js"
 import ApiError from "../utils/ApiError.js"
 import { StatusCodes } from "http-status-codes"
 import { hashPassword, comparePassword } from "../utils/password.js";
+import { generateToken } from "../utils/jwt.js";
 class UserRepository {
 
     async createUser(userData)  {
@@ -64,6 +65,30 @@ class UserRepository {
             throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, "Failed to change password");
         }
         return true;
+    }
+
+    async login(email, password, role)  {
+        const user = await User.findOne({ 
+            where: { 
+                email: email,
+                role: role
+            },
+            include: role
+        })
+        if (!user) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "User not found");
+        }
+
+        const isMatch = await comparePassword(password, user.password);
+        if (!isMatch) {
+            throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid credentials");
+        }
+        const token = generateToken({id: user.id, email: user.email, role: user.role});
+        return { user, token };
+    }
+
+    async register(userData) {
+        return this.createUser(userData);
     }
 
 }
