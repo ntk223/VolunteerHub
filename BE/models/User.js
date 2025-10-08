@@ -14,10 +14,10 @@ const User = sequelize.define('User', {
     updated_at: {type: DataTypes.DATE, defaultValue: DataTypes.NOW},
 }, {
     tableName: 'users',
-    timestamps: false,
+    timestamps: true,
+    paranoid: true,
+    deletedAt: 'deleted_at',
 });
-
-
 
 export default User;
 

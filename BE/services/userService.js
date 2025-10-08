@@ -16,6 +16,11 @@ class UserService {
         return user;
     }
 
+    async deleteUser(id) {
+        const result = await userRepo.deleteUser(id);
+        return result;
+    }
+
     async updateUser(id, updateData) {
         const updatedUser = await userRepo.updateUser(id, updateData);
         return updatedUser;

@@ -67,6 +67,16 @@ class UserRepository {
         return true;
     }
 
+    async deleteUser(id) {
+        const result = await User.destroy({
+            where: {id: id},
+        })
+        if (result === 0) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "User not found")
+        }
+        return true
+    }
+
     async login(email, password, role)  {
         const user = await User.findOne({ 
             where: { 
