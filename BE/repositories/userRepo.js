@@ -78,6 +78,7 @@ class UserRepository {
     }
 
     async login(email, password, role)  {
+
         const user = await User.findOne({ 
             where: { 
                 email: email,
@@ -85,6 +86,7 @@ class UserRepository {
             },
             include: role
         })
+
         if (!user) {
             throw new ApiError(StatusCodes.NOT_FOUND, "User not found");
         }
