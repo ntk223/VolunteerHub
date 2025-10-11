@@ -6,7 +6,7 @@ import { errorHandlingMiddleware } from './middlewares/errorHandlingMiddleware.j
 import { corsOptions } from './config/cors.js'
 import cors from 'cors'
 const START_SERVER = () => {
-
+    
     const app = express ()
     app.use (cors(corsOptions))
     app.use (express.json())
