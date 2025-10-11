@@ -3,10 +3,12 @@ import { APIs } from './routes/index.js'
 // import sequelize from './config/database.js'
 import { env } from './config/environment.js'
 import { errorHandlingMiddleware } from './middlewares/errorHandlingMiddleware.js'
-
+import { corsOptions } from './config/cors.js'
+import cors from 'cors'
 const START_SERVER = () => {
 
     const app = express ()
+    app.use (cors(corsOptions))
     app.use (express.json())
     app.use ('/api', APIs)
 

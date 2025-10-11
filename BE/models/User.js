@@ -17,14 +17,9 @@ const User = sequelize.define('User', {
     timestamps: true,
     paranoid: true,
     deletedAt: 'deleted_at',
+    createdAt: 'created_at',   // ✅ map lại tên cột
+    updatedAt: 'updated_at',   // ✅ map lại tên cột
+
 });
 
 export default User;
-
-
-
-
-
-
-
-
