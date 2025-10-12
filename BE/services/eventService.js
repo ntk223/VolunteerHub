@@ -12,6 +12,17 @@ class EventService {
     async deleteEvent(eventId, userId) {
         return await eventRepo.deleteEvent(eventId, userId);
     }
+
+    async updateEvent(eventId, updateData) {
+        return await eventRepo.updateEvent(eventId, updateData);
+    }
+
+    async updateEventApprovalStatus(eventId, status) {
+        return await eventRepo.updateEventApprovalStatus(eventId, status);
+    }
+    async updateEventProgressStatus(eventId, status) {
+        return await eventRepo.updateEventProgressStatus(eventId, status);
+    }
 }
 
 export const eventService = new EventService();

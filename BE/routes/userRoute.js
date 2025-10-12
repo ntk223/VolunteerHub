@@ -15,6 +15,7 @@ Router.delete('/:id', userController.deleteUser)
 
 Router.get('/', authorize(['admin']), userController.getAllUsers)
 Router.post('/', validate(userValidator.createUser), userController.createUser)
+Router.patch('/status/:id', authorize(['admin']), userController.updateStatus)
 
 export const userRoute = Router
 

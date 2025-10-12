@@ -1,7 +1,10 @@
 import express from 'express'
-import { verifyToken } from '../utils/jwt.js'
+import verifyTokenMiddleware from '../middlewares/verifyToken.js'
+import { userController } from '../controllers/userController.js'
+import { authorize } from '../middlewares/authorize.js'
 const Router = express.Router()
 
-Router.use(verifyToken)
+Router.use(verifyTokenMiddleware)
+
 
 export const adminRoute = Router
