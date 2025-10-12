@@ -10,6 +10,12 @@ class EventController {
         const newEvent = await eventService.createEvent(eventData);
         res.status(StatusCodes.CREATED).json(newEvent);
     }
+
+    async deleteEvent(req, res) {
+        const { userid: userId, eventid: eventId } = req.params;
+        await eventService.deleteEvent(eventId, userId);
+        res.status(StatusCodes.NO_CONTENT).send();
+    }
 }
 
 

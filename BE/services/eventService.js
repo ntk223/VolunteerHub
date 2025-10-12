@@ -8,6 +8,10 @@ class EventService {
     async createEvent(eventData) {
         return await eventRepo.createEvent(eventData);
     }
+
+    async deleteEvent(eventId, userId) {
+        return await eventRepo.deleteEvent(eventId, userId);
+    }
 }
 
 export const eventService = new EventService();
