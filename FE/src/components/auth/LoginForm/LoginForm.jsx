@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../../../contexts/AuthContext';
 import { authApi } from '../../../services/api/authApi';
 import './LoginForm.css';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const LoginForm = ({ onSwitchToRegister }) => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,9 @@ const LoginForm = ({ onSwitchToRegister }) => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  
+  // thêm state để quản lý việc ẩn/hiện mật khẩu
+  const [showPassword, setShowPassword] = useState(false);
   
   const { login } = useAuth();
 
@@ -22,6 +26,11 @@ const LoginForm = ({ onSwitchToRegister }) => {
     setError('');
   };
 
+  // bật/tắt trạng thái hiển thị mật khẩu
+  const togglePasswordVisibility = () => {
+    setShowPassword(prevState => !prevState);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -30,8 +39,8 @@ const LoginForm = ({ onSwitchToRegister }) => {
     try {
       const response = await authApi.login(formData.email, formData.password, formData.role);
       await login(response.user, response.token);
-       
-      // Redirect hoặc làm gì đó sau khi login thành công
+      
+      // Chuyển hướng hoặc làm gì đó sau khi login thành công
       window.location.href = '/';
     } catch (err) {
       setError('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
@@ -65,10 +74,11 @@ const LoginForm = ({ onSwitchToRegister }) => {
           />
         </div>
 
-        <div className="form-group">
+        {/* cập nhật khối HTML cho trường mật khẩu */}
+        <div className="form-group password-wrapper">
           <label htmlFor="password">Mật khẩu</label>
           <input
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             id="password"
             name="password"
             value={formData.password}
@@ -77,7 +87,11 @@ const LoginForm = ({ onSwitchToRegister }) => {
             required
             disabled={loading}
           />
+          <span onClick={togglePasswordVisibility} className="password-toggle-icon">
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
         </div>
+
         <div className="form-group">
           <label htmlFor="role">Vai trò</label>
           <select
@@ -91,6 +105,7 @@ const LoginForm = ({ onSwitchToRegister }) => {
             <option value="manager">Quản lý</option>
           </select>
         </div>
+        
         <button 
           type="submit" 
           className="login-button"

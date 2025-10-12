@@ -12,3 +12,25 @@
 .login-button:hover:not(:disabled) {
   transform: translateY(-2px); 
 }
+
+/* context định vị cho icon */
+.password-wrapper {
+  position: relative;
+}
+
+/* định vị và tạo kiểu cho icon */
+.password-toggle-icon {
+  position: absolute;
+  top: 70%; /* Điều chỉnh để icon nằm giữa theo chiều dọc so với input */
+  right: 15px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #888;
+  font-size: 1.2rem;
+}
+
+/* tạo khoảng trống trong input để icon không che mất chữ */
+.password-wrapper input {
+  /* !!! phải có padding-right lớn hơn chiều rộng của icon */
+  padding-right: 45px; 
+}
