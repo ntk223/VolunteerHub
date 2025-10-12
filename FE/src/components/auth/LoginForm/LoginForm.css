@@ -1,0 +1,14 @@
+.switch-button {
+  min-width: 50px !important;
+  width: auto !important;
+  padding: 6px 16px !important;
+  margin-left: 6px;
+}
+
+.switch-button:hover {
+  transform: translateY(-2px); 
+}
+
+.login-button:hover:not(:disabled) {
+  transform: translateY(-2px); 
+}
