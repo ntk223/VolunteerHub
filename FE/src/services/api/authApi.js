@@ -2,7 +2,7 @@ import {apiClient} from './apiClient.js';
 
 const login = async (email, password, role) => {
     try {
-        const response = await apiClient.post('/user/auth/login', { email, password, role });
+        const response = await apiClient.post('/auth/login', { email, password, role });
         return response.data;
     } catch (error) {
         console.error('Login failed:', error);
@@ -12,7 +12,7 @@ const login = async (email, password, role) => {
 
 const register = async (userData) => {
     try {
-        const response = await apiClient.post('/user/auth/register', userData);
+        const response = await apiClient.post('/auth/register', userData);
         return response.data;
     } catch (error) {
         console.error('Registration failed:', error);

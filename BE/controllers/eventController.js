@@ -8,7 +8,6 @@ class EventController {
     async createEvent(req, res) {
         const eventData = req.body;
         const newEvent = await eventService.createEvent(eventData);
-        console.log(newEvent);
         res.status(StatusCodes.CREATED).json(newEvent);
     }
 }
