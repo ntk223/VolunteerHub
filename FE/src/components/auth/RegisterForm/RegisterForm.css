@@ -65,6 +65,7 @@ body {
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   background-color: #fff;
+  color: black;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   box-sizing: border-box; /* đảm bảo padding không làm thay đổi kích thước */
 }
@@ -134,6 +135,35 @@ body {
 
 .switch-form button:hover {
   text-decoration: underline;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-toggle-icon {
+  position: absolute;
+  top: 70%; 
+  right: 15px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #888;
+  font-size: 1.2rem;
+  /* Thêm dòng này để icon không bị chọn khi click nhanh */
+  user-select: none; 
+}
+
+/* Áp dụng padding cho tất cả input bên trong password-wrapper */
+.password-wrapper input {
+  padding-right: 45px !important; /* Dùng !important để ghi đè lên các style khác nếu cần */
+}
+
+/* Style cho text lỗi, giống như component FormField đã làm */
+.error-text {
+  color: #e74c3c;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  display: block;
 }
 
 /* responsive cho thiết bị di động */
