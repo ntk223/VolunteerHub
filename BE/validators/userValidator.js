@@ -6,7 +6,7 @@ const createUserSchema = Joi.object({
   phone: Joi.string().pattern(/^[0-9]{9,11}$/).required(),
   password: Joi.string().min(6).required(),
   introduce: Joi.string().allow(null, ''),
-  role: Joi.string().valid('volunteer', 'manager').default('volunteer'),
+  role: Joi.string().valid('volunteer', 'manager', 'admin').default('volunteer'),
   status: Joi.string().valid('active', 'blocked').default('active'),
 });
 

@@ -30,6 +30,11 @@ class UserService {
         const result = await userRepo.changePassword(id, oldPassword, newPassword);
         return result;
     }
+
+    async updateStatus(id, status) {
+        const updatedUser = await userRepo.updateStatus(id, status);
+        return updatedUser;
+    }
 }
 
 export const userService = new UserService();

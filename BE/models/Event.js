@@ -19,7 +19,6 @@ const Event = sequelize.define("Event", {
     start_time: {type: DataTypes.DATE, allowNull: false},
     end_time: {type: DataTypes.DATE, allowNull: false},
     capacity: {type: DataTypes.INTEGER, allowNull: false},
-    status: {type: DataTypes.ENUM('pending', 'approved', 'completed', 'cancelled'), defaultValue: 'pending'},
     manager_id: {
         type: DataTypes.BIGINT,
         allowNull: false,
@@ -30,6 +29,9 @@ const Event = sequelize.define("Event", {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
     },
+    approval_status: {type: DataTypes.ENUM('pending', 'approved', 'rejected'), defaultValue: 'pending'},
+    progress_status: {type: DataTypes.ENUM('incomplete','cancelled', 'completed'), defaultValue: 'incomplete'},
+    publishedAt: {type: DataTypes.DATE, allowNull: true},
     createdAt: {type: DataTypes.DATE, defaultValue: DataTypes.NOW},
     updatedAt: {type: DataTypes.DATE, defaultValue: DataTypes.NOW},
 }, {

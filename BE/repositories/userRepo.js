@@ -6,15 +6,16 @@ import { generateToken } from "../utils/jwt.js";
 class UserRepository {
 
     async createUser(userData)  {
-        const existingUser = await User.findOne({ 
-            where: { 
-                email: userData.email,
-                role: userData.role
-            } 
-        })
-        if (existingUser) {
-            throw new ApiError(StatusCodes.BAD_REQUEST, "Email already in use");
-        }
+        console.log(userData);
+        // const existingUser = await User.findOne({ 
+        //     where: { 
+        //         email: userData.email,
+        //         role: userData.role
+        //     } 
+        // })
+        // if (existingUser) {
+        //     throw new ApiError(StatusCodes.BAD_REQUEST, "Email already in use");
+        // }
         userData.password = await hashPassword(userData.password);
         const user = await User.create(userData)
         return user
@@ -67,6 +68,15 @@ class UserRepository {
         return true;
     }
 
+    async updateStatus(id, status) {
+        const updatedUser = await User.update({ status: status }, {
+            where: {id: id},
+        })
+        if (updatedUser[0] === 0) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "User not found or no changes made")
+        }
+        return await User.findByPk(id);
+    }
     async deleteUser(id) {
         const result = await User.destroy({
             where: {id: id},
@@ -78,13 +88,25 @@ class UserRepository {
     }
 
     async login(email, password, role)  {
+        if (role === 'admin') {
+            const user = await User.findOne({ where: { email: email, role: role } });
+            if (!user) {
+                throw new ApiError(StatusCodes.NOT_FOUND, "User not found");
+            }
+            const isMatch = await comparePassword(password, user.password);
+            if (!isMatch) {
+                throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid credentials");
+            }
+            const token = generateToken({id: user.id, email: user.email, role: user.role});
+            return { user, token };
+        }
 
         const user = await User.findOne({ 
             where: { 
                 email: email,
                 role: role
             },
-            include: role
+            include: role 
         })
 
         if (!user) {
@@ -94,6 +116,9 @@ class UserRepository {
         const isMatch = await comparePassword(password, user.password);
         if (!isMatch) {
             throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid credentials");
+        }
+        if (user.status === 'blocked') {
+            throw new ApiError(StatusCodes.FORBIDDEN, "User is blocked");
         }
         const token = generateToken({id: user.id, email: user.email, role: user.role});
         return { user, token };

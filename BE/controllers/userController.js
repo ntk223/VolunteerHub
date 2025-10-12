@@ -48,6 +48,13 @@ class UserController {
         res.status(StatusCodes.OK).json({ message: "User deleted successfully" });
     }
 
+    async updateStatus(req, res) {
+        const id = req.params.id;
+        const { status } = req.body;
+        const updatedUser = await userService.updateStatus(id, status);
+        res.status(StatusCodes.OK).json(updatedUser);
+    }
+
 }
 
 export const userController = new UserController();
