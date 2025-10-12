@@ -11,6 +11,7 @@ Router.use(verifyTokenMiddleware)
 Router.get('/', eventController.getAllEvents)
 Router.post('/', authorize(['manager']),validate(eventValidator.createEvent), eventController.createEvent)
 // Router.get('/:id', userController.getUserById)
-// Router.delete
+Router.delete('/user/:userid/event/:eventid', authorize(['manager', 'admin']), eventController.deleteEvent)
 export const eventRoute = Router
 
+ 

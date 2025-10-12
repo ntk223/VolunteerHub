@@ -8,7 +8,7 @@ const User = sequelize.define('User', {
     email: {type: DataTypes.STRING(255), allowNull: false, unique: true},
     password: {type: DataTypes.TEXT, allowNull: false},
     introduce: {type: DataTypes.TEXT, allowNull: true},
-    role: {type: DataTypes.ENUM('volunteer', 'manager'), defaultValue: 'volunteer'},
+    role: {type: DataTypes.ENUM('volunteer', 'manager', 'admin'), defaultValue: 'volunteer'},
     status: {type: DataTypes.ENUM('active', 'blocked'), defaultValue: 'active'},
     createdAt: {type: DataTypes.DATE, defaultValue: DataTypes.NOW},
     updatedAt: {type: DataTypes.DATE, defaultValue: DataTypes.NOW},
@@ -17,8 +17,6 @@ const User = sequelize.define('User', {
     timestamps: true,
     paranoid: true,
     deletedAt: 'deletedAt',
-
-
 });
 
 export default User;
