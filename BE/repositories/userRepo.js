@@ -7,15 +7,15 @@ class UserRepository {
 
     async createUser(userData)  {
         console.log(userData);
-        // const existingUser = await User.findOne({ 
-        //     where: { 
-        //         email: userData.email,
-        //         role: userData.role
-        //     } 
-        // })
-        // if (existingUser) {
-        //     throw new ApiError(StatusCodes.BAD_REQUEST, "Email already in use");
-        // }
+        const existingUser = await User.findOne({ 
+            where: { 
+                email: userData.email,
+                role: userData.role
+            } 
+        })
+        if (existingUser) {
+            throw new ApiError(StatusCodes.BAD_REQUEST, "Email already in use");
+        }
         userData.password = await hashPassword(userData.password);
         const user = await User.create(userData)
         return user
