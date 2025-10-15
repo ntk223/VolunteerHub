@@ -1,6 +1,4 @@
-import Event from "../models/Event.js"
-import User from "../models/User.js"
-import Manager from "../models/Manager.js"
+import {Event, Manager, User} from "../models/Model.js";
 import ApiError from "../utils/ApiError.js";
 import { StatusCodes } from "http-status-codes";
 class EventRepository {
