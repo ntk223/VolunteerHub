@@ -1,19 +1,21 @@
-import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
+import { DataTypes } from "sequelize";
 
-const Post = sequelize.define("Post", {
+const Comment = sequelize.define('Comment', {
     id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
-    event_id: {
+    post_id: { 
         type: DataTypes.BIGINT, 
-        allowNull: true ,
+        allowNull: false,
         references: {
-            model: 'events', // name of Target model
+            model: 'posts', // name of Target model
             key: 'id', // key in Target model that we're referencing
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
-    }, 
-    author_id : { type: DataTypes.BIGINT, allowNull: false,
+    },
+    author_id : { 
+        type: DataTypes.BIGINT,
+        allowNull: false,
         references: {
             model: 'users', // name of Target model
             key: 'id', // key in Target model that we're referencing
@@ -21,22 +23,16 @@ const Post = sequelize.define("Post", {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
     },
-    post_type: {
-        type:DataTypes.ENUM('discuss', 'recruitment'),
-        allowNull: false,
-        defaultValue: 'discuss'
-    },
     content: { type: DataTypes.TEXT, allowNull: false },
-    status: { type: DataTypes.ENUM('pending', 'approved', 'rejected'), allowNull: false, defaultValue: 'pending' },
     createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
     updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
-
 }, {
-    tableName: "posts",
+    tableName: 'comments',
     timestamps: true,
     paranoid: true,
     deletedAt: "deletedAt",
-});
+})
+
+export default Comment
 
 
-export default Post;
