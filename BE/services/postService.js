@@ -8,6 +8,10 @@ class PostService {
     async getPostByType(postType) {
         return await postRepo.getPostByType(postType);
     }
+
+    async changePostStatus(postId, status) {
+        return await postRepo.changePostStatus(postId, status);
+    }
 }
 
 

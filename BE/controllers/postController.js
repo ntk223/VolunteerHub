@@ -12,6 +12,13 @@ class PostController {
         const posts = await postService.getPostByType(postType);
         res.status(StatusCodes.OK).json(posts);
     }
+
+    async changePostStatus(req, res) {
+        const postId = req.params.postId;
+        const { status } = req.body;
+        const updatedPost = await postService.changePostStatus(postId, status);
+        res.status(StatusCodes.OK).json(updatedPost);
+    }
 }
 
 export const postController = new PostController()
