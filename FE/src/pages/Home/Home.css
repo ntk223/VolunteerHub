@@ -1,0 +1,8 @@
+.home-root {
+  width: 100vw;                  /* chiếm toàn bộ chiều ngang viewport */
+  max-width: none;               /* bỏ mọi giới hạn tối đa của cha */
+  margin-left: calc(50% - 50vw); /* căn đều khi cha bị căn giữa */
+  margin-right: calc(50% - 50vw);
+  /* padding: 2rem; */
+  box-sizing: border-box;
+}
