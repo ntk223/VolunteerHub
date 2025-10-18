@@ -80,7 +80,11 @@ const RegisterForm = ({ onSwitchToLogin }) => {
       onSwitchToLogin();
     } catch (err) {
       const errorMessage = err.response?.data?.message || "Đã có lỗi xảy ra. Vui lòng thử lại.";
-      toast.error(errorMessage);
+      if (errorMessage === "Email already in use") {
+        setErrors({ email: "Email đã được sử dụng" });
+      } else {
+        toast.error(errorMessage);
+      }
     } finally {
       setLoading(false);
     }
@@ -142,6 +146,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
           <select id="role" name="role" value={formData.role} onChange={handleChange}>
             <option value="volunteer">Tình nguyện viên</option>
             <option value="manager">Quản lý</option>
+            <option value="admin">Quản trị viên</option>
           </select>
         </div>
 

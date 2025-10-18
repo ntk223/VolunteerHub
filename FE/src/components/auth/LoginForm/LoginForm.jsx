@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import React, { useState } from 'react';
 import { useAuth } from '../../../contexts/AuthContext';
 import { authApi } from '../../../services/api/authApi';
@@ -37,16 +38,25 @@ const LoginForm = ({ onSwitchToRegister }) => {
     setError('');
 
     try {
-      const response = await authApi.login(formData.email, formData.password, formData.role);
-      await login(response.user, response.token);
-      
-      // Chuyển hướng hoặc làm gì đó sau khi login thành công
-      window.location.href = '/';
-    } catch (err) {
-      setError('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
-    } finally {
-      setLoading(false);
-    }
+    const response = await authApi.login(formData.email, formData.password, formData.role);
+    
+    // ✅ Lưu token vào cookie
+    Cookies.set("access_token", response.token, {
+      expires: 7, // 7 ngày hết hạn
+      secure: true, // chỉ gửi qua HTTPS
+      sameSite: "Strict", // tránh bị CSRF
+    });
+
+    // ✅ Nếu bạn vẫn dùng context để lưu user info
+    await login(response.user, response.token);
+
+    // ✅ Chuyển hướng sau khi đăng nhập
+    window.location.href = '/';
+  } catch (err) {
+    setError('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
+  } finally {
+    setLoading(false);
+  }
   };
 
   return (
@@ -103,6 +113,7 @@ const LoginForm = ({ onSwitchToRegister }) => {
           >
             <option value="volunteer">Tình nguyện viên</option>
             <option value="manager">Quản lý</option>
+            <option value="admin">Quản trị viên</option>
           </select>
         </div>
         
