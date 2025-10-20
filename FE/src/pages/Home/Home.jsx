@@ -1,6 +1,6 @@
 import "./Home.css";
-import { useState, useEffect } from "react";
-import Cookies from "js-cookie"; // ✅ Thêm dòng này
+import { useState, useEffect, useRef } from "react";
+import Cookies from "js-cookie";
 import {
   Layout,
   Menu,
@@ -13,6 +13,8 @@ import {
   Card,
   List,
   message,
+  Empty,
+  Spin,
 } from "antd";
 import {
   HomeOutlined,
@@ -33,20 +35,20 @@ const Home = () => {
   const [selectedMenu, setSelectedMenu] = useState("home");
   const [tabKey, setTabKey] = useState("discuss");
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const containerRef = useRef(null);
 
-  // Lấy dữ liệu từ API backend
   useEffect(() => {
     const fetchPosts = async () => {
+      setLoading(true);
       try {
-        // Lấy token từ cookie
         const token = Cookies.get("access_token");
-
         if (!token) {
           message.error("Không tìm thấy token, vui lòng đăng nhập lại");
+          logout();
           return;
         }
 
-        // Gửi kèm token trong header Authorization
         const res = await fetch("http://localhost:5000/api/post/discuss", {
           headers: {
             "Content-Type": "application/json",
@@ -58,35 +60,39 @@ const Home = () => {
           if (res.status === 401) {
             message.error("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại");
             logout();
+          } else {
+            message.error("Không thể tải danh sách bài viết");
           }
-          throw new Error("Failed to fetch posts");
+          setPosts([]);
+          return;
         }
 
         const data = await res.json();
-        console.log("Fetched posts:", data);
-        setPosts(data);
+        setPosts(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error(err);
-        message.error("Không thể tải danh sách bài viết");
+        message.error("Lỗi khi tải bài viết");
+        setPosts([]);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [logout]);
 
-  // Xử lý like (frontend tạm thời)
   const handleLike = (id) => {
     setPosts((prev) =>
-      prev.map((p) =>
-        p.id === id ? { ...p, likeCount: p.likeCount + 1 } : p
-      )
+      prev.map((p) => (p.id === id ? { ...p, likeCount: (p.likeCount || 0) + 1 } : p))
     );
   };
+
+  const filtered = posts.filter((p) => p.post_type === tabKey);
 
   return (
     <div className="home-root">
       <Layout style={{ minHeight: "100vh", background: "#f5f7fa" }}>
-        {/* Header */}
         <Header
           style={{
             background: "#fff",
@@ -94,7 +100,7 @@ const Home = () => {
             justifyContent: "space-between",
             alignItems: "center",
             padding: "0 24px",
-            borderBottom: "1px solid #eee",
+            borderBottom: "1px solid #cfc6c6ff",
           }}
         >
           <Title level={4} style={{ margin: 0 }}>
@@ -109,98 +115,145 @@ const Home = () => {
           </Space>
         </Header>
 
-        {/* Body Layout */}
         <Layout style={{ flexDirection: "row" }}>
-          {/* Left Sidebar */}
           <Sider
-            width={220}
-            style={{
-              background: "#fff",
-              borderRight: "1px solid #eee",
-              paddingTop: 16,
-              height: "calc(100vh - 64px)",
-            }}
-          >
-            <Menu
-              mode="inline"
-              selectedKeys={[selectedMenu]}
-              onClick={(e) => setSelectedMenu(e.key)}
-              style={{ borderRight: 0 }}
+            className="home-sider"
+             width={450}
+             style={{
+               background: "#fff",
+               borderRight: "1px solid #cfc6c6ff",
+               paddingTop: 16,
+               height: "calc(100vh - 64px)",
+               position: "sticky",
+               top: 64,
+               alignSelf: "flex-start",
+             }}
+           >
+             <Menu
+               mode="inline"
+               selectedKeys={[selectedMenu]}
+               onClick={(e) => setSelectedMenu(e.key)}
+               style={{ borderRight: 0 }}
               items={[
-                { key: "home", icon: <HomeOutlined />, label: "Home" },
-                { key: "notification", icon: <BellOutlined />, label: "Notification" },
-              ]}
-            />
-          </Sider>
+                {
+                  key: "home",
+                  icon: <HomeOutlined style={{ fontSize: 24 }} />,
+                  label: <span className="menu-label">Home</span>,
+                },
+                {
+                  key: "notification",
+                  icon: <BellOutlined style={{ fontSize: 24 }} />,
+                  label: <span className="menu-label">Notification</span>,
+               },
+                            ]}
+             />
+           </Sider>
 
-          {/* Main Feed */}
           <Content
             style={{
               flex: 1,
               padding: "24px 32px",
-              overflowY: "auto",
+              display: "flex",
+              flexDirection: "column",
               height: "calc(100vh - 64px)",
               background: "#fafafa",
             }}
           >
-            <Tabs
-              activeKey={tabKey}
-              onChange={(key) => setTabKey(key)}
-              centered
-              items={[
-                { key: "discuss", label: "Discussion" },
-                { key: "hiring", label: "Hiring" },
-              ]}
-            />
+            <div
+              style={{
+                position: "sticky",
+                top: 0,
+                zIndex: 2,
+                background: "#fafafa",
+                paddingBottom: 12,
+              }}
+            >
+              <Tabs
+                activeKey={tabKey}
+                onChange={(key) => setTabKey(key)}
+                centered
+                items={[
+                  { key: "discuss", label: "Discussion" },
+                  { key: "hiring", label: "Hiring" },
+                ]}
+              />
+            </div>
 
-            <List
-              dataSource={posts.filter((p) => p.post_type === tabKey)}
-              renderItem={(post) => (
-                <Card key={post.id} style={{ marginBottom: 16 }}>
-                  {/* Người đăng */}
-                  <Space align="center" style={{ marginBottom: 8 }}>
-                    <Avatar icon={<UserOutlined />} />
-                    <Text strong>{post.author?.name || "Ẩn danh"}</Text>
-                  </Space>
+            <div
+              ref={containerRef}
+              className="posts-scroll"
+              style={{
+                flex: 1,
+                overflowY: "auto",
+                paddingTop: 8,
+              }}
+            >
+              {loading ? (
+                <div style={{ display: "flex", justifyContent: "center", padding: 24 }}>
+                  <Spin />
+                </div>
+              ) : filtered.length === 0 ? (
+                <Empty description="Chưa có bài viết" />
+              ) : (
+                <List
+                  dataSource={filtered}
+                  renderItem={(post) => (
+                    <Card key={post.id} className="fb-post-card">
+                      {/* Header */}
+                      <div className="fb-post-header">
+                        <Avatar size={40} icon={<UserOutlined />} />
+                        <div className="fb-post-header-info">
+                          <Text strong className="fb-post-author">{post.author?.name || "Ẩn danh"}</Text>
+                          <Text type="secondary" className="fb-post-time"> 11 giờ</Text>
+                        </div>
+                      </div>
 
-                  {/* Tiêu đề sự kiện (nếu có) */}
-                  {post.event?.title && (
-                    <Text type="secondary" style={{ display: "block", marginBottom: 4 }}>
-                       {post.event.title}
-                    </Text>
+                      {/* Nội dung */}
+                      <div className="fb-post-content">
+                        {post.event?.title && (
+                          <Text strong style={{ display: "block", marginBottom: 4 }}>
+                            {post.event.title}
+                          </Text>
+                        )}
+                        <Text style={{ whiteSpace: "pre-line" }}>{post.content}</Text>
+                      </div>
+
+                      {/* Số lượng tương tác */}
+                      <div className="fb-post-stats">
+                        <div className="fb-post-likes">
+                          👍 {post.likeCount || 0}
+                        </div>
+                        <div className="fb-post-comments">
+                          {post.commentCount || 0} bình luận
+                        </div>
+                      </div>
+
+                      {/* Thanh hành động */}
+                      <div className="fb-post-actions">
+                        <Button type="text" icon={<LikeOutlined />} onClick={() => handleLike(post.id || post._id)}>
+                          Thích
+                        </Button>
+                        <Button type="text" icon={<MessageOutlined />}>
+                          Bình luận
+                        </Button>
+                      </div>
+                    </Card>
                   )}
-
-                  {/* Nội dung bài viết */}
-                  <Text style={{ display: "block", marginBottom: 12 }}>
-                    {post.content}
-                  </Text>
-
-                  {/* Nút Like & Comment */}
-                  <Space>
-                    <Button
-                      type="text"
-                      icon={<LikeOutlined />}
-                      onClick={() => handleLike(post.id)}
-                    >
-                      {post.likeCount}
-                    </Button>
-                    <Button type="text" icon={<MessageOutlined />}>
-                      {post.commentCount}
-                    </Button>
-                  </Space>
-                </Card>
+                />
               )}
-            />
+            </div>
           </Content>
 
-          {/* Right Sidebar */}
           <Sider
-            width={260}
+            width={450}
             style={{
               background: "#fff",
-              borderLeft: "1px solid #eee",
+              borderLeft: "1px solid #cfc6c6ff",
               padding: "16px",
               height: "calc(100vh - 64px)",
+              position: "sticky",
+              top: 64,
+              alignSelf: "flex-start",
             }}
           >
             <Input

@@ -6,3 +6,120 @@
   /* padding: 2rem; */
   box-sizing: border-box;
 }
+
+/* container chứa danh sách bài viết, ẩn scrollbar nhưng vẫn cuộn được */
+.posts-scroll {
+  overflow-y: auto;
+  -ms-overflow-style: none;  /* IE 10+ */
+  scrollbar-width: none;     /* Firefox */
+}
+
+/* WebKit browsers (Chrome, Safari, Edge Chromium) */
+.posts-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.post-card,
+.post-card .ant-card-body {
+  text-align: left;
+}
+
+/* nếu có meta/title/description của AntD card */
+.post-card .ant-card-meta-title,
+.post-card .ant-card-meta-description {
+  text-align: left;
+}
+
+/* --- Facebook-style post --- */
+.fb-post-card {
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  background: #fff;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+
+/* Header */
+.fb-post-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.fb-post-header-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.fb-post-author {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.fb-post-time {
+  font-size: 12px;
+  color: #777;
+  text-align: left;
+}
+
+/* Nội dung */
+.fb-post-content {
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 12px;
+  white-space: pre-line;
+  text-align: left;
+}
+
+/* Like + comment count */
+.fb-post-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #65676b;
+  border-bottom: 1px solid #e4e6eb;
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+}
+
+.fb-post-likes {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.fb-post-comments {
+  cursor: pointer;
+}
+
+/* Nút hành động */
+.fb-post-actions {
+  display: flex;
+  justify-content: space-around;
+  color: #65676b;
+  border-top: 1px solid #e4e6eb;
+  padding-top: 4px;
+}
+
+.fb-post-actions .ant-btn {
+  flex: 1;
+  text-align: center;
+  border: none;
+  background: transparent;
+  font-weight: 500;
+}
+
+.fb-post-actions .ant-btn:hover {
+  background: #f0f2f5;
+}
+
+.home-sider .ant-menu-item .menu-label,
+.home-sider .ant-menu-item .ant-menu-title-content {
+  font-size: 16px; /* label size */
+  font-weight: 300px;
+  /* padding-left: 4px; */
+  text-align: center;
+  color: rgba(0,0,0,0.85);
+}
