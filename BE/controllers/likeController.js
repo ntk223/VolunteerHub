@@ -10,6 +10,12 @@ class LikeController {
             res.status(StatusCodes.BAD_REQUEST).json({ error: "Failed to create like" });
         }
     }
+
+    async getLikesByPostId(req, res) {
+        const { postId } = req.params;
+        const likes = await likeService.getLikesByPostId(postId);
+        res.status(StatusCodes.OK).json(likes);
+    }
 }
 
 export const likeController = new LikeController();
