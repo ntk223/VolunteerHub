@@ -42,7 +42,7 @@ const Home = () => {
     const fetchPosts = async () => {
       setLoading(true);
       try {
-        const res = await api.get("/post/discuss"); // ✅ dùng global config
+        const res = await api.get("/post/discuss"); // dùng global config
         setPosts(Array.isArray(res.data) ? res.data : []);
       } catch (err) {
         console.error(err);
