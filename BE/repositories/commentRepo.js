@@ -1,0 +1,13 @@
+import {Comment} from "../models/Model.js";
+
+class CommentRepository {
+    async createComment(postId, authorId, content) {
+        return await Comment.create({ post_id: postId, author_id: authorId, content });
+    }
+
+    async getCommentsByPostId(postId) {
+        return await Comment.findAll({ where: { post_id: postId } });
+    }
+}
+
+export const commentRepo = new CommentRepository();
