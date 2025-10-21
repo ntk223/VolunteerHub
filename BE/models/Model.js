@@ -6,7 +6,7 @@ import Category from './Category.js';
 import Post from './Post.js';
 import Comment from './Comment.js';
 import Like from './Like.js';
-
+import Application from './Application.js';
 
 // User ↔ Volunteer (1-1)
 User.hasOne(Volunteer, { foreignKey: 'user_id', as: 'volunteer' });
@@ -48,6 +48,14 @@ Comment.belongsTo(User, { foreignKey: 'author_id', as: 'author' });
 User.hasMany(Like, { foreignKey: 'user_id', as: 'likes' });
 Like.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
+// Volunteer ↔ Application (1-n)
+Volunteer.hasMany(Application, { foreignKey: 'volunteer_id', as: 'applications' });
+Application.belongsTo(Volunteer, { foreignKey: 'volunteer_id', as: 'volunteer' });
+
+// Event ↔ Application (1-n)
+Event.hasMany(Application, { foreignKey: 'event_id', as: 'applications' });
+Application.belongsTo(Event, { foreignKey: 'event_id', as: 'event' });
+
 export {
   User,
   Volunteer,
@@ -56,5 +64,6 @@ export {
   Category,
   Post,
   Comment,
-  Like
+  Like,
+  Application
 };
