@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes";
 class CommentController {
     async createComment(req, res) {
         const { postId, authorId, content } = req.body;
+        console.log("Creating comment with:", { postId, authorId, content });
         const comment = await commentService.createComment(postId, authorId, content);
         if (comment) {
             res.status(StatusCodes.CREATED).json(comment);
