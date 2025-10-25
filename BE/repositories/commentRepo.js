@@ -1,4 +1,4 @@
-import {Comment} from "../models/Model.js";
+import {Comment, User} from "../models/Model.js";
 
 class CommentRepository {
     async createComment(postId, authorId, content) {
@@ -7,7 +7,12 @@ class CommentRepository {
     }
 
     async getCommentsByPostId(postId) {
-        return await Comment.findAll({ where: { post_id: postId } });
+        return await Comment.findAll({ where: { post_id: postId },
+        include: [{
+            model: User,
+            as: 'author',
+            attributes: ['id', 'name']
+        }] });
     }
 }
 
