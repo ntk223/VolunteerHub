@@ -2,6 +2,7 @@ import {Comment} from "../models/Model.js";
 
 class CommentRepository {
     async createComment(postId, authorId, content) {
+        console.log("Creating comment with:", { postId, authorId, content });
         return await Comment.create({ post_id: postId, author_id: authorId, content });
     }
 

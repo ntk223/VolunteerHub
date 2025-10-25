@@ -39,3 +39,9 @@
   /* !!! phải có padding-right lớn hơn chiều rộng của icon */
   padding-right: 45px; 
 }
+
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
