@@ -3,7 +3,7 @@ import sequelize from "../config/database.js";
 
 const Volunteer = sequelize.define('Volunteer', {
     id: {type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true},
-    user_id : {
+    userId : {
         type: DataTypes.BIGINT, 
         allowNull: false, 
         unique: true,
@@ -19,6 +19,7 @@ const Volunteer = sequelize.define('Volunteer', {
 }, {
     tableName: 'volunteers',
     timestamps: false,
+    underscored: true,
 })
 
 

@@ -14,7 +14,7 @@ class PostController {
     }
 
     async changePostStatus(req, res) {
-        const postId = req.params.postId;
+        const postId = req.params.id;
         const { status } = req.body;
         const updatedPost = await postService.changePostStatus(postId, status);
         res.status(StatusCodes.OK).json(updatedPost);

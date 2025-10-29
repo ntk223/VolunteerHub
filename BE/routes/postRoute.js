@@ -8,5 +8,5 @@ const Router = express.Router()
 Router.use(verifyTokenMiddleware)
 Router.post('/', validate(postValidator.createPost), postController.createPost)
 Router.get("/:postType", postController.getPostByType)
-Router.patch("/status/:postId", authorize(['admin']), postController.changePostStatus)
+Router.patch("/status/:id", authorize(['admin']), postController.changePostStatus)
 export const postRoute = Router

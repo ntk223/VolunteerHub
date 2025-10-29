@@ -52,17 +52,17 @@ class EventRepository {
     }
 
     async updateEventApprovalStatus(eventId, status) {
-        let obj = {        
-            approval_status: status
+        let obj = {
+            approvalStatus: status
         };
         if (status == 'approved') {
             obj = {
-                progress_status: 'incomplete',
-                approval_status: status,
+                progressStatus: 'incomplete',
+                approvalStatus: status,
                 publishedAt: new Date()
             }
         }
-        console.log(obj);
+        // console.log(obj);
         const updatedEvent = await Event.update(obj, {
             where: {id: eventId},
         })
@@ -77,10 +77,10 @@ class EventRepository {
         if (!event) {
             throw new ApiError(StatusCodes.NOT_FOUND, "Event not found");
         }
-        if (event.approval_status !== 'approved') {
+        if (event.approvalStatus !== 'approved') {
             throw new ApiError(StatusCodes.BAD_REQUEST, "Only approved events can have their progress status updated");
         }
-        const updatedEvent = await Event.update({progress_status: status}, {
+        const updatedEvent = await Event.update({progressStatus: status}, {
             where: {id: eventId},
         })
         if (updatedEvent[0] === 0) {

@@ -3,7 +3,7 @@ import sequelize from "../config/database.js";
 
 const Manager = sequelize.define('Manager', {
     id: {type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true},
-    user_id : {
+    userId : {
         type: DataTypes.BIGINT, 
         allowNull: false, 
         unique: true,
@@ -18,6 +18,7 @@ const Manager = sequelize.define('Manager', {
 }, {
     tableName: 'managers',
     timestamps: false,
+    underscored: true,
 })
 
 

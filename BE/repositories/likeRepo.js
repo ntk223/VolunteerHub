@@ -2,11 +2,32 @@ import {Like, User} from "../models/Model.js";
 
 class LikeRepository {
     async createLike(postId, userId) {
-        return await Like.create({ post_id: postId, user_id: userId });
+        const existingLike = await Like.findOne({ where: { postId, userId } });
+        if (existingLike) {
+            await Like.update({
+                deletedAt: null
+            }, {
+                where: { id: existingLike.id }
+            })
+            return existingLike
+        }
+        return await Like.create({ postId, userId });
     }
+
+    async removeLike(postId, userId) {
+        const existingLike = await Like.findOne({ where: { postId, userId } });
+        if (existingLike) {
+            await Like.destroy({ where: { id: existingLike.id } });
+            return existingLike;
+        }
+        return null;
+    }
+
     async getLikesByPostId(postId) {
         const likes = await Like.findAll({ 
-            where: { post_id: postId },
+            where: { 
+                postId,
+            },
             include: [
                 {   
                     model: User, 
@@ -19,6 +40,9 @@ class LikeRepository {
         });
         return likes;
     }
+
+
+
 }   
 
 export const likeRepo = new LikeRepository();

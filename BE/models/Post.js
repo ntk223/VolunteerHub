@@ -3,7 +3,7 @@ import sequelize from "../config/database.js";
 
 const Post = sequelize.define("Post", {
     id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
-    event_id: {
+    eventId: {
         type: DataTypes.BIGINT, 
         allowNull: true ,
         references: {
@@ -13,7 +13,7 @@ const Post = sequelize.define("Post", {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
     }, 
-    author_id : { type: DataTypes.BIGINT, allowNull: false,
+    authorId : { type: DataTypes.BIGINT, allowNull: false,
         references: {
             model: 'users', // name of Target model
             key: 'id', // key in Target model that we're referencing
@@ -21,7 +21,7 @@ const Post = sequelize.define("Post", {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
     },
-    post_type: {
+    postType: {
         type:DataTypes.ENUM('discuss', 'recruitment'),
         allowNull: false,
         defaultValue: 'discuss'
@@ -35,7 +35,8 @@ const Post = sequelize.define("Post", {
     tableName: "posts",
     timestamps: true,
     paranoid: true,
-    deletedAt: "deletedAt",
+    deletedAt: "deleted_at",
+    underscored: true,
 });
 
 

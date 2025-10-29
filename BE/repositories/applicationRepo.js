@@ -3,11 +3,11 @@ import ApiError from "../utils/ApiError.js";
 import {StatusCodes} from "http-status-codes";
 class ApplicationRepository {
     async createApplication(eventId, volunteerId) {
-        return await Application.create({ event_id: eventId, volunteer_id: volunteerId });
+        return await Application.create({ eventId, volunteerId });
     }
 
     async getApplicationsByEventId(eventId) {
-        return await Application.findAll({ where: { event_id: eventId } });
+        return await Application.findAll({ where: { eventId } });
     }
 
     async changeApplicationStatus(applicationId, status) {

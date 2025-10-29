@@ -12,29 +12,29 @@ class EventController {
     }
 
     async deleteEvent(req, res) {
-        const { userid: userId, eventid: eventId } = req.params;
+        const { userId, eventId } = req.params;
         await eventService.deleteEvent(eventId, userId);
         res.status(StatusCodes.NO_CONTENT).send();
     }
 
     async updateEvent(req, res) {
-        const { eventid: eventId } = req.params;
+        const eventId  = req.params.id;
         const updateData = req.body;
         const updatedEvent = await eventService.updateEvent(eventId, updateData);
         res.status(StatusCodes.OK).json(updatedEvent);
     }
 
     async updateApprovalStatus(req, res) {
-        const { id: eventId } = req.params;
-        const { approval_status } = req.body;
-        const updatedEvent = await eventService.updateEventApprovalStatus(eventId, approval_status);
+        const eventId = req.params.id;
+        const { approvalStatus } = req.body;
+        const updatedEvent = await eventService.updateEventApprovalStatus(eventId, approvalStatus);
         res.status(StatusCodes.OK).json(updatedEvent);
     }
 
     async updateEventProgressStatus(req, res) {
-        const { id: eventId } = req.params;
-        const { progress_status } = req.body;
-        const updatedEvent = await eventService.updateEventProgressStatus(eventId, progress_status);
+        const eventId = req.params.id;
+        const { progressStatus } = req.body;
+        const updatedEvent = await eventService.updateEventProgressStatus(eventId, progressStatus);
         res.status(StatusCodes.OK).json(updatedEvent);
     }
 }
