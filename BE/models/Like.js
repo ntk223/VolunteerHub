@@ -3,7 +3,7 @@ import { DataTypes } from "sequelize";
 
 const Like = sequelize.define('Like', {
     id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
-    user_id : { 
+    userId : { 
         type: DataTypes.BIGINT,
         allowNull: false,
         references: {
@@ -13,7 +13,7 @@ const Like = sequelize.define('Like', {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
     },
-    post_id: { 
+    postId: { 
         type: DataTypes.BIGINT, 
         allowNull: true,
         references: {
@@ -23,12 +23,14 @@ const Like = sequelize.define('Like', {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
     },
-createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
+    createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
 }, {
     tableName: 'likes',
-    timestamps: false,
+    timestamps: true,
+    updatedAt: false,
     paranoid: true,
-    deletedAt: "deletedAt"
+    deletedAt: "deleted_at",
+    underscored: true,
 })
 
 export default Like

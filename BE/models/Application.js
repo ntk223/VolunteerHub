@@ -3,20 +3,20 @@ import sequelize from "../config/database.js";
 
 const Application = sequelize.define('Application', {
     id: {type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true},
-    event_id: {
+    eventId: {
         type: DataTypes.BIGINT,
         allowNull: false,
         references: {
             model: 'events',
-            key: 'event_id',
+            key: 'eventId',
         },
     },
-    volunteer_id: {
+    volunteerId: {
         type: DataTypes.BIGINT,
         allowNull: false,
         references: {
             model: 'volunteers',
-            key: 'volunteer_id',
+            key: 'volunteerId',
         },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
@@ -32,6 +32,7 @@ const Application = sequelize.define('Application', {
 }, {
     tableName: 'applications',
     timestamps: false,
+    underscored: true,
 });
 export default Application;
 

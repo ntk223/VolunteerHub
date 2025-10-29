@@ -4,11 +4,11 @@ import ApiError from '../utils/ApiError.js';
 import { StatusCodes } from "http-status-codes";
 class PostRepository {
     async createPost(postData) {
-        const user = await User.findByPk(postData.author_id);
+        const user = await User.findByPk(postData.authorId);
         if (!user) {
             throw new ApiError(StatusCodes.NOT_FOUND, 'User not found');
         }
-        if (postData.post_type === 'recruitment' && user.role !== 'manager') {
+        if (postData.postType === 'recruitment' && user.role !== 'manager') {
             throw new ApiError(StatusCodes.FORBIDDEN, 'Only managers can create recruitment posts');
         }
         return await Post.create(postData);
@@ -19,7 +19,7 @@ class PostRepository {
         const posts = await Post.findAll({
             attributes: [
                 'id',
-                'post_type',
+                'postType',
                 'content',
                 [sequelize.literal('(SELECT COUNT(*) FROM likes WHERE likes.post_id = Post.id)'), 'likeCount'],
                 [sequelize.literal('(SELECT COUNT(*) FROM comments WHERE comments.post_id = Post.id)'), 'commentCount'],
@@ -30,8 +30,7 @@ class PostRepository {
             ],
             where: {
                 status: 'approved',
-                post_type: postType,
-                deletedAt: null,
+                postType,
             },
             order: [['id', 'DESC']],
             });

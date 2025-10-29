@@ -5,6 +5,6 @@ const Router = express.Router()
 
 Router.post('/', applicationController.createApplication)
 Router.get('/event/:eventId', applicationController.getApplicationsByEventId)
-Router.patch('/:applicationId', applicationController.changeApplicationStatus)
-Router.patch('/:applicationId/cancel', applicationController.cancelApplication)
+Router.patch('/:id', applicationController.changeApplicationStatus)
+Router.patch('/:id/cancel', applicationController.cancelApplication)
 export const applicationRoute = Router;

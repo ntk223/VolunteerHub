@@ -28,6 +28,7 @@ import {
   MessageOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../contexts/AuthContext";
+import ColumnGroup from "antd/es/table/ColumnGroup";
 const { Header, Sider, Content } = Layout;
 const { Title, Text } = Typography;
 
@@ -58,6 +59,7 @@ const Home = () => {
       try {
         const res = await api.get("/post/discuss");
         const list = Array.isArray(res.data) ? res.data : [];
+        console.log("Fetched posts:", list);
         setPosts(list);
       } catch (err) {
         console.error(err);
@@ -110,10 +112,10 @@ const Home = () => {
       if (!currentlyLiked) {
         // like
         //await api.post("/like", { postId });
-        await api.post("/like", { post_id: postId, user_id: userId });
+        await api.post("/like", { postId, userId });
       } else {
         // unlike - use DELETE with body
-        await api.delete("/like", { data: { postId } });
+        await api.delete("/like", { postId, userId });
       }
       // after mutation, refresh authoritative like list/count from server
       await refreshLikesForPost(postId);
@@ -235,7 +237,7 @@ const Home = () => {
     }
   };
 
-  const filtered = posts.filter((p) => p.post_type === tabKey);
+  const filtered = posts.filter((p) => p.postType === tabKey);
 
   return (
     <div className="home-root">

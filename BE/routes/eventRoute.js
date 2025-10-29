@@ -11,7 +11,7 @@ Router.use(verifyTokenMiddleware)
 Router.get('/', eventController.getAllEvents)
 Router.post('/', authorize(['manager']),validate(eventValidator.createEvent), eventController.createEvent)
 // Router.get('/:id', userController.getUserById)
-Router.delete('/user/:userid/event/:eventid', authorize(['manager', 'admin']), eventController.deleteEvent)
+Router.delete('/user/:userId/event/:eventId', authorize(['manager', 'admin']), eventController.deleteEvent) // Delete event by manager or admin
 Router.put('/:id', authorize(['manager']), validate(eventValidator.updateEvent), eventController.updateEvent)
 Router.patch('/approval-status/:id', authorize(['admin']), eventController.updateApprovalStatus)
 Router.patch('/progress-status/:id', authorize(['manager']), eventController.updateEventProgressStatus)

@@ -3,7 +3,7 @@ import { DataTypes } from "sequelize";
 
 const Comment = sequelize.define('Comment', {
     id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
-    post_id: { 
+    postId: { 
         type: DataTypes.BIGINT, 
         allowNull: false,
         references: {
@@ -13,7 +13,7 @@ const Comment = sequelize.define('Comment', {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
     },
-    author_id : { 
+    authorId: { 
         type: DataTypes.BIGINT,
         allowNull: false,
         references: {
@@ -30,7 +30,8 @@ const Comment = sequelize.define('Comment', {
     tableName: 'comments',
     timestamps: true,
     paranoid: true,
-    deletedAt: "deletedAt",
+    deletedAt: "deleted_at",
+    underscored: true,
 })
 
 export default Comment
