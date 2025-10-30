@@ -1,0 +1,94 @@
+.fb-post-card {
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.fb-post-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.fb-post-header-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.fb-post-author {
+  font-size: 15px;
+}
+
+.fb-post-time {
+  font-size: 13px;
+}
+
+.fb-post-content {
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.fb-post-stats {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-top: 1px solid #eee;
+  /* border-bottom: 1px solid #eee; */
+  /* margin-bottom: 8px; */
+  font-size: 14px;
+  color: #65676b;
+}
+
+.fb-post-likes:hover {
+  text-decoration: underline;
+}
+
+.fb-post-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Comment styles */
+.comment-section {
+  margin-top: 12px;
+  border-top: 1px solid #eee;
+  padding-top: 12px;
+}
+
+.comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.comment-item {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.comment-body {
+  flex: 1;
+  text-align: left;
+}
+
+.comment-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+
+.comment-time {
+  font-size: 0.8rem;
+}
+
+.comment-content {
+  white-space: pre-wrap;
+}
+
+.comment-input textarea {
+  resize: vertical;
+}
