@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../hooks/useAuth.jsx';
 import LoginForm from '../../components/auth/LoginForm/LoginForm';
 import RegisterForm from '../../components/auth/RegisterForm/RegisterForm'; 
 import './Login.css';

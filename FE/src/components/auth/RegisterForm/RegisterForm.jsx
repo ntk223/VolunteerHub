@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { authApi } from "../../../services/api/authApi";
+import api from '../../../api/index.js';
 import FormField from '../../common/FormField';
 import toast from 'react-hot-toast';
 import "./RegisterForm.css";

@@ -1,33 +1,42 @@
-import { Modal, List, Avatar, Typography, Spin } from "antd";
+// components/posts/LikesModal.jsx
+import { Modal, List, Avatar, Typography, Spin, Empty } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 
 const { Text } = Typography;
 
-export const LikesModal = ({ visible, loading, likes, onClose }) => {
+export const LikesModal = ({ visible, loading = false, likes = [], onClose }) => {
   return (
-    <Modal title="Người đã thích" open={visible} onCancel={onClose} footer={null}>
+    <Modal
+      title="Người đã thích bài viết"
+      open={visible}
+      onCancel={onClose}
+      footer={null}
+      centered
+    >
       {loading ? (
-        <div style={{ textAlign: "center", padding: 16 }}>
+        <div style={{ textAlign: "center", padding: 24 }}>
           <Spin />
         </div>
       ) : likes.length === 0 ? (
-        <Text type="secondary">Chưa có ai thích bài viết này.</Text>
+        <Empty description="Chưa có ai thích bài viết này." />
       ) : (
         <List
           itemLayout="horizontal"
           dataSource={likes}
           renderItem={(like) => {
-            const u = like.user ?? like.User ?? { name: "Người dùng", role: "" };
+            const user = like.user ?? like.User ?? {};
             return (
               <List.Item>
                 <List.Item.Meta
                   avatar={<Avatar icon={<UserOutlined />} />}
-                  title={u.name || "Người dùng"}
-                  description={u.role ? `${u.role}` : undefined}
+                  title={user.name || "Người dùng"}
+                  description={user.role || undefined}
                 />
-                <div style={{ fontSize: 12, color: "#888" }}>
-                  {new Date(like.createdAt).toLocaleString()}
-                </div>
+                <Text type="secondary" style={{ fontSize: 12 }}>
+                  {like.createdAt
+                    ? new Date(like.createdAt).toLocaleString()
+                    : ""}
+                </Text>
               </List.Item>
             );
           }}
@@ -36,3 +45,5 @@ export const LikesModal = ({ visible, loading, likes, onClose }) => {
     </Modal>
   );
 };
+
+export default LikesModal;
