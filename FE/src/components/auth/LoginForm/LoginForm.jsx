@@ -1,9 +1,10 @@
 import Cookies from "js-cookie";
 import React, { useState } from 'react';
-import { useAuth } from '../../../contexts/AuthContext';
-import { authApi } from '../../../services/api/authApi';
+import { useAuth } from '../../../hooks/useAuth.jsx';
+import api from '../../../api/index.js';
 import './LoginForm.css';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import ColumnGroup from "antd/es/table/ColumnGroup.js";
 
 const LoginForm = ({ onSwitchToRegister }) => {
   const [formData, setFormData] = useState({
@@ -33,31 +34,39 @@ const LoginForm = ({ onSwitchToRegister }) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+  e.preventDefault();
+  setLoading(true);
+  setError('');
 
-    try {
-    const response = await authApi.login(formData.email, formData.password, formData.role);
-    
-    // ✅ Lưu token vào cookie
-    Cookies.set("access_token", response.token, {
-      expires: 7, // 7 ngày hết hạn
-      secure: true, // chỉ gửi qua HTTPS
-      sameSite: "Strict", // tránh bị CSRF
+  try {
+    console.log('Submitting login form with data:', formData);
+
+    // Gọi API đăng nhập
+    const res = await api.post('/auth/login', formData);
+    console.log('Login response:', res);
+
+    const { user, token } = res.data;
+
+    // Lưu token vào cookie
+    Cookies.set("access_token", token, {
+      expires: 7,
+      secure: window.location.protocol === "https:",
+      sameSite: "Strict",
     });
 
-    // ✅ Nếu bạn vẫn dùng context để lưu user info
-    await login(response.user, response.token);
+    // Gọi hàm login trong context
+    await login(user, token);
 
-    // ✅ Chuyển hướng sau khi đăng nhập
+    // Chuyển hướng về trang chủ
     window.location.href = '/';
   } catch (err) {
+    console.error("Login failed:", err);
     setError('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
   } finally {
     setLoading(false);
   }
-  };
+};
+
 
   return (
     <div className="login-form">

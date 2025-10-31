@@ -1,86 +1,97 @@
-import { Card, Avatar, Typography, Button } from "antd";
-import { UserOutlined, LikeOutlined, MessageOutlined } from "@ant-design/icons";
-import { CommentSection } from "./CommentSection";
-import "./PostCard.css";
-
+import { Card, Avatar, Button, Typography, Tooltip } from "antd";
+import {
+  LikeOutlined,
+  LikeFilled, // Thêm
+  MessageOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import CommentSection from "./CommentSection";
+import { usePosts } from "../../hooks/usePosts";
 const { Text } = Typography;
 
-export const PostCard = ({
-  post,
-  isLiked,
-  onLike,
-  onOpenLikes,
-  onToggleComments,
-  // comment props
-  commentSection,
-  onCommentChange,
-  onSubmitComment,
-}) => {
-  const postId = post.id ?? post._id;
+export const PostCard = ({post}) => {
+  const {
+    toggleLike,
+    openLikes,
+    toggleComments,
+    commentsMap,
+    newComments,
+    handleCommentChange,
+    submitComment,
+  } = usePosts();
+  const postId = post.id;
+  const postComments = commentsMap[postId] || [];
+  const isLiked = Boolean(post.isLiked);
+  const commentsVisible = Boolean(commentsMap[postId]);
 
   return (
-    <Card className="fb-post-card">
-      {/* Header */}
-      <div className="fb-post-header">
-        <Avatar size={40} icon={<UserOutlined />} />
-        <div className="fb-post-header-info">
-          <Text strong className="fb-post-author">
-            {post.author?.name || "Ẩn danh"}
-          </Text>
-          <Text type="secondary" className="fb-post-time">
-            {" "}11 giờ
-          </Text>
+    <Card className="fb-post-card" style={{ marginBottom: 16 }}>
+      {/* --- Header --- */}
+      <div className="fb-post-header" style={{gap: 10, display: 'flex', alignItems: 'center' }}>
+        <Avatar size={40} src={post.author?.avatarUrl} icon={<UserOutlined />} />
+        <div>
+          <Text strong>{post.author?.name || "Ẩn danh"}</Text>
+          <div>
+            <Text type="secondary" style={{ fontSize: 12 }}>
+              {new Date(post.createdAt || Date.now()).toLocaleString()}
+            </Text>
+          </div>
         </div>
       </div>
 
-      {/* Nội dung */}
-      <div className="fb-post-content">
-        {post.event?.title && (
-          <Text strong style={{ display: "block", marginBottom: 4 }}>
-            {post.event.title}
+      {/* --- Content --- */}
+      <div className="fb-post-content" style={{ marginTop: 12 }}>
+        <Text>{post.content}</Text>
+      </div>
+
+      {/* --- Stats --- */}
+      <div className="fb-post-stats" style={{ marginTop: 8, display: 'flex', justifyContent: 'space-between', cursor: 'pointer' }}>
+        <Tooltip title="Xem ai đã thích">
+          <Text type="secondary" onClick={() => openLikes(postId)}>
+            👍 {post.likeCount || post.likes || 0}
           </Text>
-        )}
-        <Text style={{ whiteSpace: "pre-line" }}>{post.content}</Text>
+        </Tooltip>
+        <Tooltip title="Xem bình luận">
+           <Text type="secondary" onClick={() => toggleComments(postId)}>
+             💬 {post.commentCount || 0}
+           </Text>
+        </Tooltip>
       </div>
 
-      {/* Số lượng tương tác */}
-      <div className="fb-post-stats">
-        <div
-          className="fb-post-likes"
-          onClick={() => onOpenLikes(postId)}
-          style={{ cursor: "pointer", display: "inline-block" }}
-          title="Xem ai đã thích"
-        >
-          👍 {post.likeCount || 0}
-        </div>
-        <div className="fb-post-comments">{post.commentCount || 0} bình luận</div>
-      </div>
-
-      {/* Thanh hành động */}
-      <div className="fb-post-actions">
+      {/* --- Actions --- */}
+      <div className="fb-post-actions" style={{ display: "flex", gap: 10, marginTop: 8, borderTop: '1px solid #f0f0f0', paddingTop: 8 }}>
         <Button
           type="text"
-          icon={<LikeOutlined style={{ color: isLiked ? "#1890ff" : undefined }} />}
-          onClick={() => onLike(post)}
+          danger={isLiked}
+          icon={
+            isLiked ? <LikeFilled /> : <LikeOutlined />
+          }
+          onClick={toggleLike}
+          style={{ flex: 1 }}
         >
           Thích
         </Button>
         <Button
           type="text"
           icon={<MessageOutlined />}
-          onClick={() => onToggleComments(postId)}
+          onClick={() => toggleComments(postId)}
+          style={{ flex: 1 }}
         >
           Bình luận
         </Button>
       </div>
 
-      {/* Comment section */}
-      {commentSection && (
-        <CommentSection
-          comments={commentSection}
-          onCommentChange={(value) => onCommentChange(postId, value)}
-          onSubmit={() => onSubmitComment(postId)}
-        />
+      {/* --- Comments --- */}
+      {commentsVisible && (
+        <div style={{ marginTop: 12 }}>
+          <CommentSection 
+            postId={postId}
+            comments={postComments}
+            newComment={newComments[postId] || ""}
+            onCommentChange={handleCommentChange}
+            onSubmitComment={submitComment}
+          />
+        </div>
       )}
     </Card>
   );

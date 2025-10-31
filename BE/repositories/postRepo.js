@@ -21,8 +21,8 @@ class PostRepository {
                 'id',
                 'postType',
                 'content',
-                [sequelize.literal('(SELECT COUNT(*) FROM likes WHERE likes.post_id = Post.id)'), 'likeCount'],
-                [sequelize.literal('(SELECT COUNT(*) FROM comments WHERE comments.post_id = Post.id)'), 'commentCount'],
+                [sequelize.literal('(SELECT COUNT(*) FROM likes WHERE likes.post_id = Post.id and likes.deleted_at IS NULL)'), 'likeCount'],
+                [sequelize.literal('(SELECT COUNT(*) FROM comments WHERE comments.post_id = Post.id and comments.deleted_at IS NULL)'), 'commentCount'],
             ],
             include: [
                 { model: User, attributes: ['id', 'name'], as: 'author' },
