@@ -1,181 +1,163 @@
+/* --- Tái sử dụng các biến CSS (Nên được định nghĩa trong file global hoặc form cha) --- */
+/* Nếu bạn định nghĩa các biến này trong một file CSS riêng biệt cho form, 
+   hãy đảm bảo chúng được import hoặc copy vào đây: */
 :root {
   --primary-color: #007bff;
   --primary-hover-color: #0056b3;
-  --background-color: #f7f9fc;
+  --background-color: #f0f3fa;
   --form-background-color: #ffffff;
   --text-color: #333;
   --label-color: #555;
   --border-color: #ddd;
   --border-focus-color: var(--primary-color);
   --error-color: #e74c3c;
-  --success-color: #2ecc71;
-  --font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --border-radius: 8px;
-  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --font-family: 'Montserrat', sans-serif; /* Sử dụng Montserrat như code React trước */
+  --border-radius: 8px; /* Giữ nhỏ hơn để phù hợp với input */
+  --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35); /* Sử dụng shadow từ Login.css ban đầu */
 }
 
-body {
-  font-family: var(--font-family);
-  background-color: var(--background-color);
-  color: var(--text-color);
-  /* display: flex; */
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  margin: 0;
-}
 
-/* container chính */
+/* --- Khối Form chính --- */
+/* Form này được bọc trong các container từ component Login.jsx hoặc Register.jsx */
+
 .register-form {
-  background-color: var(--form-background-color);
-  padding: 2.5rem;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  width: 100%;
-  max-width: 450px;
-  box-sizing: border-box;
+    width: 100%;
+    /* Đảm bảo không có padding thừa nếu đã có form-title */
+    padding: 0; 
 }
 
+/* Tiêu đề "Đăng ký" bên trong form (Nếu không dùng form-title từ bên ngoài) */
 .register-form h2 {
-  text-align: center;
-  margin-top: 0;
-  margin-bottom: 2rem;
-  font-size: 1.75rem;
-  color: var(--text-color);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0 0 1rem 0; /* Khoảng cách với form bên dưới */
+    text-align: center;
+}
+
+/* --- Định dạng Form Group chung --- */
+/* Dành cho FormField hoặc div bọc label/input */
+.register-form form {
+    /* Đảm bảo form căn giữa và không bị tràn */
+    padding: 0; /* padding đã có ở component cha */
+    width: 100%;
 }
 
 .form-group {
-  margin-bottom: 1.25rem;
+    margin-bottom: 15px;
+    width: 100%;
 }
 
 .form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--label-color);
+    display: block;
+    margin-bottom: 5px;
+    color: var(--label-color);
+    font-size: 0.9rem;
+    font-weight: 500;
 }
 
+
+/* --- Định dạng Input/Select --- */
 .form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  font-size: 1rem;
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  background-color: #fff;
-  color: black;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  box-sizing: border-box; /* đảm bảo padding không làm thay đổi kích thước */
+.form-group select {
+    background-color: #eee; /* Nền xám nhạt như Login.css */
+    border: 1px solid var(--border-color);
+    margin: 0; /* Đã loại bỏ margin 8px 0 mặc định của Login.css để kiểm soát bằng form-group */
+    padding: 10px 15px;
+    font-size: 13px;
+    border-radius: 8px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    height: 40px; /* Chiều cao cố định cho input/select */
 }
 
-.form-group textarea {
-  min-height: 100px;
-  resize: vertical;
+/* Select có thể cần thêm style để phù hợp */
+.form-group select {
+    appearance: none; /* Ẩn mũi tên mặc định */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23555'%3e%3cpath d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+    background-size: 12px;
 }
 
-/* Hiệu ứng khi focus vào input */
 .form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: var(--border-focus-color);
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+.form-group select:focus {
+    border-color: var(--border-focus-color);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
 }
 
-.register-button {
-  width: 100%;
-  padding: 0.85rem 1rem;
-  font-size: 1rem;
-  font-weight: 700;
-  color: #fff;
-  background-color: var(--primary-color);
-  border: none;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-  margin-top: 1rem;
+/* Input khi có lỗi */
+.form-group.has-error input,
+.form-group.has-error select {
+    border-color: var(--error-color);
 }
 
-.register-button:hover:not(:disabled) {
-  background-color: var(--primary-hover-color);
-  transform: translateY(-2px); 
-}
-
-.register-button:disabled {
-  background-color: #9b9b9b;
-  cursor: not-allowed;
-}
-
-/* thông báo lỗi & chuyển đổi form */
-/* lỗi hiển thị inline dưới mỗi input */
-.error-text {
-  color: var(--error-color);
-  font-size: 0.85rem;
-  margin-top: 0.25rem;
-  display: block;
-}
-
-.switch-form {
-  text-align: center;
-  margin-top: 1.5rem;
-  font-size: 0.9rem;
-}
-
-.switch-form button {
-  background: none;
-  border: none;
-  color: var(--primary-color);
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0.25rem;
-  font-size: inherit; /* kế thừa font-size từ thẻ p */
-}
-
-.switch-form button:hover {
-  text-decoration: underline;
-}
-
+/* --- Password Wrapper (Tái sử dụng style từ Login.css) --- */
 .password-wrapper {
-  position: relative;
+    position: relative;
 }
 
 .password-toggle-icon {
-  position: absolute;
-  top: 70%; 
-  right: 15px;
-  transform: translateY(-50%);
-  cursor: pointer;
-  color: #888;
-  font-size: 1.2rem;
-  /* Thêm dòng này để icon không bị chọn khi click nhanh */
-  user-select: none; 
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    /* Căn chỉnh lại vì input không có padding-top: 10px */
+    transform: translateY(calc(0% + 5px)); 
+    cursor: pointer;
+    color: #888;
+    font-size: 1.1rem;
+    user-select: none;
+    z-index: 10;
 }
 
-/* Áp dụng padding cho tất cả input bên trong password-wrapper */
 .password-wrapper input {
-  padding-right: 45px !important; /* Dùng !important để ghi đè lên các style khác nếu cần */
+    padding-right: 45px !important;
 }
 
-/* Style cho text lỗi, giống như component FormField đã làm */
+/* Fix vị trí icon khi sử dụng FormField */
+.form-group .password-toggle-icon {
+    /* Đảm bảo icon nằm giữa input, nếu input cao 40px */
+    top: 30px; /* Thử nghiệm giá trị này (label cao + 1/2 input) */
+}
+
+
+/* --- Thông báo lỗi --- */
 .error-text {
-  color: #e74c3c;
-  font-size: 0.85rem;
-  margin-top: 0.25rem;
-  display: block;
+    color: var(--error-color);
+    font-size: 0.8rem;
+    margin-top: 5px;
+    display: block;
 }
 
-/* responsive cho thiết bị di động */
-@media (max-width: 500px) {
-  .register-form {
-    padding: 1.5rem;
-    box-shadow: none;
-    border-radius: 0;
-  }
 
-  body {
-    /* Cho phép form chiếm toàn màn hình trên mobile */
-    align-items: flex-start;
-  }
+/* --- Nút Đăng ký (Tái sử dụng style nút chung) --- */
+.register-button {
+    background-color: var(--primary-color) !important;
+    color: white;
+    font-size: 12px;
+    padding: 10px 45px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-top: 20px;
+    cursor: pointer;
+    width: 100%; /* Đảm bảo nút rộng toàn bộ form */
+    transition: all 0.3s ease-in-out;
+}
+
+.register-button:hover:not(:disabled) {
+    background-color: var(--primary-hover-color) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4);
+}
+
+.register-button:disabled {
+    background-color: #cccccc !important;
+    cursor: not-allowed;
+    opacity: 0.7;
+    transform: none;
+    box-shadow: none;
 }
