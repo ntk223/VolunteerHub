@@ -127,7 +127,7 @@ const LoginForm = () => { // Loại bỏ { onSwitchToRegister } vì logic chuy�
         style={{
              backgroundColor: '#eee',
              border: 'none',
-             margin: '8px 0',
+             margin: '4px 0',
              padding: '10px 15px',
              fontSize: '13px',
              borderRadius: '8px',

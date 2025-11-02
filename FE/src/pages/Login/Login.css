@@ -62,6 +62,8 @@
 
 .container span {
     font-size: 12px;
+    margin-top: 8px;
+    margin-bottom: 8px;
 }
 
 .container a {
@@ -83,6 +85,12 @@
     text-transform: uppercase;
     margin-top: 10px;
     cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.container button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(116, 75, 220, 0.4);
 }
 
 /* Nút ẩn trên panel lật */
@@ -104,7 +112,7 @@
 .container input {
     background-color: #eee;
     border: none;
-    margin: 8px 0;
+    margin: 4px 0;
     padding: 10px 15px;
     font-size: 13px;
     border-radius: 8px;
