@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import api from '../../../api/index.js';
+import api from '../../../api/index.js'; // <= Đảm bảo đối tượng này có thể gọi .post()
 import FormField from '../../common/FormField';
 import toast from 'react-hot-toast';
 import "./RegisterForm.css";
@@ -20,7 +20,6 @@ const RegisterForm = ({ onSwitchToLogin }) => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  // state để quản lý riêng biệt từng trường mật khẩu
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -37,8 +36,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
       });
     }
   };
-  
-  // toggle cho từng trường
+    
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
 
@@ -75,12 +73,16 @@ const RegisterForm = ({ onSwitchToLogin }) => {
 
     try {
       const { confirmPassword, ...dataToSubmit } = formData;
-      await authApi.register(dataToSubmit);
+      
+     
+      await api.post('/auth/register', dataToSubmit);
+
       toast.success('Đăng ký thành công! Vui lòng đăng nhập.');
       onSwitchToLogin();
     } catch (err) {
       const errorMessage = err.response?.data?.message || "Đã có lỗi xảy ra. Vui lòng thử lại.";
-      if (errorMessage === "Email already in use") {
+      
+      if (errorMessage === "Email already in use") { 
         setErrors({ email: "Email đã được sử dụng" });
       } else {
         toast.error(errorMessage);
@@ -95,7 +97,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
       <h2>Đăng ký</h2>
 
       <form onSubmit={handleSubmit} noValidate>
-        {/* Các trường Name, Email, Phone  */}
+        {/* Các trường Name, Email, Phone */}
         <FormField
           id="name" label="Họ và tên" name="name" type="text"
           value={formData.name} onChange={handleChange} error={errors.name}
@@ -109,7 +111,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
           value={formData.phone} onChange={handleChange} error={errors.phone}
         />
 
-        {/* Thay thế FormField bằng cấu trúc div để chèn icon */}
+        {/* Mật khẩu */}
         <div className="form-group password-wrapper">
           <label htmlFor="password">Mật khẩu</label>
           <input
@@ -125,6 +127,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
           {errors.password && <span className="error-text">{errors.password}</span>}
         </div>
 
+        {/* Xác nhận mật khẩu */}
         <div className="form-group password-wrapper">
           <label htmlFor="confirmPassword">Xác nhận mật khẩu</label>
           <input
@@ -140,7 +143,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
           {errors.confirmPassword && <span className="error-text">{errors.confirmPassword}</span>}
         </div>
         
-        {/* Các trường còn lại giữ nguyên */}
+        {/* Vai trò */}
         <div className="form-group">
           <label htmlFor="role">Vai trò</label>
           <select id="role" name="role" value={formData.role} onChange={handleChange}>
@@ -150,22 +153,15 @@ const RegisterForm = ({ onSwitchToLogin }) => {
           </select>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="introduce">Giới thiệu bản thân</label>
-          <textarea id="introduce" name="introduce" value={formData.introduce} onChange={handleChange} />
-        </div>
+        {/* Giới thiệu bản thân */}
+        
 
         <button type="submit" className="register-button" disabled={loading}>
           {loading ? 'Đang xử lý...' : 'Đăng ký'}
         </button>
       </form>
 
-      <p className="switch-form">
-        Đã có tài khoản?{' '}
-        <button type="button" onClick={onSwitchToLogin} disabled={loading}>
-          Đăng nhập
-        </button>
-      </p>
+      
     </div>
   );
 }

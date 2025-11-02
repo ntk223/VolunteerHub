@@ -2,11 +2,11 @@ import Cookies from "js-cookie";
 import React, { useState } from 'react';
 import { useAuth } from '../../../hooks/useAuth.jsx';
 import api from '../../../api/index.js';
-import './LoginForm.css';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import ColumnGroup from "antd/es/table/ColumnGroup.js";
+// Import file CSS (đã được sử dụng trong Login.jsx nhưng vẫn giữ lại nếu cần style riêng)
+import './LoginForm.css'; 
 
-const LoginForm = ({ onSwitchToRegister }) => {
+const LoginForm = () => { // Loại bỏ { onSwitchToRegister } vì logic chuyển đổi nằm trong Login.jsx
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -14,8 +14,6 @@ const LoginForm = ({ onSwitchToRegister }) => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
-  // thêm state để quản lý việc ẩn/hiện mật khẩu
   const [showPassword, setShowPassword] = useState(false);
   
   const { login } = useAuth();
@@ -28,126 +26,131 @@ const LoginForm = ({ onSwitchToRegister }) => {
     setError('');
   };
 
-  // bật/tắt trạng thái hiển thị mật khẩu
   const togglePasswordVisibility = () => {
     setShowPassword(prevState => !prevState);
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setError('');
+    e.preventDefault();
+    setLoading(true);
+    setError('');
 
-  try {
-    console.log('Submitting login form with data:', formData);
+    try {
+      console.log('Submitting login form with data:', formData);
 
-    // Gọi API đăng nhập
-    const res = await api.post('/auth/login', formData);
-    console.log('Login response:', res);
+      // Gọi API đăng nhập
+      const res = await api.post('/auth/login', formData);
+      console.log('Login response:', res);
 
-    const { user, token } = res.data;
+      const { user, token } = res.data;
 
-    // Lưu token vào cookie
-    Cookies.set("access_token", token, {
-      expires: 7,
-      secure: window.location.protocol === "https:",
-      sameSite: "Strict",
-    });
+      // Lưu token vào cookie
+      Cookies.set("access_token", token, {
+        expires: 7,
+        secure: window.location.protocol === "https:",
+        sameSite: "Strict",
+      });
 
-    // Gọi hàm login trong context
-    await login(user, token);
+      // Gọi hàm login trong context
+      await login(user, token);
 
-    // Chuyển hướng về trang chủ
-    window.location.href = '/';
-  } catch (err) {
-    console.error("Login failed:", err);
-    setError('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
-  } finally {
-    setLoading(false);
-  }
-};
+      // Chuyển hướng về trang chủ
+      window.location.href = '/';
+    } catch (err) {
+      console.error("Login failed:", err);
+      // Hiển thị lỗi từ server hoặc lỗi mặc định
+      const message = err.response?.data?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.';
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   return (
-    <div className="login-form">
-      <h2>Đăng nhập</h2>
+    // Component này chỉ nên trả về thẻ <form> để khớp với cấu trúc CSS
+    <form onSubmit={handleSubmit}>
+      <h1>Đăng nhập</h1>
       
-      {error && (
-        <div className="error-message">
-          {error}
-        </div>
-      )}
+      {/* Social Icons - Giữ lại để khớp với thiết kế */}
+      
+      <span>Sử dụng email/mật khẩu</span>
+      
+      {/* Hiển thị lỗi */}
+      {error && <p style={{ color: 'red', margin: '10px 0' }}>{error}</p>}
 
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Nhập email của bạn"
-            required
-            disabled={loading}
-          />
-        </div>
+      {/* Trường Email */}
+      <input
+        type="email"
+        name="email"
+        value={formData.email}
+        onChange={handleChange}
+        placeholder="Email" // Thay đổi placeholder để phù hợp với input style
+        required
+        disabled={loading}
+      />
 
-        {/* cập nhật khối HTML cho trường mật khẩu */}
-        <div className="form-group password-wrapper">
-          <label htmlFor="password">Mật khẩu</label>
-          <input
-            type={showPassword ? 'text' : 'password'}
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Nhập mật khẩu"
-            required
-            disabled={loading}
-          />
-          <span onClick={togglePasswordVisibility} className="password-toggle-icon">
-            {showPassword ? <FaEyeSlash /> : <FaEye />}
-          </span>
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="role">Vai trò</label>
-          <select
-            id="role"
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            disabled={loading}
-          >
-            <option value="volunteer">Tình nguyện viên</option>
-            <option value="manager">Quản lý</option>
-            <option value="admin">Quản trị viên</option>
-          </select>
-        </div>
-        
-        <button 
-          type="submit" 
-          className="login-button"
+      {/* Trường Mật khẩu (Sử dụng wrapper nếu bạn muốn icon hiển thị bên trong) */}
+      <div style={{ position: 'relative', width: '100%' }}> 
+        <input
+          type={showPassword ? 'text' : 'password'}
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          placeholder="Mật khẩu"
+          required
           disabled={loading}
+        />
+        {/* Nút bật/tắt mật khẩu */}
+        <span 
+          onClick={togglePasswordVisibility} 
+          style={{ 
+            position: 'absolute', 
+            right: '15px', 
+            top: '50%', 
+            transform: 'translateY(-50%)',
+            cursor: 'pointer',
+            color: '#333' // Đảm bảo icon hiện rõ
+          }}
         >
-          {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
-        </button>
-      </form>
-
-      <div className="form-footer">
-        <p>
-          Chưa có tài khoản? 
-          <button 
-            type="button" 
-            className="switch-button"
-            onClick={onSwitchToRegister}
-          >
-            Đăng ký ngay
-          </button>
-        </p>
+          {showPassword ? <FaEyeSlash /> : <FaEye />}
+        </span>
       </div>
-    </div>
+
+      {/* Trường Vai trò - Giữ nguyên nếu cần, nhưng nên xem xét ẩn đi cho người dùng thông thường */}
+      <select
+        name="role"
+        value={formData.role}
+        onChange={handleChange}
+        disabled={loading}
+        // Thêm style để select box trông giống input
+        style={{
+             backgroundColor: '#eee',
+             border: 'none',
+             margin: '8px 0',
+             padding: '10px 15px',
+             fontSize: '13px',
+             borderRadius: '8px',
+             width: '100%',
+             outline: 'none',
+        }}
+      >
+        <option value="volunteer">Tình nguyện viên</option>
+        <option value="manager">Quản lý</option>
+        <option value="admin">Quản trị viên</option>
+      </select>
+
+      {/* Quên mật khẩu */}
+      <a href="#">Quên mật khẩu?</a> 
+      
+      {/* Nút Submit */}
+      <button 
+        type="submit" 
+        disabled={loading}
+      >
+        {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+      </button>
+    </form>
   );
 };
 

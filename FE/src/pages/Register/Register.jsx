@@ -3,11 +3,10 @@
 const Register = () => {
     return (
         <div className="register-page">
-            <RegisterForm />
+            <div className="register-form-container">
+                <RegisterForm />
+            </div>
         </div>
     );
 }
-
-
 export default Register;
-
