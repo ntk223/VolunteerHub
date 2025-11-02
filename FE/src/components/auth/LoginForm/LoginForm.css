@@ -1,19 +1,16 @@
-/* --- Style cho Mật khẩu Toggle (Cần thiết cho icon hiển thị đúng) --- */
-/* Wrapper xung quanh input và icon mật khẩu */
-/* Đảm bảo style này áp dụng cho div wrapper trong LoginForm.jsx */
 .password-wrapper {
     position: relative;
     width: 100%; 
     margin: 8px 0; 
 }
 
-/* Kế thừa input style chung, chỉ cần thêm padding để nhường chỗ cho icon */
+
 .password-wrapper input {
-    /* Đảm bảo padding-right là 45px để nhường chỗ cho icon */
+    
     padding-right: 45px !important; 
 }
 
-/* Icon bật/tắt mật khẩu */
+
 .password-toggle-icon {
     position: absolute;
     
@@ -32,11 +29,11 @@
     color: #555;
 }
 
-/* --- Style cho thông báo lỗi --- */
+
 .error-message {
-    color: #e74c3c; /* Màu lỗi */
+    color: #e74c3c; 
     font-size: 0.7rem; 
-    margin: 5px 0 10px 0; /* Đặt lề để thông báo nằm trên form */
+    margin: 5px 0 10px 0; 
     display: block;
     text-align: center;
     width: 100%;

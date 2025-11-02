@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import api from '../../../api/index.js'; // <= Đảm bảo đối tượng này có thể gọi .post()
+import api from '../../../api/index.js'; 
 import FormField from '../../common/FormField';
 import toast from 'react-hot-toast';
 import "./RegisterForm.css";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+
+
+const VIETNAMESE_PHONE_REGEX = /^(0|84|\+84)(3|5|7|8|9)[0-9]{8}$/; 
 
 const initialFormData = {
   name: '',
@@ -40,23 +43,50 @@ const RegisterForm = ({ onSwitchToLogin }) => {
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
 
+  /**
+   * @description Kiểm tra số điện thoại hợp lệ
+   * @param {string} phone Số điện thoại cần kiểm tra
+   * @returns {boolean} True nếu hợp lệ, False nếu không
+   */
+  const isVietnamesePhoneNumber = (phone) => {
+    
+    const cleanedPhone = phone.replace(/[\s-]/g, ''); 
+    return VIETNAMESE_PHONE_REGEX.test(cleanedPhone);
+  };
+
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = "Vui lòng nhập họ và tên.";
-    if (!formData.email) {
+    const { name, email, phone, password, confirmPassword } = formData;
+
+    // Họ và tên
+    if (!name.trim()) newErrors.name = "Vui lòng nhập họ và tên.";
+    
+    // Email
+    if (!email) {
       newErrors.email = "Vui lòng nhập email.";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
       newErrors.email = "Địa chỉ email không hợp lệ.";
     }
-    if (!formData.phone) newErrors.phone = "Vui lòng nhập số điện thoại.";
-    if (!formData.password) {
+    
+    // Số điện thoại 
+    if (!phone) {
+      newErrors.phone = "Vui lòng nhập số điện thoại.";
+    } else if (!isVietnamesePhoneNumber(phone)) {
+      newErrors.phone = "Số điện thoại không đúng định dạng Việt Nam (10 số).";
+    }
+
+    // Mật khẩu
+    if (!password) {
       newErrors.password = "Vui lòng nhập mật khẩu.";
-    } else if (formData.password.length < 6) {
+    } else if (password.length < 6) {
       newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự.";
     }
-    if (formData.password !== formData.confirmPassword) {
+    
+    // Xác nhận mật khẩu
+    if (password !== confirmPassword) {
       newErrors.confirmPassword = "Mật khẩu xác nhận không khớp.";
     }
+
     return newErrors;
   };
 
@@ -65,6 +95,8 @@ const RegisterForm = ({ onSwitchToLogin }) => {
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      // Hiển thị thông báo lỗi chung nếu có lỗi validation
+      toast.error('Vui lòng điền đầy đủ và chính xác thông tin đăng ký.'); 
       return;
     }
 
@@ -73,8 +105,9 @@ const RegisterForm = ({ onSwitchToLogin }) => {
 
     try {
       const { confirmPassword, ...dataToSubmit } = formData;
-      
-     
+      console.log("Submitting registration data:", dataToSubmit);
+      // Thêm bước làm sạch số điện thoại trước khi gửi lên API
+      dataToSubmit.phone = dataToSubmit.phone.replace(/[\s-]/g, ''); 
       await api.post('/auth/register', dataToSubmit);
 
       toast.success('Đăng ký thành công! Vui lòng đăng nhập.');
@@ -84,6 +117,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
       
       if (errorMessage === "Email already in use") { 
         setErrors({ email: "Email đã được sử dụng" });
+        toast.error("Email đã được sử dụng.");
       } else {
         toast.error(errorMessage);
       }
@@ -97,7 +131,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
       <h2>Đăng ký</h2>
 
       <form onSubmit={handleSubmit} noValidate>
-        {/* Các trường Name, Email, Phone */}
+        
         <FormField
           id="name" label="Họ và tên" name="name" type="text"
           value={formData.name} onChange={handleChange} error={errors.name}
@@ -153,7 +187,6 @@ const RegisterForm = ({ onSwitchToLogin }) => {
           </select>
         </div>
 
-        {/* Giới thiệu bản thân */}
         
 
         <button type="submit" className="register-button" disabled={loading}>
