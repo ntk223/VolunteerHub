@@ -33,6 +33,8 @@
     color: var(--text-color);
     margin: 0 0 1rem 0; /* Khoảng cách với form bên dưới */
     text-align: center;
+    margin-top: 40px;
+    margin-bottom: 0px;
 }
 
 /* --- Định dạng Form Group chung --- */
@@ -126,14 +128,16 @@
 .error-text {
     color: var(--error-color);
     font-size: 0.8rem;
-    margin-top: 5px;
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
     display: block;
 }
 
 
 /* --- Nút Đăng ký (Tái sử dụng style nút chung) --- */
 .register-button {
-    background-color: var(--primary-color) !important;
+    background-color: #4E56C0 !important;
+    height: 42px !important;
     color: white;
     font-size: 12px;
     padding: 10px 45px;
@@ -149,9 +153,9 @@
 }
 
 .register-button:hover:not(:disabled) {
-    background-color: var(--primary-hover-color) !important;
+    background-color: #4E56C0 !important;
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4);
+    box-shadow: 0 4px 10px rgba(116, 75, 220, 0.4);
 }
 
 .register-button:disabled {
