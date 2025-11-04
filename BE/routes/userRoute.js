@@ -11,11 +11,12 @@ Router.use(verifyTokenMiddleware)
 Router.put('/:id', validate(userValidator.updateUser), userController.updateUser)
 Router.get('/profile/:id', userController.getUserById)
 Router.put('/password/:id', validate(userValidator.changePassword), userController.changePassword)
-Router.delete('/:id', userController.deleteUser)
-
-Router.get('/', authorize(['admin']), userController.getAllUsers)
 Router.post('/', validate(userValidator.createUser), userController.createUser)
-Router.patch('/status/:id', authorize(['admin']), userController.updateStatus)
 
+// route for admin only
+Router.patch('/status/:id', authorize(['admin']), userController.updateStatus)
+Router.delete('/:id', authorize(['admin']), userController.deleteUser)
+Router.get('/', authorize(['admin']), userController.getAllUsers)
+Router.patch('/status/:id', authorize(['admin']), userController.changeStatus)
 export const userRoute = Router
 

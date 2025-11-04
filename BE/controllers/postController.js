@@ -19,6 +19,12 @@ class PostController {
         const updatedPost = await postService.changePostStatus(postId, status);
         res.status(StatusCodes.OK).json(updatedPost);
     }
+
+    async deletePost(req, res) {
+        const postId = req.params.id;
+        const deletedPost = await postService.deletePost(postId);
+        res.status(StatusCodes.OK).json(deletedPost);
+    }
 }
 
 export const postController = new PostController()

@@ -50,5 +50,14 @@ class PostRepository {
         await post.save();
         return post;
     }
+
+    async deletePost(postId) {
+        const post = await Post.findByPk(postId);
+        if (!post) {
+            throw new ApiError(StatusCodes.NOT_FOUND, 'Post not found');
+        }
+        await post.destroy();
+        return post;
+    }
 }
 export const postRepo = new PostRepository();
