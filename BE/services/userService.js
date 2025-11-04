@@ -35,6 +35,11 @@ class UserService {
         const updatedUser = await userRepo.updateStatus(id, status);
         return updatedUser;
     }
+
+    async changeStatus(id, status) {
+        const updatedUser = await userRepo.changeStatus(id, status);
+        return updatedUser;
+    }
 }
 
 export const userService = new UserService();

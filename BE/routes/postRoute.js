@@ -8,5 +8,8 @@ const Router = express.Router()
 Router.use(verifyTokenMiddleware)
 Router.post('/', validate(postValidator.createPost), postController.createPost)
 Router.get("/:postType", postController.getPostByType)
+
+// route for admin only
 Router.patch("/status/:id", authorize(['admin']), postController.changePostStatus)
+Router.delete("/:id", authorize(['admin']), postController.deletePost)
 export const postRoute = Router
