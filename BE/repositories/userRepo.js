@@ -87,6 +87,15 @@ class UserRepository {
         return true
     }
 
+    async changeStatus(id, status) {
+        const updatedUser = await User.update({ status: status }, {
+            where: {id: id},
+        })
+        if (updatedUser[0] === 0) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "User not found or no changes made")
+        }
+        return await User.findByPk(id);
+    }
     async login(email, password, role)  {
         if (role === 'admin') {
             const user = await User.findOne({ where: { email, role } });

@@ -55,6 +55,13 @@ class UserController {
         res.status(StatusCodes.OK).json(updatedUser);
     }
 
+    async changeStatus(req, res) {
+        const id = req.params.id;
+        const { status } = req.body;
+        const updatedUser = await userService.changeStatus(id, status);
+        res.status(StatusCodes.OK).json(updatedUser);
+    }
+
 }
 
 export const userController = new UserController();

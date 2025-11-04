@@ -1,5 +1,5 @@
 import express from "express"
-import { adminRoute } from "./adminRoute.js"
+// import { adminRoute } from "./adminRoute.js"
 import { authRoute } from "./authRoute.js" // Thường đặt xác thực lên đầu
 import { userRoute } from "./userRoute.js"
 
@@ -27,7 +27,7 @@ router.use('/comment', commentRoute)
 router.use('/like', likeRoute)
 
 // 4. Routes QUẢN TRỊ (Admin) 
-router.use('/admin', adminRoute)
+// router.use('/admin', adminRoute)
 
 
-export default router
+export const APIs = router
