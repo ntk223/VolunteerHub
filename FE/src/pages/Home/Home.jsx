@@ -1,4 +1,4 @@
-// pages/Home.jsx
+
 import { Layout } from "antd";
 import { AppHeader } from "../../components/layout/AppHeader";
 import { Sidebar } from "../../components/layout/Sidebar";
@@ -16,7 +16,6 @@ const Home = () => {
       <Layout className="content-layout">
         <Sidebar />
 
-        {/* Nội dung chính */}
         <Content className="main-content">
           <Outlet />
         </Content>

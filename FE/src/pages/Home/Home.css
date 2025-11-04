@@ -16,7 +16,7 @@
 .content-layout > .ant-layout-sider:first-child {
   width: 240px !important;
   min-width: 240px;
-  background: #fff;
+  background: #4E56C0;
   border-right: 1px solid #eee;
   position: fixed;
   top: 64px;
