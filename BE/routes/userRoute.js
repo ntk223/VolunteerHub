@@ -14,7 +14,6 @@ Router.put('/password/:id', validate(userValidator.changePassword), userControll
 Router.post('/', validate(userValidator.createUser), userController.createUser)
 
 // route for admin only
-Router.patch('/status/:id', authorize(['admin']), userController.updateStatus)
 Router.delete('/:id', authorize(['admin']), userController.deleteUser)
 Router.get('/', authorize(['admin']), userController.getAllUsers)
 Router.patch('/status/:id', authorize(['admin']), userController.changeStatus)
