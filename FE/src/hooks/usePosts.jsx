@@ -21,6 +21,7 @@ export const PostsProvider = ({ children, postType }) => {
   const [newComments, setNewComments] = useState({}); 
   const [likeModalVisible, setLikeModalVisible] = useState(false);
   const [likeUsers, setLikeUsers] = useState([]);
+  
 
   // 🔹 Lấy danh sách bài viết
   useEffect(() => {
@@ -43,23 +44,26 @@ export const PostsProvider = ({ children, postType }) => {
     };
 
     fetchPosts();
-  }, [postType]);
+  }, [postType, user?.id]);
 
   // 🔹 Like / Unlike bài viết
   const toggleLike = useCallback(async (postId) => {
     try {
-      await api.post(`/like`, { postId, userId: user.id });
-      setPosts((prev) =>
-        prev.map((p) =>
-          p.id === postId
-            ? { ...p, isLiked: !p.isLiked, likes: p.likes + (p.isLiked ? -1 : 1) }
-            : p
-        )
-      );
+        const res = await api.post(`/like`, { postId, userId: user.id }); 
+        const { isLiked: newIsLiked, newLikeCount } = res.data; // Lấy dữ liệu mới
+
+        setPosts((prev) =>
+            prev.map((p) =>
+                p.id === postId
+                    ? { ...p, isLiked: newIsLiked, likes: newLikeCount } 
+                    : p
+            )
+        );
     } catch (error) {
-      console.error(error);
+        // Nếu lỗi, không thay đổi trạng thái UI
+        console.error(error);
     }
-  }, [user.id]);
+}, [user.id]);
 
   // 🔹 Mở modal xem lượt like
   const openLikes = useCallback(async (postId) => {

@@ -72,7 +72,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
     if (!phone) {
       newErrors.phone = "Vui lòng nhập số điện thoại.";
     } else if (!isVietnamesePhoneNumber(phone)) {
-      newErrors.phone = "Số điện thoại không đúng định dạng Việt Nam (10 số).";
+      newErrors.phone = "Số điện thoại không đúng định dạng.";
     }
 
     // Mật khẩu

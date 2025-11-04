@@ -16,7 +16,6 @@ const Home = () => {
       <Layout className="content-layout">
         <Sidebar />
 
-        {/* Nội dung chính */}
         <Content className="main-content">
           <Outlet />
         </Content>

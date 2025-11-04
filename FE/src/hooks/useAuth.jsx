@@ -9,6 +9,10 @@ export const AuthProvider = ({ children }) => {
 
   const [user, setUser] = useState(savedUser ? JSON.parse(savedUser) : null);
   const [token, setToken] = useState(savedToken || null);
+  // ✅ LOGIC KIỂM TRA QUYỀN ADMIN
+  const isAuthenticated = !!user;
+  const isAdmin = isAuthenticated && user?.role === "admin";
+
 
   const value = {
     user,
@@ -25,7 +29,8 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
     },
-    isAuthenticated: !!user,
+    isAuthenticated,
+    isAdmin,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -6,7 +6,8 @@ import { PostsProvider } from "./hooks/usePosts.jsx";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import DiscussPage from "./pages/Feed/DiscussPage";
-import { setupInterceptors } from "./api/index.js"; // ✅ import setupInterceptors
+import AdminPage from "./pages/Admin/AdminPage"; // 💡 Import AdminPage
+import { setupInterceptors } from "./api/index.js"; 
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -14,11 +15,31 @@ const ProtectedRoute = ({ children }) => {
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
+// ✅ Component AdminRoute mới 
+const AdminRoute = ({ children }) => {
+  const { isAuthenticated, isAdmin } = useAuth();
+  
+  if (!isAuthenticated) {
+    // Chưa đăng nhập -> về Login
+    return <Navigate to="/login" replace />;
+  }
+  
+  if (!isAdmin) {
+    // Đã đăng nhập nhưng không phải Admin -> về trang chính
+    // Đảm bảo hook useAuth của bạn có logic isAdmin
+    return <Navigate to="/discuss" replace />; 
+  }
+
+  // Đã đăng nhập VÀ là Admin -> OK
+  return children;
+};
+
+
 function AppInitializer() {
   const { logout } = useAuth();
 
   useEffect(() => {
-    setupInterceptors(logout); // interceptor sẽ tự logout nếu 401
+    setupInterceptors(logout); 
   }, [logout]);
 
   return (
@@ -57,10 +78,21 @@ function AppInitializer() {
               </PostsProvider>
             }
           />
-
-          {/* Admin */}
-          <Route path="admin" element={<div>Admin Page</div>} />
+          
+          
         </Route>
+        
+       
+        <Route 
+          path="/admin/*" // Dùng /* để cho phép các tuyến đường con (vd: /admin/users)
+          element={
+            <AdminRoute>
+              {/* Đây là nơi bạn đặt layout Admin chính, ví dụ: AdminLayout hoặc AdminPage */}
+              <AdminPage /> 
+            </AdminRoute>
+          } 
+        />
+
 
         {/* Catch-all */}
         <Route path="*" element={<Navigate to="/discuss" replace />} />
