@@ -1,4 +1,3 @@
-// src/routes/api/admin/userAdminRoute.js
 import express from 'express';
 import { userController } from '../controllers/userController.js';
 
@@ -11,7 +10,7 @@ userAdminRouter.route('/')
 
 userAdminRouter.route('/:id')
     .get(userController.getUserDetail)      // GET /admin/users/:id
-    .put(userController.updateUserRole)     // PUT /admin/users/:id (Thay đổi vai trò)
+    .put(userController.updateUserRole)     // PUT /admin/users/:id 
     .delete(userController.deleteUser);   // DELETE /admin/users/:id
 
 export default userAdminRouter;

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from '../api/index'; // API instance
+import axios from '../api/index'; 
 
 export const useAdminData = () => {
   const [stats, setStats] = useState(null);
@@ -10,7 +10,7 @@ export const useAdminData = () => {
     const fetchAdminData = async () => {
       try {
         setLoading(true);
-        // Gọi API Admin (đã được bảo vệ)
+        
         const [statsRes, usersRes] = await Promise.all([
           axios.get('/admin/dashboard-stats'),
           axios.get('/admin/users')

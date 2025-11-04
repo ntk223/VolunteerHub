@@ -3,10 +3,11 @@ import React, { useState } from 'react';
 import { useAuth } from '../../../hooks/useAuth.jsx';
 import api from '../../../api/index.js';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-// Import file CSS (đã được sử dụng trong Login.jsx nhưng vẫn giữ lại nếu cần style riêng)
-import './LoginForm.css'; 
 
-const LoginForm = () => { // Loại bỏ { onSwitchToRegister } vì logic chuyển đổi nằm trong Login.jsx
+
+import './LoginForm.css';
+
+const LoginForm = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -15,7 +16,7 @@ const LoginForm = () => { // Loại bỏ { onSwitchToRegister } vì logic chuy�
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  
+
   const { login } = useAuth();
 
   const handleChange = (e) => {
@@ -55,10 +56,15 @@ const LoginForm = () => { // Loại bỏ { onSwitchToRegister } vì logic chuy�
       await login(user, token);
 
       // Chuyển hướng về trang chủ
-      window.location.href = '/';
+      if (user.role === 'admin') {
+        navigate('/admin'); 
+      } else {
+        navigate('/'); 
+      }
+
     } catch (err) {
       console.error("Login failed:", err);
-      // Hiển thị lỗi từ server hoặc lỗi mặc định
+      console.log('Error response data:', err.response?.data);
       const message = err.response?.data?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.';
       setError(message);
     } finally {
@@ -71,11 +77,9 @@ const LoginForm = () => { // Loại bỏ { onSwitchToRegister } vì logic chuy�
     // Component này chỉ nên trả về thẻ <form> để khớp với cấu trúc CSS
     <form onSubmit={handleSubmit}>
       <h1>Đăng nhập</h1>
-      
-      {/* Social Icons - Giữ lại để khớp với thiết kế */}
-      
+
       <span>Sử dụng email/mật khẩu</span>
-      
+
       {/* Hiển thị lỗi */}
       {error && <p style={{ color: 'red', margin: '10px 0' }}>{error}</p>}
 
@@ -85,13 +89,13 @@ const LoginForm = () => { // Loại bỏ { onSwitchToRegister } vì logic chuy�
         name="email"
         value={formData.email}
         onChange={handleChange}
-        placeholder="Email" // Thay đổi placeholder để phù hợp với input style
+        placeholder="Email"
         required
         disabled={loading}
       />
 
       {/* Trường Mật khẩu (Sử dụng wrapper nếu bạn muốn icon hiển thị bên trong) */}
-      <div style={{ position: 'relative', width: '100%' }}> 
+      <div style={{ position: 'relative', width: '100%' }}>
         <input
           type={showPassword ? 'text' : 'password'}
           name="password"
@@ -102,37 +106,37 @@ const LoginForm = () => { // Loại bỏ { onSwitchToRegister } vì logic chuy�
           disabled={loading}
         />
         {/* Nút bật/tắt mật khẩu */}
-        <span 
-          onClick={togglePasswordVisibility} 
-          style={{ 
-            position: 'absolute', 
-            right: '15px', 
-            top: '50%', 
+        <span
+          onClick={togglePasswordVisibility}
+          style={{
+            position: 'absolute',
+            right: '15px',
+            top: '50%',
             transform: 'translateY(-50%)',
             cursor: 'pointer',
-            color: '#333' // Đảm bảo icon hiện rõ
+            color: '#333'
           }}
         >
           {showPassword ? <FaEyeSlash /> : <FaEye />}
         </span>
       </div>
 
-      {/* Trường Vai trò - Giữ nguyên nếu cần, nhưng nên xem xét ẩn đi cho người dùng thông thường */}
+
       <select
         name="role"
         value={formData.role}
         onChange={handleChange}
         disabled={loading}
-        // Thêm style để select box trông giống input
+
         style={{
-             backgroundColor: '#eee',
-             border: 'none',
-             margin: '4px 0',
-             padding: '10px 15px',
-             fontSize: '13px',
-             borderRadius: '8px',
-             width: '100%',
-             outline: 'none',
+          backgroundColor: '#eee',
+          border: 'none',
+          margin: '4px 0',
+          padding: '10px 15px',
+          fontSize: '13px',
+          borderRadius: '8px',
+          width: '100%',
+          outline: 'none',
         }}
       >
         <option value="volunteer">Tình nguyện viên</option>
@@ -140,12 +144,12 @@ const LoginForm = () => { // Loại bỏ { onSwitchToRegister } vì logic chuy�
         <option value="admin">Quản trị viên</option>
       </select>
 
-      {/* Quên mật khẩu */}
-      <a href="#">Quên mật khẩu?</a> 
-      
-      {/* Nút Submit */}
-      <button 
-        type="submit" 
+
+      <a href="#">Quên mật khẩu?</a>
+
+
+      <button
+        type="submit"
         disabled={loading}
       >
         {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}

@@ -1,11 +1,10 @@
-// pages/Admin/AdminPage.jsx
 import React from 'react';
-import { Spin } from 'antd'; // Giả sử dùng Ant Design cho Spin
-import { useAuth } from '../../hooks/useAuth'; // Để kiểm tra user và role
+import { Spin } from 'antd'; 
+import { useAuth } from '../../hooks/useAuth'; 
 import { useAdminData } from '../../hooks/useAdminData';
 
 const AdminPage = () => {
-  const { user } = useAuth(); // Dữ liệu user đã có từ AuthProvider
+  const { user } = useAuth(); 
   
   // 2. GỌI HOOK LẤY TẤT CẢ DATA ADMIN
   const {
@@ -14,7 +13,7 @@ const AdminPage = () => {
     loading
   } = useAdminData(); 
 
-  // 1. Lớp bảo vệ UI (Mặc dù đã có AdminRoute, nhưng nên có lớp bảo vệ dữ liệu)
+  
   if (!user || loading) return <Spin size="large" />;
 
   return (
@@ -30,11 +29,9 @@ const AdminPage = () => {
 
       <hr/>
 
-      {/* Hiển thị danh sách quản lý (ví dụ: component UserManagementTable) */}
+      {/* Hiển thị danh sách quản lý */}
       <div className="admin-users">
         <h3>Quản lý Người dùng</h3>
-        {/* Component chuyên biệt để hiển thị và thao tác với danh sách users */}
-        {/* <UserManagementTable users={users} /> */}
         <ul>
           {users.map(u => <li key={u._id}>{u.name} ({u.role})</li>)}
         </ul>

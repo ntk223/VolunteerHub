@@ -15,7 +15,6 @@ const ProtectedRoute = ({ children }) => {
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
-// ✅ Component AdminRoute mới 
 const AdminRoute = ({ children }) => {
   const { isAuthenticated, isAdmin } = useAuth();
   
@@ -25,8 +24,6 @@ const AdminRoute = ({ children }) => {
   }
   
   if (!isAdmin) {
-    // Đã đăng nhập nhưng không phải Admin -> về trang chính
-    // Đảm bảo hook useAuth của bạn có logic isAdmin
     return <Navigate to="/discuss" replace />; 
   }
 
