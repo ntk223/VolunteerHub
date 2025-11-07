@@ -29,6 +29,10 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
     },
+    updateUser: (updatedUser) => {
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+    },
     isAuthenticated,
     isAdmin,
   };

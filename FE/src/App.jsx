@@ -6,6 +6,7 @@ import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import DiscussPage from "./pages/Feed/DiscussPage";
 import AdminPage from "./pages/Admin/AdminPage"; 
+import Profile from "./pages/Profile/Profile.jsx";
 import { setupInterceptors } from "./api/index.js"; 
 
 const ProtectedRoute = ({ children }) => {
@@ -72,8 +73,13 @@ function AppInitializer() {
               </PostsProvider>
             }
           />
+          <Route
+            path="profile"
+            element={
+                <Profile />
+            }
+          />
 
-          
           <Route
             path="admin/*" // Path sẽ là /admin
             element={
