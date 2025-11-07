@@ -1,49 +1,73 @@
-/* Toàn bộ khung layout */
 .main-layout {
   min-height: 100vh;
-  background-color: #f5f7fa;
-}
-
-/* Layout chứa 3 phần: sidebar - content - searchbar */
-.content-layout {
-  margin-top: 64px; /* chừa chỗ cho AppHeader cố định */
   display: flex;
-  flex-direction: row;
-  height: calc(100vh - 64px);
+  flex-direction: column;
+  background-color: #f0f2f5;
 }
 
-/* Sidebar trái */
-.content-layout > .ant-layout-sider:first-child {
-  width: 240px !important;
-  min-width: 240px;
-  background: #4E56C0;
-  border-right: 1px solid #eee;
-  position: fixed;
-  top: 64px;
-  left: 0;
-  bottom: 0;
-  overflow-y: auto;
-}
-
-/* Nội dung chính */
-.main-content {
+.content-layout {
+  display: flex;
   flex: 1;
-  margin-left: 240px; /* trừ chỗ cho sidebar trái */
-  margin-right: 300px; /* trừ chỗ cho search sidebar */
+  overflow: hidden;
+}
+
+
+.main-content {
+  flex-grow: 1;
   padding: 24px;
+  margin: 0;
   overflow-y: auto;
-  background: transparent;
+  background-color: #f0f2f5;
+  min-height: 280px;
 }
 
-/* Sidebar phải (SearchSidebar) */
-.content-layout > .search-sidebar {
-  width: 300px;
-  background: #fff;
-  border-left: 1px solid #eee;
-  position: fixed;
-  top: 64px;
-  right: 0;
-  bottom: 0;
-  overflow-y: auto;
+
+.ant-layout-sider {
+  background-color: #fff !important;
+  padding: 16px 0;
+  border-right: 1px solid #f0f0f0;
 }
 
+
+.content-layout>.ant-layout-sider:first-child {
+  max-width: 250px !important;
+  min-width: 200px !important;
+}
+
+
+.content-layout>.ant-layout-sider:last-child {
+  max-width: 300px !important;
+  min-width: 250px !important;
+  border-left: 1px solid #f0f0f0;
+}
+
+
+
+@media (max-width: 1200px) {
+  .content-layout>.ant-layout-sider:first-child {
+    max-width: 200px !important;
+    min-width: 180px !important;
+  }
+
+  .content-layout>.ant-layout-sider:last-child {
+    max-width: 250px !important;
+    min-width: 220px !important;
+  }
+}
+
+@media (max-width: 992px) {
+  .content-layout>.ant-layout-sider:last-child {
+    display: none !important;
+  }
+
+  .main-content {
+    padding: 16px;
+    /* Giảm padding */
+  }
+}
+
+@media (max-width: 768px) {
+  .content-layout>.ant-layout-sider:first-child {
+    display: none !important;
+  }
+}

@@ -2,6 +2,7 @@ import React from 'react';
 import { Spin } from 'antd'; 
 import { useAuth } from '../../hooks/useAuth'; 
 import { useAdminData } from '../../hooks/useAdminData';
+import './AdminPage.css';
 
 const AdminPage = () => {
   const { user } = useAuth(); 
