@@ -1,4 +1,3 @@
-// App.jsx
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./hooks/useAuth.jsx";
@@ -6,7 +5,7 @@ import { PostsProvider } from "./hooks/usePosts.jsx";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import DiscussPage from "./pages/Feed/DiscussPage";
-import AdminPage from "./pages/Admin/AdminPage"; // 💡 Import AdminPage
+import AdminPage from "./pages/Admin/AdminPage"; 
 import { setupInterceptors } from "./api/index.js"; 
 
 const ProtectedRoute = ({ children }) => {
@@ -15,7 +14,6 @@ const ProtectedRoute = ({ children }) => {
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
-// ✅ Component AdminRoute mới 
 const AdminRoute = ({ children }) => {
   const { isAuthenticated, isAdmin } = useAuth();
   
@@ -25,8 +23,6 @@ const AdminRoute = ({ children }) => {
   }
   
   if (!isAdmin) {
-    // Đã đăng nhập nhưng không phải Admin -> về trang chính
-    // Đảm bảo hook useAuth của bạn có logic isAdmin
     return <Navigate to="/discuss" replace />; 
   }
 
@@ -39,7 +35,7 @@ function AppInitializer() {
   const { logout } = useAuth();
 
   useEffect(() => {
-    setupInterceptors(logout); 
+    setupInterceptors(logout);
   }, [logout]);
 
   return (
@@ -48,18 +44,18 @@ function AppInitializer() {
         {/* Public */}
         <Route path="/login" element={<Login />} />
 
-        {/* Private - Home layout */}
+        
         <Route
           path="/"
           element={
             <ProtectedRoute>
-              <Home />
+              <Home /> 
             </ProtectedRoute>
           }
         >
           <Route index element={<Navigate to="discuss" replace />} />
 
-          {/* Discuss */}
+          
           <Route
             path="discuss"
             element={
@@ -68,8 +64,6 @@ function AppInitializer() {
               </PostsProvider>
             }
           />
-
-          {/* Recruitment */}
           <Route
             path="recruitment"
             element={
@@ -78,22 +72,19 @@ function AppInitializer() {
               </PostsProvider>
             }
           />
+
           
-          
+          <Route
+            path="admin/*" // Path sẽ là /admin
+            element={
+              <AdminRoute>
+                <AdminPage /> 
+              </AdminRoute>
+            }
+          />
+
         </Route>
         
-       
-        <Route 
-          path="/admin/*" // Dùng /* để cho phép các tuyến đường con (vd: /admin/users)
-          element={
-            <AdminRoute>
-              {/* Đây là nơi bạn đặt layout Admin chính, ví dụ: AdminLayout hoặc AdminPage */}
-              <AdminPage /> 
-            </AdminRoute>
-          } 
-        />
-
-
         {/* Catch-all */}
         <Route path="*" element={<Navigate to="/discuss" replace />} />
       </Routes>

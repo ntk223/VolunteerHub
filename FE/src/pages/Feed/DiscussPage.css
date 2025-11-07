@@ -1,0 +1,35 @@
+/* --- Thiết Lập Chung cho Trang Thảo Luận --- */
+.discuss-page-container {
+    /* Đảm bảo trang có thể cuộn và chiếm đủ chiều cao */
+    min-height: 100vh;
+    background-color: #f0f2f5; /* Nền nhẹ nhàng, đồng bộ với Ant Design */
+    padding: 20px 0; /* Khoảng đệm trên dưới */
+}
+
+/* --- Bố Cục Nội Dung Chính --- */
+/* Thêm class này vào thẻ cha ngoài cùng của DiscussPage nếu muốn áp dụng */
+/* Ví dụ: <div className="discuss-page-container"><PostList posts={posts} />...</div> */
+.discuss-page-content {
+    max-width: 800px; /* Giới hạn chiều rộng nội dung chính để dễ đọc */
+    margin: 0 auto; /* Căn giữa nội dung */
+    padding: 0 15px; /* Khoảng đệm hai bên cho màn hình nhỏ */
+}
+
+/* --- Xử lý Component Tải (Spin) --- */
+/* Đảm bảo Spin chiếm toàn bộ màn hình khi đang tải */
+.ant-spin-container-full {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* --- Gợi ý: CSS cho PostList (Nếu chưa có) --- */
+/* Vì PostList là component con, CSS của nó nên nằm trong file riêng. */
+/* Nhưng đây là ví dụ để đảm bảo khoảng cách giữa các bài viết */
+.post-list-wrapper > div {
+    margin-bottom: 15px; /* Khoảng cách giữa các bài viết */
+    background-color: #fff; /* Nền trắng cho từng bài viết */
+    border-radius: 8px; /* Bo góc */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Đổ bóng nhẹ */
+}
