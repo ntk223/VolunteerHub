@@ -5,7 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 const { Sider } = Layout;
 
-export const Sidebar = () => {
+const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -57,3 +57,4 @@ export const Sidebar = () => {
     </Sider>
   );
 };
+export default Sidebar;

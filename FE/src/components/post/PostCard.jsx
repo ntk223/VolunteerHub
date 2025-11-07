@@ -9,7 +9,7 @@ import CommentSection from "./CommentSection";
 import { usePosts } from "../../hooks/usePosts";
 const { Text } = Typography;
 
-export const PostCard = ({post}) => {
+const PostCard = ({post}) => {
   const {
     toggleLike,
     openLikes,
@@ -96,3 +96,5 @@ export const PostCard = ({post}) => {
     </Card>
   );
 };
+
+export default PostCard;

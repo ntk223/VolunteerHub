@@ -20,7 +20,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 const { Header } = Layout;
 const { Title, Text } = Typography;
 
-export const AppHeader = () => {
+const AppHeader = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -97,3 +97,5 @@ export const AppHeader = () => {
     </Header>
   );
 };
+
+export default AppHeader;

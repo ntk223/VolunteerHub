@@ -1,6 +1,6 @@
 import { Layout } from "antd";
-import { AppHeader } from "../../components/layout/AppHeader";
-import { Sidebar } from "../../components/layout/Sidebar";
+import AppHeader from "../../components/layout/AppHeader";
+import Sidebar from "../../components/layout/Sidebar";
 import { Outlet } from "react-router-dom";
 
 

@@ -1,7 +1,7 @@
 import { List, Empty, Spin } from "antd";
-import { PostCard } from "./PostCard";
+import PostCard from "./PostCard";
 
-export const PostList = ({posts}) => {
+const PostList = ({posts}) => {
   // if (loading) {
   //   return (
   //     <div style={{ display: "flex", justifyContent: "center", padding: 24 }}>
@@ -23,3 +23,4 @@ export const PostList = ({posts}) => {
     />
   );
 };
+export default PostList;
