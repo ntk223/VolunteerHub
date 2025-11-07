@@ -15,6 +15,7 @@ const updateUserSchema = Joi.object({
   // email: Joi.string().email(),
   phone: Joi.string().pattern(/^[0-9]{9,11}$/),
   introduce: Joi.string().allow(null, ''),
+  avatarUrl: Joi.string().uri().allow(null, ''),
   status: Joi.string().valid('active', 'blocked'),
 });
 

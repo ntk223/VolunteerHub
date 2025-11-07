@@ -1,6 +1,6 @@
 import express from 'express'
 import { postController } from '../controllers/postController.js'
-import { postValidator } from '../validators/postValidation.js'
+import { postValidator } from '../validators/postValidator.js'
 import validate from '../middlewares/validate.js'
 import verifyTokenMiddleware from '../middlewares/verifyToken.js'
 import { authorize } from '../middlewares/authorize.js'
