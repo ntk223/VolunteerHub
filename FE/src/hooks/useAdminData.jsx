@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from '../api/index'; 
+import api from '../api/index'; 
 
 export const useAdminData = () => {
   const [stats, setStats] = useState(null);
@@ -12,8 +12,8 @@ export const useAdminData = () => {
         setLoading(true);
         
         const [statsRes, usersRes] = await Promise.all([
-          axios.get('/admin/dashboard-stats'),
-          axios.get('/admin/users')
+          api.get('/admin/dashboard-stats'),
+          api.get('/admin/users')
         ]);
 
         setStats(statsRes.data);

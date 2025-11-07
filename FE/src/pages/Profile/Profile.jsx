@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Card, Avatar, Form, Button, Row, Col, Typography } from 'antd';
 import { UserOutlined, EditOutlined, SaveOutlined } from '@ant-design/icons';
 import { useAuth } from '../../hooks/useAuth';
-import api from '../../api';
 import UpdateProfileForm from '../../components/auth/UpdateProfileForm/UpdateProfileForm';
 import ChangePasswordForm from '../../components/auth/UpdateProfileForm/ChangePasswordForm';
 const { Title } = Typography;

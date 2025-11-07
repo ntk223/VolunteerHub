@@ -7,7 +7,6 @@ import Login from "./pages/Login/Login";
 import DiscussPage from "./pages/Feed/DiscussPage";
 import AdminPage from "./pages/Admin/AdminPage"; 
 import Profile from "./pages/Profile/Profile.jsx";
-import { setupInterceptors } from "./api/index.js"; 
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -33,11 +32,6 @@ const AdminRoute = ({ children }) => {
 
 
 function AppInitializer() {
-  const { logout } = useAuth();
-
-  useEffect(() => {
-    setupInterceptors(logout);
-  }, [logout]);
 
   return (
     <Router>

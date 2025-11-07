@@ -1,8 +1,8 @@
 
 import { Layout } from "antd";
-import { AppHeader } from "../../components/layout/AppHeader";
-import { Sidebar } from "../../components/layout/Sidebar";
-import { SearchSidebar } from "../../components/layout/SearchSidebar";
+import AppHeader  from "../../components/layout/AppHeader";
+import Sidebar from "../../components/layout/Sidebar";
+import SearchSidebar from "../../components/layout/SearchSidebar";
 import { Outlet } from "react-router-dom";
 import "./Home.css";
 
