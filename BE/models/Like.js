@@ -24,12 +24,12 @@ const Like = sequelize.define('Like', {
         onDelete: 'CASCADE',
     },
     createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
+    deletedAt: { type: DataTypes.DATE, allowNull: true },
 }, {
     tableName: 'likes',
     timestamps: true,
     updatedAt: false,
     paranoid: true,
-    deletedAt: "deleted_at",
     underscored: true,
 })
 

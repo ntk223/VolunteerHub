@@ -22,7 +22,8 @@ export const PostsProvider = ({ children, postType }) => {
   const [likeModalVisible, setLikeModalVisible] = useState(false);
   const [likeUsers, setLikeUsers] = useState([]);
   
-  
+
+  const [postLikedbyUser, setPostLikedbyUser] = useState({}); // Lưu trạng thái like của từng post theo user
 
   // 🔹 Lấy danh sách bài viết
   useEffect(() => {
@@ -48,19 +49,43 @@ export const PostsProvider = ({ children, postType }) => {
     fetchPosts();
   }, [postType, user?.id]);
 
+  // 🔹 Danh sách xem người đang login đã like những bài nào
+  useEffect(() => {
+    const fetchUserLikes = async () => {
+      if (!user?.id) return;
+      try {
+        const res = await api.get(`/like/user/${user.id}`);
+        const likedPosts = {};
+        res.data.forEach((like) => {
+          likedPosts[like.postId] = true;
+        });
+        setPostLikedbyUser(likedPosts);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchUserLikes();
+  }, [user?.id]);
   // 🔹 Like / Unlike bài viết
   const toggleLike = useCallback(async (postId) => {
     try {
+        console.log("Toggling like for postId:", postId, "by userId:", user.id);
         const res = await api.post(`/like`, { postId, userId: user.id }); 
-        const { isLiked: newIsLiked, newLikeCount } = res.data; // Lấy dữ liệu mới
-
+        // console.log(res);
+        const { like, isLiked } = res.data; // Lấy dữ liệu mới
+        let cnt = -1;
+        if (isLiked) cnt = 1;
         setPosts((prev) =>
             prev.map((p) =>
                 p.id === postId
-                    ? { ...p, isLiked: newIsLiked, likes: newLikeCount } 
+                    ? { ...p, likeCount: p.likeCount + cnt } 
                     : p
             )
         );
+        setPostLikedbyUser((prev) => ({
+        ...prev,
+        [postId]: isLiked,
+    }));
     } catch (error) {
         // Nếu lỗi, không thay đổi trạng thái UI
         console.error(error);
@@ -135,6 +160,7 @@ export const PostsProvider = ({ children, postType }) => {
     newComments,
     likeModalVisible,
     likeUsers,
+    postLikedbyUser,
     toggleLike,
     openLikes,
     closeLikes,

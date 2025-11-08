@@ -1,18 +1,31 @@
 import {Like, User} from "../models/Model.js";
 
 class LikeRepository {
-    async createLike(postId, userId) {
-        const existingLike = await Like.findOne({ where: { postId, userId } });
+    async toggleLike(postId, userId) {
+        let existingLike = await Like.findOne({
+            where: { postId, userId },
+            paranoid: false,
+        })
         if (existingLike) {
-            await Like.update({
-                deletedAt: null
-            }, {
-                where: { id: existingLike.id }
-            })
-            return existingLike
+            existingLike = existingLike.dataValues;
+            if (existingLike.deletedAt === null) {
+            // Đang like → bấm nữa thì unlike (xóa mềm)
+            await Like.destroy({ where: { id: existingLike.id } });
+            const deletedLike = await Like.findByPk(existingLike.id, { paranoid: false });
+            return { like: deletedLike, isLiked: false };
+            } else {
+            // Đã unlike → bấm nữa thì khôi phục like
+            await Like.restore({ where: { id: existingLike.id } });
+            const restoredLike = await Like.findByPk(existingLike.id);
+            return { like: restoredLike, isLiked: true };
+            }
         }
-        return await Like.create({ postId, userId });
-    }
+
+        // Chưa có like → tạo mới
+        const newLike = await Like.create({ postId, userId });
+        return { like: newLike, isLiked: true };
+        }
+
 
     async removeLike(postId, userId) {
         const existingLike = await Like.findOne({ where: { postId, userId } });
@@ -31,12 +44,21 @@ class LikeRepository {
             include: [
                 {   
                     model: User, 
-                    attributes: ['name', 'role'],
+                    attributes: ['id','name', 'role'],
                     as: 'user' 
                 }
             ],
             attributes: ['createdAt']
 
+        });
+        return likes;
+    }
+
+    async getLikesByUserId(userId) {
+        const likes = await Like.findAll({ 
+            where: { 
+                userId,
+            },
         });
         return likes;
     }
