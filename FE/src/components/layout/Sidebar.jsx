@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Layout, Menu } from "antd";
 import { HomeOutlined, BellOutlined, UserOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
-import CreatePostModal from "../createPost/createPostModal"; // đảm bảo path đúng
+import CreatePostModal from "../createPost/CreatePostModal"; // đảm bảo path đúng
 import { useAuth } from "../../hooks/useAuth";
 
 const { Sider } = Layout;
