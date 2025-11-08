@@ -76,7 +76,7 @@ function AppInitializer() {
           />
 
           <Route
-            path="admin/*" // Path sẽ là /admin
+            path="admin/*" 
             element={
               <AdminRoute>
                 <AdminPage /> 
