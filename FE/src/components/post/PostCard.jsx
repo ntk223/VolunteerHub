@@ -13,6 +13,7 @@ const PostCard = ({post}) => {
   const {
     toggleLike,
     openLikes,
+    postLikedbyUser,
     toggleComments,
     commentsMap,
     newComments,
@@ -21,7 +22,7 @@ const PostCard = ({post}) => {
   } = usePosts();
   const postId = post.id;
   const postComments = commentsMap[postId] || [];
-  const isLiked = Boolean(post.isLiked);
+  const isLiked = Boolean(postLikedbyUser[postId]);
   const commentsVisible = Boolean(commentsMap[postId]);
 
   return (
@@ -66,7 +67,7 @@ const PostCard = ({post}) => {
           icon={
             isLiked ? <LikeFilled /> : <LikeOutlined />
           }
-          onClick={toggleLike}
+          onClick={() => toggleLike(postId)}
           style={{ flex: 1 }}
         >
           Thích

@@ -25,7 +25,7 @@ const Router = express.Router()
  *       201:
  *         description: Đã like bài viết
  */
-Router.post('/', likeController.createLike)
+Router.post('/', likeController.toggleLike)
 
 /**
  * @swagger
@@ -69,4 +69,6 @@ Router.delete('/', likeController.removeLike)
  *         description: Danh sách likes
  */
 Router.get('/post/:postId', likeController.getLikesByPostId)
+
+Router.get('/user/:userId', likeController.getLikesByUserId)
 export const likeRoute = Router;

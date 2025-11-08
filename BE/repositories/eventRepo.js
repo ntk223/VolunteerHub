@@ -15,7 +15,8 @@ class EventRepository {
     }
 
     async deleteEvent(eventId, userId) {
-        console.log(eventId, userId);
+        // console.log(eventId, userId);
+        const user = await User.findByPk(userId)
         const event = await Event.findByPk(eventId, {
             include: [
                 {
@@ -35,7 +36,7 @@ class EventRepository {
             throw new ApiError(StatusCodes.NOT_FOUND, "Event not found");
         }
         // console.log(event.manager.user.id, userId);
-        if (event.manager.user.id == userId) {
+        if (event.manager.user.id == userId || user.role === 'admin') {
             return await Event.destroy({where: {id: eventId}});
         }
         throw new ApiError(StatusCodes.FORBIDDEN, "You are not authorized to delete this event");
