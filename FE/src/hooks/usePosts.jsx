@@ -22,10 +22,12 @@ export const PostsProvider = ({ children, postType }) => {
   const [likeModalVisible, setLikeModalVisible] = useState(false);
   const [likeUsers, setLikeUsers] = useState([]);
   
+
   const [postLikedbyUser, setPostLikedbyUser] = useState({}); // Lưu trạng thái like của từng post theo user
 
   // 🔹 Lấy danh sách bài viết
   useEffect(() => {
+    
     setLoading(true);
     setPosts([]);
     if (!postType) {
@@ -166,6 +168,19 @@ export const PostsProvider = ({ children, postType }) => {
     handleCommentChange,
     submitComment,
   };
+
+  useEffect(() => {
+      const onCreated = (e) => {
+        const created = e.detail;
+        if (!created) return;
+        // Nếu postType khớp hoặc đang fetch all, thêm vào đầu list
+        if (!postType || created.postType === postType) {
+          setPosts((prev) => [created, ...prev]);
+        }
+      };
+      window.addEventListener("post:created", onCreated);
+      return () => window.removeEventListener("post:created", onCreated);
+    }, [postType]);
 
   return <PostsContext.Provider value={value}>{children}</PostsContext.Provider>;
 };
