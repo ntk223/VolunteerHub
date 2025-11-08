@@ -10,6 +10,7 @@ const User = sequelize.define('User', {
     introduce: {type: DataTypes.TEXT, allowNull: true},
     role: {type: DataTypes.ENUM('volunteer', 'manager', 'admin'), defaultValue: 'volunteer'},
     status: {type: DataTypes.ENUM('active', 'blocked'), defaultValue: 'active'},
+    avatarUrl: {type: DataTypes.STRING, allowNull: true},
     createdAt: {type: DataTypes.DATE, defaultValue: DataTypes.NOW},
     updatedAt: {type: DataTypes.DATE, defaultValue: DataTypes.NOW},
 }, {

@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./hooks/useAuth.jsx";
 import { PostsProvider } from "./hooks/usePosts.jsx";
@@ -6,7 +5,9 @@ import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import DiscussPage from "./pages/Feed/DiscussPage";
 import AdminPage from "./pages/Admin/AdminPage"; 
-import { setupInterceptors } from "./api/index.js"; 
+import Profile from "./pages/Profile/Profile.jsx";
+import 'antd/dist/reset.css';
+import { ConfigProvider } from 'antd';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -32,11 +33,6 @@ const AdminRoute = ({ children }) => {
 
 
 function AppInitializer() {
-  const { logout } = useAuth();
-
-  useEffect(() => {
-    setupInterceptors(logout);
-  }, [logout]);
 
   return (
     <Router>
@@ -72,8 +68,13 @@ function AppInitializer() {
               </PostsProvider>
             }
           />
+          <Route
+            path="profile"
+            element={
+                <Profile />
+            }
+          />
 
-          
           <Route
             path="admin/*" // Path sẽ là /admin
             element={
@@ -94,8 +95,10 @@ function AppInitializer() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <AppInitializer />
-    </AuthProvider>
+    <ConfigProvider>
+      <AuthProvider>
+        <AppInitializer />
+      </AuthProvider>
+    </ConfigProvider>
   );
 }

@@ -9,14 +9,14 @@ import { applicationRoute } from "./applicationRoute.js" // Liên quan đến ev
 
 import { commentRoute } from "./commentRoute.js"
 import { likeRoute } from "./likeRoute.js"
-
+import { fileRoute } from "./fileRoute.js"
 
 const router = express.Router()
 
 // 1. Routes XÁC THỰC & NGƯỜI DÙNG
 router.use('/auth', authRoute)
 router.use('/user', userRoute)
-
+router.use('/file', fileRoute)
 // 2. Routes TÀI NGUYÊN CHÍNH
 router.use('/post', postRoute)
 router.use('/event', eventRoute)

@@ -1,4 +1,4 @@
-import { DataTypes, or } from "sequelize";
+import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
 
 const Manager = sequelize.define('Manager', {

@@ -3,7 +3,7 @@ import { SearchOutlined } from "@ant-design/icons";
 
 const { Sider } = Layout;
 
-export const SearchSidebar = () => {
+const SearchSidebar = () => {
   return (
     <Sider
       width={450}
@@ -26,3 +26,4 @@ export const SearchSidebar = () => {
     </Sider>
   );
 };
+export default SearchSidebar;

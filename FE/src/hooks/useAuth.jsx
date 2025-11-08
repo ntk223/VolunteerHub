@@ -1,5 +1,5 @@
-import { useState, createContext, useContext } from "react";
-
+import { useState, createContext, useContext, useEffect } from "react";
+import { apiEvents } from "../api";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -9,10 +9,20 @@ export const AuthProvider = ({ children }) => {
 
   const [user, setUser] = useState(savedUser ? JSON.parse(savedUser) : null);
   const [token, setToken] = useState(savedToken || null);
+  
   // ✅ LOGIC KIỂM TRA QUYỀN ADMIN
   const isAuthenticated = !!user;
   const isAdmin = isAuthenticated && user?.role === "admin";
-
+  const logout = () => {
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+  }
+  useEffect(() => {
+    apiEvents.on("unauthorized", logout);
+    return () => apiEvents.off("unauthorized", logout);
+  }, []);
 
   const value = {
     user,
@@ -23,11 +33,10 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("token", authToken);
       localStorage.setItem("user", JSON.stringify(userData));
     },
-    logout: () => {
-      setUser(null);
-      setToken(null);
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+    logout,
+    updateUser: (updatedUser) => {
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
     },
     isAuthenticated,
     isAdmin,

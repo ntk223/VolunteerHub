@@ -1,8 +1,7 @@
-import React from 'react'; 
 import { Spin } from 'antd'; 
 import { usePosts } from '../../hooks/usePosts';
-import { PostList } from '../../components/post/PostList';
-import { LikesModal } from '../../components/post/LikesModal';
+import PostList from '../../components/post/PostList';
+import LikesModal from '../../components/post/LikesModal';
 import { useAuth } from '../../hooks/useAuth';
 import './DiscussPage.css';
 
