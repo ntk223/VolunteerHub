@@ -19,11 +19,12 @@ const PostCard = ({post}) => {
     newComments,
     handleCommentChange,
     submitComment,
+    isOpenedComments,
   } = usePosts();
   const postId = post.id;
   const postComments = commentsMap[postId] || [];
   const isLiked = Boolean(postLikedbyUser[postId]);
-  const commentsVisible = Boolean(commentsMap[postId]);
+  const commentsVisible = Boolean(isOpenedComments[postId]);
 
   return (
     <Card className="fb-post-card" style={{ marginBottom: 16 }}>
@@ -39,7 +40,12 @@ const PostCard = ({post}) => {
           </div>
         </div>
       </div>
-
+      {/* --- Event Title --- */}
+      {post.event && (
+        <div className="fb-post-title" style={{ marginTop: 12 }}>
+          <Text strong>{post.event.title}</Text>
+        </div>
+      )}
       {/* --- Content --- */}
       <div className="fb-post-content" style={{ marginTop: 12 }}>
         <Text>{post.content}</Text>

@@ -24,11 +24,11 @@ export const LikesModal = ({ visible, loading = false, likes = [], onClose }) =>
           itemLayout="horizontal"
           dataSource={likes}
           renderItem={(like) => {
-            const user = like.user ?? like.User ?? {};
+            const user = like.user;
             return (
               <List.Item>
                 <List.Item.Meta
-                  avatar={<Avatar icon={<UserOutlined />} />}
+                  avatar={<Avatar src={user.avatarUrl} icon={<UserOutlined />} />}
                   title={user.name || "Người dùng"}
                   description={user.role || undefined}
                 />

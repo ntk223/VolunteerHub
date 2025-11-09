@@ -44,7 +44,7 @@ class LikeRepository {
             include: [
                 {   
                     model: User, 
-                    attributes: ['id','name', 'role'],
+                    attributes: ['id','name', 'role', 'avatarUrl'],
                     as: 'user' 
                 }
             ],
