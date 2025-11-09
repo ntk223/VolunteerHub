@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./hooks/useAuth.jsx";
 import { PostsProvider } from "./hooks/usePosts.jsx";
+import { AdminProvider } from "./hooks/useAdminData.jsx";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import DiscussPage from "./pages/Feed/DiscussPage";
@@ -14,22 +15,6 @@ const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
   console.log("ProtectedRoute isAuthenticated:", isAuthenticated);
   return isAuthenticated ? children : <Navigate to="/login" replace />;
-};
-
-const AdminRoute = ({ children }) => {
-  const { isAuthenticated, isAdmin } = useAuth();
-  
-  if (!isAuthenticated) {
-    // Chưa đăng nhập -> về Login
-    return <Navigate to="/login" replace />;
-  }
-  
-  if (!isAdmin) {
-    return <Navigate to="/discuss" replace />; 
-  }
-
-  // Đã đăng nhập VÀ là Admin -> OK
-  return children;
 };
 
 
@@ -85,9 +70,9 @@ function AppInitializer() {
           <Route
             path="admin/*" 
             element={
-              <AdminRoute>
+              <AdminProvider>
                 <AdminPage /> 
-              </AdminRoute>
+              </AdminProvider>
             }
           />
 

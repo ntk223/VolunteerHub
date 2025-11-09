@@ -4,7 +4,16 @@ import { StatusCodes } from "http-status-codes";
 class EventRepository {
     async getAllEvents() {
         const events = await Event.findAll({
-            include: ['manager', 'category']
+            include: ['category', {
+                model: Manager, 
+                as: 'manager',
+                include: [
+                    {
+                        model: User, 
+                        as: 'user'
+                    }
+                ]
+            }]
         });
         return events;
     }

@@ -7,6 +7,11 @@ class PostController {
         res.status(StatusCodes.CREATED).json(newPost);
     }
 
+    async getAllPosts(req, res) {
+        const posts = await postService.getAllPosts();
+        res.status(StatusCodes.OK).json(posts);
+    }
+
     async getPostByType(req, res) {
         const postType = req.params.postType;
         const posts = await postService.getPostByType(postType);
