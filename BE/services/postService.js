@@ -5,6 +5,11 @@ class PostService {
     async createPost(postData) {
         return await postRepo.createPost(postData);
     }
+
+    async getAllPosts() {
+        return await postRepo.getAllPosts();
+    }
+
     async getPostByType(postType) {
         return await postRepo.getPostByType(postType);
     }

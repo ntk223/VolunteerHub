@@ -1,13 +1,18 @@
-import { useState, useEffect, useCallback } from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import api from "../api";
 import { useAuth } from "./useAuth.jsx";
 
-export const useAdminData = () => {
+const AdminContext = createContext();
+
+export const useAdminData = () => useContext(AdminContext);
+
+export const AdminProvider = ({ children }) => {
   const { user, isAdmin } = useAuth();
 
   const [users, setUsers] = useState([]);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [posts, setPosts] = useState([]);
   const [error, setError] = useState(null);
 
   // 🔹 Fetch users
@@ -26,10 +31,21 @@ export const useAdminData = () => {
   const fetchEvents = useCallback(async () => {
     if (!isAdmin) return;
     try {
-      const res = await api.get("/event"); // endpoint backend
+      const res = await api.get("/event");
       setEvents(res.data);
     } catch (err) {
       console.error("Lỗi khi tải danh sách sự kiện:", err);
+      setError(err.response?.data?.message || "Lỗi kết nối hoặc server.");
+    }
+  }, [isAdmin]);
+
+  const fetchPosts = useCallback(async () => {
+    if (!isAdmin) return;
+    try {
+      const res = await api.get("/post");
+      setPosts(res.data);
+    } catch (err) {
+      console.error("Lỗi khi tải danh sách bài viết:", err);
       setError(err.response?.data?.message || "Lỗi kết nối hoặc server.");
     }
   }, [isAdmin]);
@@ -39,16 +55,16 @@ export const useAdminData = () => {
     if (!isAdmin) return;
     setLoading(true);
     setError(null);
-    Promise.all([fetchUsers(), fetchEvents()])
+    Promise.all([fetchUsers(), fetchEvents(), fetchPosts()])
       .finally(() => setLoading(false));
-  }, [fetchUsers, fetchEvents, isAdmin]);
+  }, [fetchUsers, fetchEvents, fetchPosts, isAdmin]);
 
   // 🔹 Toggle user status
   const toggleUserStatus = useCallback(async (userId, newStatus) => {
     try {
       await api.patch(`/user/status/${userId}`, { status: newStatus });
       setUsers(prev =>
-        prev.map(u => (u._id === userId ? { ...u, status: newStatus } : u))
+        prev.map(u => (u.id === userId ? { ...u, status: newStatus } : u))
       );
     } catch (err) {
       console.error("Lỗi cập nhật trạng thái người dùng:", err);
@@ -56,12 +72,12 @@ export const useAdminData = () => {
     }
   }, []);
 
-  // 🔹 Approve event
-  const approveEvent = useCallback(async (eventId, status = "approved") => {
+  // 🔹 Change event approval status
+  const changeEventApprovalStatus = useCallback(async (eventId, approvalStatus = "approved") => {
     try {
-      await api.patch(`/event/approval-status/${eventId}`, { status });
+      await api.patch(`/event/approval-status/${eventId}`, { approvalStatus });
       setEvents(prev =>
-        prev.map(e => (e._id === eventId ? { ...e, status } : e))
+        prev.map(e => (e.id === eventId ? { ...e, approvalStatus } : e))
       );
     } catch (err) {
       console.error("Lỗi khi duyệt sự kiện:", err);
@@ -72,24 +88,41 @@ export const useAdminData = () => {
   // 🔹 Delete event
   const deleteEvent = useCallback(async (eventId) => {
     try {
-      console.log("Xóa sự kiện thành công:", eventId);
       await api.delete(`/event/user/${user.id}/event/${eventId}`);
-      setEvents(prev => prev.filter(e => e._id !== eventId));
+      setEvents(prev => prev.filter(e => e.id !== eventId));
     } catch (err) {
       console.error("Lỗi khi xóa sự kiện:", err);
       setError(err.response?.data?.message || "Không thể xóa sự kiện.");
     }
+  }, [user.id]);
+
+  const changePostStatus = useCallback(async (postId, newStatus) => {
+    try {
+      await api.patch(`/post/status/${postId}`, { status: newStatus });
+      setPosts(prev =>
+        prev.map(p => (p.id === postId ? { ...p, status: newStatus } : p))
+      );
+    } catch (err) {
+      console.error("Lỗi cập nhật trạng thái bài viết:", err);
+      setError(err.response?.data?.message || "Không thể cập nhật trạng thái bài viết.");
+    }
   }, []);
 
-  return {
+  const value = {
     users,
     events,
+    posts,
     loading,
     error,
-    fetchUsers,
-    fetchEvents,
     toggleUserStatus,
-    approveEvent,
+    changeEventApprovalStatus,
     deleteEvent,
+    changePostStatus,
   };
+
+  return (
+    <AdminContext.Provider value={value}>
+      {children}
+    </AdminContext.Provider>
+  );
 };

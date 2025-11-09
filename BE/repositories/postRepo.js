@@ -13,9 +13,28 @@ class PostRepository {
         }
         return await Post.create(postData);
     }
-
+    async getAllPosts() {
+        const posts = await Post.findAll({
+            attributes: [
+                'id',
+                'postType',
+                'content',
+                'status',
+                [sequelize.literal('(SELECT COUNT(*) FROM likes WHERE likes.post_id = Post.id and likes.deleted_at IS NULL)'), 'likeCount'],
+                [sequelize.literal('(SELECT COUNT(*) FROM comments WHERE comments.post_id = Post.id and comments.deleted_at IS NULL)'), 'commentCount'],
+            ],
+            include: [
+                { model: User, attributes: ['id', 'name', 'avatarUrl'], as: 'author' },
+                { model: Event, attributes: ['title'], as: 'event' },
+            ],
+            order: [['id', 'DESC']],
+        });
+        if (!posts) {
+            throw new ApiError(StatusCodes.NOT_FOUND, 'Posts not found');
+        }
+        return posts;
+    }
     async getPostByType(postType) {
-
         const posts = await Post.findAll({
             attributes: [
                 'id',

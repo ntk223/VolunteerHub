@@ -6,6 +6,7 @@ import verifyTokenMiddleware from '../middlewares/verifyToken.js'
 import { authorize } from '../middlewares/authorize.js'
 const Router = express.Router()
 Router.use(verifyTokenMiddleware)
+Router.get('/', postController.getAllPosts)
 /**
  * @swagger
  * /api/post:
