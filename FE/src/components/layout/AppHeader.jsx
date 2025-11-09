@@ -83,7 +83,7 @@ const AppHeader = () => {
 
       {/* ==== BÊN PHẢI: Thông tin người dùng ==== */}
       <Space>
-        <Avatar icon={<UserOutlined />} />
+        <Avatar src={user?.avatarUrl} icon={<UserOutlined />} />
         <Text style={{ fontSize: 14 }}>{user?.email}</Text>
         <Button
           type="primary"

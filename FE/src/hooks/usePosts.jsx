@@ -21,8 +21,8 @@ export const PostsProvider = ({ children, postType }) => {
   const [newComments, setNewComments] = useState({}); 
   const [likeModalVisible, setLikeModalVisible] = useState(false);
   const [likeUsers, setLikeUsers] = useState([]);
-  
-
+  const [isOpenedComments, setIsOpenedComments] = useState({}); // Quản lý trạng thái mở comment theo postId
+ 
   const [postLikedbyUser, setPostLikedbyUser] = useState({}); // Lưu trạng thái like của từng post theo user
 
   // 🔹 Lấy danh sách bài viết
@@ -113,6 +113,10 @@ export const PostsProvider = ({ children, postType }) => {
         ...prev,
         [postId]: res.data, // chỉ lưu comment của postId này
       }));
+      setIsOpenedComments((prev) => ({
+        ...prev,
+        [postId]: !prev[postId], // toggle trạng thái hiển thị
+      }));
       // console.log("aaa", res);
     } catch (error) {
       console.error(error);
@@ -161,6 +165,7 @@ export const PostsProvider = ({ children, postType }) => {
     likeModalVisible,
     likeUsers,
     postLikedbyUser,
+    isOpenedComments,
     toggleLike,
     openLikes,
     closeLikes,

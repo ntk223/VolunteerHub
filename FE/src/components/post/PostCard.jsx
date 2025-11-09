@@ -7,6 +7,7 @@ import {
 } from "@ant-design/icons";
 import CommentSection from "./CommentSection";
 import { usePosts } from "../../hooks/usePosts";
+import { Link } from "react-router-dom";
 const { Text } = Typography;
 
 const PostCard = ({post}) => {
@@ -19,11 +20,12 @@ const PostCard = ({post}) => {
     newComments,
     handleCommentChange,
     submitComment,
+    isOpenedComments,
   } = usePosts();
   const postId = post.id;
   const postComments = commentsMap[postId] || [];
   const isLiked = Boolean(postLikedbyUser[postId]);
-  const commentsVisible = Boolean(commentsMap[postId]);
+  const commentsVisible = Boolean(isOpenedComments[postId]);
 
   return (
     <Card className="fb-post-card" style={{ marginBottom: 16 }}>
@@ -31,7 +33,9 @@ const PostCard = ({post}) => {
       <div className="fb-post-header" style={{gap: 10, display: 'flex', alignItems: 'center' }}>
         <Avatar size={40} src={post.author?.avatarUrl} icon={<UserOutlined />} />
         <div>
-          <Text strong>{post.author?.name || "Ẩn danh"}</Text>
+          <Link to={`/profile/${post.author?.id}`} style={{ fontWeight: 600, color: "#1677ff" }}>
+            {post.author?.name || "Ẩn danh"}
+          </Link>
           <div>
             <Text type="secondary" style={{ fontSize: 12 }}>
               {new Date(post.createdAt || Date.now()).toLocaleString()}
@@ -39,7 +43,12 @@ const PostCard = ({post}) => {
           </div>
         </div>
       </div>
-
+      {/* --- Event Title --- */}
+      {post.event && (
+        <div className="fb-post-title" style={{ marginTop: 12 }}>
+          <Text strong>{post.event.title}</Text>
+        </div>
+      )}
       {/* --- Content --- */}
       <div className="fb-post-content" style={{ marginTop: 12 }}>
         <Text>{post.content}</Text>

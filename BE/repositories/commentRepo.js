@@ -12,7 +12,7 @@ class CommentRepository {
         include: [
         {
             model: User,
-            attributes: ['name', "role"],
+            attributes: ['name', "role", "avatarUrl"],
             as: 'author',
         },
         ],
@@ -27,7 +27,7 @@ class CommentRepository {
         include: [{
             model: User,
             as: 'author',
-            attributes: ['id', 'name']
+            attributes: ['id', 'name', 'avatarUrl'],
         }] });
     }
 }

@@ -25,7 +25,7 @@ class PostRepository {
                 [sequelize.literal('(SELECT COUNT(*) FROM comments WHERE comments.post_id = Post.id and comments.deleted_at IS NULL)'), 'commentCount'],
             ],
             include: [
-                { model: User, attributes: ['id', 'name'], as: 'author' },
+                { model: User, attributes: ['id', 'name', 'avatarUrl'], as: 'author' },
                 { model: Event, attributes: ['title'], as: 'event' },
             ],
             where: {

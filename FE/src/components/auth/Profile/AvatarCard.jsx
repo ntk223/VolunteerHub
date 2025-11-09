@@ -4,7 +4,7 @@ import { UserOutlined, CameraOutlined, LoadingOutlined } from '@ant-design/icons
 import api from '../../../api/index.js';
 const { Title } = Typography;
 
-const AvatarCard = ({ user, updateUser }) => {
+const AvatarCard = ({ user, updateUser, isMe }) => {
   const [isHovering, setIsHovering] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -45,7 +45,7 @@ const AvatarCard = ({ user, updateUser }) => {
             <div style={{ textAlign: 'center' }}>
               <div
                 style={{ position: 'relative', display: 'inline-block' }}
-                onMouseEnter={() => setIsHovering(true)}
+                onMouseEnter={() => setIsHovering(isMe ? true : false)}
                 onMouseLeave={() => setIsHovering(false)}
               >
                 {/* Avatar */}
