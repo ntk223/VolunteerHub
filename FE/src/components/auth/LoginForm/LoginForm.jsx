@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../../../hooks/useAuth.jsx';
 import api from '../../../api/index.js';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-
+import { message } from "antd";
 
 import './LoginForm.css';
 
@@ -54,13 +54,11 @@ const LoginForm = () => {
 
       // Gọi hàm login trong context
       await login(user, token);
+      
+      // Hiển thị thông báo thành công
+      message.success('Đăng nhập thành công!');
 
-      // Chuyển hướng về trang chủ
-      if (user.role === 'admin') {
-        navigate('/admin'); 
-      } else {
-        navigate('/'); 
-      }
+      // navigate('/');
 
     } catch (err) {
       console.error("Login failed:", err);

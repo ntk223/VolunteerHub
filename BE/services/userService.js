@@ -12,7 +12,7 @@ class UserService {
         return users;
     }
     async getUserById(userId) {
-        const user = await userRepo.getAllUserById(userId);
+        const user = await userRepo.getUserById(userId);
         return user;
     }
 

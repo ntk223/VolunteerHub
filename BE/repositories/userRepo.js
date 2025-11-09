@@ -26,7 +26,7 @@ class UserRepository {
         return users
     }
 
-    async getAllUserById(id) {
+    async getUserById(id) {
         const user = await User.findByPk(id)
         if (!user) {
             throw new ApiError(StatusCodes.NOT_FOUND, "User not found")
@@ -34,9 +34,10 @@ class UserRepository {
         if (user.role === 'volunteer') {
             return await User.findByPk(id, { include: 'volunteer' });
         }
-        else {
+        else if (user.role === 'manager') {
             return await User.findByPk(id, { include: 'manager' });
         }
+        return user;
     }
 
     async updateUser(id, updateData) {

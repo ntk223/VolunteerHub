@@ -6,7 +6,7 @@ import UpdateProfileForm from '../../components/auth/Profile/UpdateProfileForm';
 import ChangePasswordForm from '../../components/auth/Profile/ChangePasswordForm';
 import AvatarCard from '../../components/auth/Profile/AvatarCard';
 
-const Profile = () => {
+const MyProfile = () => {
   const { user, updateUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [form] = Form.useForm();
@@ -17,7 +17,7 @@ const Profile = () => {
     <div style={{ padding: '24px', maxWidth: '800px', margin: '0 auto' }}>
       <Row gutter={[24, 24]}>
         <Col xs={24} md={8}>
-            <AvatarCard user={user} updateUser={updateUser} />
+            <AvatarCard user={user} updateUser={updateUser} isMe={true} />
         </Col>
 
         <Col xs={24} md={16}>
@@ -72,4 +72,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default MyProfile;

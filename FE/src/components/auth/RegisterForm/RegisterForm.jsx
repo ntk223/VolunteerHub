@@ -4,7 +4,7 @@ import FormField from '../../common/FormField';
 import toast from 'react-hot-toast';
 import "./RegisterForm.css";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-
+import { message } from 'antd';
 
 const VIETNAMESE_PHONE_REGEX = /^(0|84|\+84)(3|5|7|8|9)[0-9]{8}$/; 
 
@@ -110,7 +110,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
       dataToSubmit.phone = dataToSubmit.phone.replace(/[\s-]/g, ''); 
       await api.post('/auth/register', dataToSubmit);
 
-      toast.success('Đăng ký thành công! Vui lòng đăng nhập.');
+      message.success('Đăng ký thành công! Vui lòng đăng nhập.');
       onSwitchToLogin();
     } catch (err) {
       const errorMessage = err.response?.data?.message || "Đã có lỗi xảy ra. Vui lòng thử lại.";
@@ -183,7 +183,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
           <select id="role" name="role" value={formData.role} onChange={handleChange}>
             <option value="volunteer">Tình nguyện viên</option>
             <option value="manager">Quản lý</option>
-            <option value="admin">Quản trị viên</option>
+            {/* <option value="admin">Quản trị viên</option> */}
           </select>
         </div>
 

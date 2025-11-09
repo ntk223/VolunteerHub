@@ -5,7 +5,8 @@ import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import DiscussPage from "./pages/Feed/DiscussPage";
 import AdminPage from "./pages/Admin/AdminPage"; 
-import Profile from "./pages/Profile/Profile.jsx";
+import MyProfile from "./pages/Profile/MyProfile.jsx";
+import OtherProfile from "./pages/Profile/OtherProfile.jsx";
 import 'antd/dist/reset.css';
 import { ConfigProvider } from 'antd';
 
@@ -71,7 +72,13 @@ function AppInitializer() {
           <Route
             path="profile"
             element={
-                <Profile />
+                <MyProfile />
+            }
+          />
+          <Route
+            path="profile/:id"
+            element={
+              <OtherProfile />
             }
           />
 

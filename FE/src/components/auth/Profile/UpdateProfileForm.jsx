@@ -17,15 +17,7 @@ const UpdateProfileForm = ({ profileForm, user, updateUser, setIsEditing, isEdit
                 }
               }}
             >
-              <div style={{ marginBottom: '16px' }}>
-                <strong>Email:</strong>
-                <p>{user?.email}</p>
-              </div>
-              <div style={{ marginBottom: '16px' }}>
-                <strong>Số điện thoại:</strong>
-                <p>{user?.phone || 'Chưa cập nhật'}</p>
-              </div>
-              
+
               {isEditing ? (
                 <>
                   <Form.Item
@@ -53,6 +45,32 @@ const UpdateProfileForm = ({ profileForm, user, updateUser, setIsEditing, isEdit
                     <p>{user?.introduce || 'Chưa cập nhật'}</p>
                   </div>
                 </>
+              )}
+
+              <div style={{ marginBottom: '16px' }}>
+                <strong>Email:</strong>
+                <p>{user?.email}</p>
+              </div>
+              <div style={{ marginBottom: '16px' }}>
+                <strong>Số điện thoại:</strong>
+                <p>{user?.phone || 'Chưa cập nhật'}</p>
+              </div>
+
+              {user.role === 'volunteer' && (
+                <div style={{ marginBottom: '16px' }}>
+                  <strong>Đóng góp</strong>
+                  <p>{user.volunteer.contributed || 'Chưa có đóng góp'}</p>
+                  <strong>Uy tín</strong>
+                  <p>{user.volunteer.credibility}</p>
+
+                </div>
+              )}
+
+              {user.role === 'manager' && (
+                <div style={{ marginBottom: '16px' }}>
+                  <strong>Đơn vị quản lý:</strong>
+                  <p>{user.manager.organization || 'Chưa cập nhật'}</p>
+                </div>
               )}
             </Form>
     )
