@@ -55,6 +55,12 @@ class UserController {
         res.status(StatusCodes.OK).json(updatedUser);
     }
 
+    async getStatisticsForUser(req, res) {
+        const id = req.params.id;
+        const statistics = await userService.getStatisticsForUser(id);
+        res.status(StatusCodes.OK).json(statistics);
+    }
+
 }
 
 export const userController = new UserController();

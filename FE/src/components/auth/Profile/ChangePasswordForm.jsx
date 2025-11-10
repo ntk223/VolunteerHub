@@ -1,10 +1,8 @@
 import { Form, Input, Button, Modal } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
-import { useState } from 'react';
 import api from '../../../api';
 import { message } from 'antd';
-const ChangePasswordForm = ({ form }) => {
-      const [isChangePasswordVisible, setIsChangePasswordVisible] = useState(false);
+const ChangePasswordForm = ({ form, isChangePasswordVisible, setIsChangePasswordVisible }) => {
     const handleChangePassword = async (values) => {
         try {
         await api.put(`/user/password/${user.id}`, {

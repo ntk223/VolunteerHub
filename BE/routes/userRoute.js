@@ -168,5 +168,7 @@ Router.get('/', authorize(['admin']), userController.getAllUsers)
  *         description: Trạng thái user đã được cập nhật
  */
 Router.patch('/status/:id', authorize(['admin']), userController.changeStatus)
+
+Router.get('/statistics/:id', userController.getStatisticsForUser)
 export const userRoute = Router
 

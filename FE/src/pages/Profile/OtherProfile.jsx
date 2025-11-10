@@ -2,6 +2,8 @@ import { useState, useEffect, use } from 'react';
 import { Card, Form, Row, Col, Spin, message } from 'antd';
 import UpdateProfileForm from '../../components/auth/Profile/UpdateProfileForm';
 import AvatarCard from '../../components/auth/Profile/AvatarCard';
+import Statistics from '../../components/auth/Profile/Statistics';
+import Activities from '../../components/auth/Profile/Activities';
 import api from '../../api';
 import { useParams, useNavigate} from "react-router-dom";
 import { useAuth } from '../../hooks/useAuth';
@@ -46,13 +48,23 @@ const OtherProfile = () => {
   }
 
   return (
-    <div style={{ padding: '24px', maxWidth: '800px', margin: '0 auto' }}>
-      <Row gutter={[24, 24]}>
-        <Col xs={24} md={8}>
+    <div style={{
+        background: '#f5f6fa',
+        minHeight: '100vh',
+        padding: '40px 0',
+        display: 'flex',
+        justifyContent: 'center',
+      }}>
+              <div style={{ width: '100%', maxWidth: 1200 }}>
+
+      <Row gutter={[24, 12]}>
+        <Col xs={24} md={12}>
           <AvatarCard user={user} updateUser={() => {}} isMe={false} />
         </Col>
-
-        <Col xs={24} md={16}>
+          <Col xs={24} md={12}>
+            <Statistics userId={id}/>
+          </Col>
+        <Col xs={24} md={12}>
           <Card title="Thông tin cá nhân">
             <UpdateProfileForm
               profileForm={profileForm}
@@ -63,7 +75,12 @@ const OtherProfile = () => {
             />
           </Card>
         </Col>
+
+        <Col xs={24} md={12}>
+            <Activities />
+        </Col>
       </Row>
+      </div>
     </div>
   );
 };
