@@ -10,7 +10,7 @@ import { applicationRoute } from "./applicationRoute.js" // Liên quan đến ev
 import { commentRoute } from "./commentRoute.js"
 import { likeRoute } from "./likeRoute.js"
 import { fileRoute } from "./fileRoute.js"
-
+import { notificationRoute } from "./notificationRoute.js"
 const router = express.Router()
 
 // 1. Routes XÁC THỰC & NGƯỜI DÙNG
@@ -25,7 +25,7 @@ router.use('/application', applicationRoute)
 // 3. Routes HÀNH ĐỘNG PHỤ
 router.use('/comment', commentRoute)
 router.use('/like', likeRoute)
-
+router.use('/notification', notificationRoute)
 // 4. Routes QUẢN TRỊ (Admin) 
 // router.use('/admin', adminRoute)
 
