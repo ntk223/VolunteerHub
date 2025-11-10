@@ -2,12 +2,14 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { AuthProvider, useAuth } from "./hooks/useAuth.jsx";
 import { PostsProvider } from "./hooks/usePosts.jsx";
 import { AdminProvider } from "./hooks/useAdminData.jsx";
+import { SocketProvider } from "./hooks/useSocket.jsx";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import DiscussPage from "./pages/Feed/DiscussPage";
 import AdminPage from "./pages/Admin/AdminPage"; 
 import MyProfile from "./pages/Profile/MyProfile.jsx";
 import OtherProfile from "./pages/Profile/OtherProfile.jsx";
+import NotificationPage from "./pages/Notification/NotificationPage.jsx";
 import 'antd/dist/reset.css';
 import { ConfigProvider } from 'antd';
 
@@ -66,7 +68,12 @@ function AppInitializer() {
               <OtherProfile />
             }
           />
-
+          <Route
+            path="notification"
+            element={
+              <NotificationPage />
+            }
+          />
           <Route
             path="admin/*" 
             element={
@@ -89,7 +96,9 @@ export default function App() {
   return (
     <ConfigProvider>
       <AuthProvider>
-        <AppInitializer />
+        <SocketProvider>
+          <AppInitializer />
+        </SocketProvider>
       </AuthProvider>
     </ConfigProvider>
   );

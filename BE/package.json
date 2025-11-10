@@ -24,6 +24,7 @@
     "mysql2": "^3.14.5",
     "redis": "^5.8.2",
     "sequelize": "^6.37.7",
+    "socket.io": "^4.8.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   },

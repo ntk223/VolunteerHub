@@ -6,9 +6,18 @@ import { errorHandlingMiddleware } from './middlewares/errorHandlingMiddleware.j
 import { corsOptions } from './config/cors.js'
 import { swaggerDocs } from './config/swagger.js'
 import cors from 'cors'
+
+import { initSocket } from './config/socket.js'
+import http from 'http'
+
 const START_SERVER = () => {
     
     const app = express ()
+    const server = http.createServer (app)
+    // Khởi tạo Socket.io
+    initSocket (server)
+
+    // Thiết lập CORS và các middleware khác
     app.use (cors(corsOptions))
     app.use (express.json())
     app.use ('/api', APIs)
@@ -18,7 +27,7 @@ const START_SERVER = () => {
     // Tài liệu API với Swagger
     swaggerDocs (app)
     // Kết nối Database
-    app.listen(env.APP_PORT, () => {
+    server.listen(env.APP_PORT, () => {
         console.log(`Server is running on port ${env.APP_PORT}`)
     })
 

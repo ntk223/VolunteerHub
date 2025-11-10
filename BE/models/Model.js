@@ -8,6 +8,7 @@ import Comment from './Comment.js';
 import Like from './Like.js';
 import Application from './Application.js';
 import File from './File.js';
+import Notification from './Notification.js';
 
 // User ↔ Volunteer (1-1)
 User.hasOne(Volunteer, { foreignKey: 'userId', as: 'volunteer' });
@@ -61,6 +62,10 @@ Application.belongsTo(Event, { foreignKey: 'eventId', as: 'event' });
 User.hasMany(File, { foreignKey: 'uploadedBy', as: 'files' });
 File.belongsTo(User, { foreignKey: 'uploadedBy', as: 'uploader' });
 
+// User ↔ Notification (1-n)
+User.hasMany(Notification, { foreignKey: 'userId', as: 'notifications' });
+Notification.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
 export {
   User,
   Volunteer,
@@ -71,5 +76,6 @@ export {
   Post,
   Comment,
   Like,
-  Application
+  Application,
+  Notification,
 };

@@ -1,4 +1,4 @@
-import { Post, User, Event, Like, Comment } from '../models/Model.js';
+import { Post, User, Event, Notification } from '../models/Model.js';
 import sequelize from '../config/database.js';
 import ApiError from '../utils/ApiError.js';
 import { StatusCodes } from "http-status-codes";
@@ -67,7 +67,15 @@ class PostRepository {
         }
         post.status = status;
         await post.save();
-        return post;
+        const statusVN = status === 'approved' ? 'được phê duyệt' : 'bị từ chối';
+        // Tạo thông báo cho tác giả bài viết
+        const notificationMessage = `Bài viết của bạn (ID: ${postId}) đã ${statusVN}.`;
+        const notification = await Notification.create({
+            userId: post.authorId,
+            message: notificationMessage,
+        });
+
+        return {post, notification};
     }
 
     async deletePost(postId) {

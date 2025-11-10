@@ -1,25 +1,30 @@
 // Sidebar.jsx
 import { useState } from "react";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Badge } from "antd";
 import { HomeOutlined, BellOutlined, UserOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
 import CreatePostModal from "../createPost/CreatePostModal"; // đảm bảo path đúng
 import { useAuth } from "../../hooks/useAuth";
-
+import { useSocket } from "../../hooks/useSocket";
 const { Sider } = Layout;
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
-
+  const { notifications, markNotificationsAsRead } = useSocket();
+  let countUnread = notifications.filter(n => !n.isRead).length;
+  console.log("Sidebar notifications:", notifications);
   const [showCreate, setShowCreate] = useState(false);
 
   // Lấy key hiện tại từ pathname
   const selectedKey = location.pathname === "/" ? "home" : location.pathname.slice(1);
   const handleMenuClick = (e) => {
     if (e.key === "home") navigate("/");
-    if (e.key === "notification") navigate("/notification");
+    if (e.key === "notification") {
+      markNotificationsAsRead(); // Đánh dấu đã đọc khi vào trang thông báo
+      navigate("/notification");
+    }
     if (e.key === "profile") navigate("/profile");
     if (e.key === "create-post") {
       if (!user) {
@@ -65,7 +70,16 @@ const Sidebar = () => {
           {
             key: "notification",
             icon: <BellOutlined style={{ fontSize: 24 }} />,
-            label: <span className="menu-label">Notification</span>,
+            label: (
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span className="menu-label">Notification</span>
+                
+                {/* 3. Tự thêm Badge vào đây */}
+                {countUnread > 0 && (
+                  <Badge count={countUnread} size="small" />
+                )}
+              </div>
+            ),
           },
           {
             key: "profile",
