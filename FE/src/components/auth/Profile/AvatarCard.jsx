@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Card, Avatar, Upload, message, Spin, Typography } from 'antd';
 import { UserOutlined, CameraOutlined, LoadingOutlined } from '@ant-design/icons';
 import api from '../../../api/index.js';
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const AvatarCard = ({ user, updateUser, isMe }) => {
   const [isHovering, setIsHovering] = useState(false);
@@ -41,8 +41,12 @@ const AvatarCard = ({ user, updateUser, isMe }) => {
         }
     };
     return (
-        <Card>
-            <div style={{ textAlign: 'center' }}>
+        <Card style={{
+                borderRadius: 12,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                textAlign: 'center',
+                height: '100%',
+              }}>
               <div
                 style={{ position: 'relative', display: 'inline-block' }}
                 onMouseEnter={() => setIsHovering(isMe ? true : false)}
@@ -50,7 +54,7 @@ const AvatarCard = ({ user, updateUser, isMe }) => {
               >
                 {/* Avatar */}
                 <Avatar
-                  size={120}
+                  size={250}
                   icon={!user?.avatarUrl && <UserOutlined />}
                   src={user?.avatarUrl}
                   style={{ marginBottom: '16px' }}
@@ -96,7 +100,7 @@ const AvatarCard = ({ user, updateUser, isMe }) => {
                         top: 0,
                         left: 0,
                         width: '100%',
-                        height: '87%',
+                        height: '94%',
                         background: 'rgba(0, 0, 0, 0.5)',
                         display: 'flex',
                         justifyContent: 'center',
@@ -105,15 +109,27 @@ const AvatarCard = ({ user, updateUser, isMe }) => {
                         borderRadius: '50%'
                       }}
                     >
-                      <CameraOutlined style={{ fontSize: '24px', color: '#fff' }} />
+                      <CameraOutlined style={{ fontSize: '44px', color: '#fff' }} />
                     </div>
                   </Upload>
                 )}
               </div>
 
-              <Title level={4} style={{ marginTop: 16 }}>{user?.name}</Title>
-              <p style={{ color: '#666' }}>{translateRole(user?.role)}</p>
-            </div>
+            <Title
+              level={1}
+              style={{
+                marginTop: 16,
+                marginBottom: 0,
+                fontWeight: 700,
+                letterSpacing: '0.5px',
+              }}
+            >
+              {user?.name}
+            </Title>
+            <Text style={{ fontSize: '17px', color: '#555' }}>
+              {translateRole(user?.role)}
+            </Text>
+
           </Card>
     )
 }

@@ -1,8 +1,11 @@
-import {User} from "../models/Model.js"
+import {User, Post, Like, Comment} from "../models/Model.js"
 import ApiError from "../utils/ApiError.js"
 import { StatusCodes } from "http-status-codes"
 import { hashPassword, comparePassword } from "../utils/password.js";
 import { generateToken } from "../utils/jwt.js";
+import { Op, fn, col, literal } from "sequelize";
+
+import connection from "../config/databaseUsingSQL.js";
 class UserRepository {
 
     async createUser(userData)  {
@@ -138,5 +141,28 @@ class UserRepository {
         return this.createUser(userData);
     }
 
+    async getStatisticsForUser(id) {
+        const sql = `SELECT 
+        u.id,
+        u.name,
+        COUNT(DISTINCT p.id) AS totalPosts,
+        COUNT(DISTINCT l1.id) AS totalLikes,
+        COUNT(DISTINCT c1.id) AS totalComments,
+        COUNT(DISTINCT l2.id) + COUNT(DISTINCT c2.id) AS totalInteractions
+        FROM users u
+        LEFT JOIN posts p ON p.author_id = u.id AND p.status != 'rejected'
+        LEFT JOIN likes l1 ON l1.post_id = p.id AND l1.deleted_at IS NULL
+        LEFT JOIN comments c1 ON c1.post_id = p.id
+        LEFT JOIN likes l2 ON l2.user_id = u.id AND l2.deleted_at IS NULL
+        LEFT JOIN comments c2 ON c2.author_id = u.id
+        where u.id = ${id}
+        GROUP BY u.id, u.name
+        ORDER BY totalInteractions DESC;`
+
+        const [rows] = await connection.execute(sql);
+        // await connection.end();
+
+        return rows;
+    }
 }
 export const userRepo = new UserRepository()
