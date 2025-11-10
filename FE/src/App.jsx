@@ -6,6 +6,7 @@ import { SocketProvider } from "./hooks/useSocket.jsx";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import DiscussPage from "./pages/Feed/DiscussPage";
+import RecruitmentPage from "./pages/Feed/RecruitmentPage";
 import AdminPage from "./pages/Admin/AdminPage"; 
 import MyProfile from "./pages/Profile/MyProfile.jsx";
 import OtherProfile from "./pages/Profile/OtherProfile.jsx";
@@ -52,7 +53,7 @@ function AppInitializer() {
             path="recruitment"
             element={
               <PostsProvider postType="recruitment">
-                <div>Recruitment Page</div>
+                <RecruitmentPage />
               </PostsProvider>
             }
           />
