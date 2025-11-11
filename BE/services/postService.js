@@ -1,4 +1,5 @@
 import { postRepo } from "../repositories/postRepo.js"
+import { notificationRepo } from "../repositories/notificationRepo.js";
 import { getIO } from "../config/socket.js";
 
 class PostService {
@@ -15,7 +16,11 @@ class PostService {
     }
 
     async changePostStatus(postId, status) {
-        const { post, notification } = await postRepo.changePostStatus(postId, status);
+        const post = await postRepo.changePostStatus(postId, status);
+        const statusVN = status === 'approved' ? 'được phê duyệt' : 'bị từ chối';
+        // Tạo thông báo cho tác giả bài viết
+        const notificationMessage = `Bài viết của bạn (ID: ${postId}) đã ${statusVN}.`;
+        const notification = await notificationRepo.createNotification({userId: post.authorId, message: notificationMessage})
         // Gửi thông báo qua Socket.io
         const io = getIO();
         io.to(`user_${post.authorId}`).emit("newNotification", notification);
