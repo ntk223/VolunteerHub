@@ -67,15 +67,7 @@ class PostRepository {
         }
         post.status = status;
         await post.save();
-        const statusVN = status === 'approved' ? 'được phê duyệt' : 'bị từ chối';
-        // Tạo thông báo cho tác giả bài viết
-        const notificationMessage = `Bài viết của bạn (ID: ${postId}) đã ${statusVN}.`;
-        const notification = await Notification.create({
-            userId: post.authorId,
-            message: notificationMessage,
-        });
-
-        return {post, notification};
+        return post;
     }
 
     async deletePost(postId) {

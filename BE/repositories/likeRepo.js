@@ -1,7 +1,9 @@
-import {Like, User} from "../models/Model.js";
+import {Like, Post,User} from "../models/Model.js";
 
 class LikeRepository {
     async toggleLike(postId, userId) {
+        const post = await Post.findByPk(postId);
+        const userLike =  await User.findByPk(userId);
         let existingLike = await Like.findOne({
             where: { postId, userId },
             paranoid: false,
@@ -12,18 +14,18 @@ class LikeRepository {
             // Đang like → bấm nữa thì unlike (xóa mềm)
             await Like.destroy({ where: { id: existingLike.id } });
             const deletedLike = await Like.findByPk(existingLike.id, { paranoid: false });
-            return { like: deletedLike, isLiked: false };
+            return { like: deletedLike, isLiked: false, authorId: post.authorId, userLike: userLike.name};
             } else {
             // Đã unlike → bấm nữa thì khôi phục like
             await Like.restore({ where: { id: existingLike.id } });
             const restoredLike = await Like.findByPk(existingLike.id);
-            return { like: restoredLike, isLiked: true };
+            return { like: restoredLike, isLiked: true, authorId: post.authorId, userLike: userLike.name};
             }
         }
 
         // Chưa có like → tạo mới
         const newLike = await Like.create({ postId, userId });
-        return { like: newLike, isLiked: true };
+        return { like: newLike, isLiked: true, authorId: post.authorId, userLike: userLike.name };
         }
 
 

@@ -47,7 +47,7 @@ export default function CreatePostModal({ visible, onClose }) {
       const payload = {
         content: values.content,
         postType: values.postType || "discuss",
-        title: derivedTitle,
+        // title: derivedTitle,
         ...(authorId ? { authorId } : {}),
         ...(values.eventId ? { eventId: values.eventId } : {}),
       };
