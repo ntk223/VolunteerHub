@@ -19,6 +19,9 @@ Router.use(verifyTokenMiddleware)
  *       200:
  *         description: Danh sách sự kiện
  */
+
+Router.get('/manager/:userId', eventController.getEventsByManagerId)
+
 Router.get('/', eventController.getAllEvents)
 
 /**

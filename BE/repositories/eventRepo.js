@@ -2,6 +2,18 @@ import {Event, Manager, User} from "../models/Model.js";
 import ApiError from "../utils/ApiError.js";
 import { StatusCodes } from "http-status-codes";
 class EventRepository {
+
+    async getEventsByManagerId(userId) {
+        const manager = await Manager.findOne({ where: { userId }});
+        if (!manager) return [];
+
+        return Event.findAll({
+            where: { manager_id: manager.id },
+            order: [["created_at", "DESC"]]
+        });
+    }
+
+
     async getAllEvents() {
         const events = await Event.findAll({
             include: ['category', {
