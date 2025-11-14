@@ -31,6 +31,9 @@ class EventService {
     async updateEventProgressStatus(eventId, status) {
         return await eventRepo.updateEventProgressStatus(eventId, status);
     }
+    async getEventsByManagerId(userId) {
+    return await eventRepo.getEventsByManagerId(userId);
+    }
 }
 
 export const eventService = new EventService();

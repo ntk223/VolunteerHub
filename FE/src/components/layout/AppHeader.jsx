@@ -49,7 +49,7 @@ const AppHeader = () => {
       }}
     >
       {/* ==== BÊN TRÁI: Logo==== */}
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+      <div style={{ marginRight: 60, display: "flex", alignItems: "center", gap: 12 }}>
         <Title
           level={4}
           style={{ margin: 0, cursor: "pointer" }}
@@ -68,6 +68,7 @@ const AppHeader = () => {
               icon={item.icon}
               onClick={() => navigate(item.key)}
               style={{
+                marginLeft: 20,
                 fontSize: 20,
                 color:
                   location.pathname === item.key ? "#1677ff" : "rgba(0,0,0,0.65)",

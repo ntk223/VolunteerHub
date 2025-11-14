@@ -37,6 +37,12 @@ class EventController {
         const updatedEvent = await eventService.updateEventProgressStatus(eventId, progressStatus);
         res.status(StatusCodes.OK).json(updatedEvent);
     }
+
+    async getEventsByManagerId(req, res) {
+    const { userId } = req.params;
+    const events = await eventService.getEventsByManagerId(userId);
+    res.status(200).json(events);
+    }
 }
 
 

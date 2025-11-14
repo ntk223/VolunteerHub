@@ -21,6 +21,7 @@ export const SocketProvider = ({ children }) => {
   const userId = user?.id; // Lấy userId ra biến riêng
     const markNotificationsAsRead = async () => {
     try {
+      if (notifications.length === 0) return; // Không có thông báo nào để đánh dấu
       await api.put(`/notification/read/${userId}`);
       // Cập nhật trạng thái thông báo trong state
       setNotifications((prev) =>
@@ -86,6 +87,7 @@ export const SocketProvider = ({ children }) => {
         const res = await api.get(`/notification/user/${userId}`);
         
         setNotifications(res.data);
+        }
       } catch (error) {
         console.error("Lỗi khi tải thông báo (từ hook):", error);
       }
