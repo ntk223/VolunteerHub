@@ -85,7 +85,7 @@ export const SocketProvider = ({ children }) => {
       try {
         // Dùng `userId` từ biến ở trên
         const res = await api.get(`/notification/user/${userId}`);
-        if (Array.isArray(res.data)) {
+        
         setNotifications(res.data);
         }
       } catch (error) {
