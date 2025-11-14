@@ -79,7 +79,17 @@ class EventRepository {
         if (updatedEvent[0] === 0) {
             throw new ApiError(StatusCodes.NOT_FOUND, "Event not found or no changes made")
         }
-        return await Event.findByPk(eventId);
+        const event = await Event.findByPk(eventId);
+        const manager = await Manager.findByPk(event.managerId, {
+            include: [
+                {
+                    model: User, 
+                    as: 'user'
+                }
+            ]
+        });
+        // console.log(manager);
+        return {event, userId : manager.user.id};
     }
 
     async updateEventProgressStatus(eventId, status) {

@@ -1,4 +1,6 @@
 import { eventRepo } from "../repositories/eventRepo.js";
+import { notificationRepo } from "../repositories/notificationRepo.js";
+import { getIO } from "../config/socket.js";
 
 class EventService {
     async getAllEvents() {
@@ -18,7 +20,13 @@ class EventService {
     }
 
     async updateEventApprovalStatus(eventId, status) {
-        return await eventRepo.updateEventApprovalStatus(eventId, status);
+        const {event, userId} = await eventRepo.updateEventApprovalStatus(eventId, status);
+        const statusVN = status === 'approved' ? 'được phê duyệt' : 'bị từ chối';
+        const message = `Sự kiện của bạn (ID: ${eventId}, Tên: ${event.title}) đã ${statusVN}.`;
+        const notification = await notificationRepo.createNotification({userId, message});
+        const io = getIO();
+        io.to(`user_${userId}`).emit("newNotification", notification);
+        return event
     }
     async updateEventProgressStatus(eventId, status) {
         return await eventRepo.updateEventProgressStatus(eventId, status);

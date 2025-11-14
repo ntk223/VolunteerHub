@@ -84,6 +84,7 @@ export const SocketProvider = ({ children }) => {
       try {
         // Dùng `userId` từ biến ở trên
         const res = await api.get(`/notification/user/${userId}`);
+        
         setNotifications(res.data);
       } catch (error) {
         console.error("Lỗi khi tải thông báo (từ hook):", error);
