@@ -25,37 +25,55 @@ export default function CreatePostModal({ visible, onClose }) {
         ]
       : [{ label: "Discussion", value: "discuss" }];
 
+  // chuẩn hoá event
   const normalizeEvent = (e) => ({
     id: e.id,
     title: e.title,
     managerId: e.manager_id,
+    approvalStatus: e.approval_status ?? e.approvalStatus ?? e.status,
     raw: e,
   });
 
-  
-  const fetchAllEvents = useCallback(async (search = "") => {
-    setSearching(true);
-    try {
-      const url = search
-        ? `/event?search=${encodeURIComponent(search)}`
-        : `/event`;
+  // Hàm lọc event approved khi postType = recruitment
+  const applyApprovalFilter = (list, postType) => {
+    if (postType !== "recruitment") return list;
 
-      const res = await api.get(url);
-      const list = Array.isArray(res.data) ? res.data : [];
+    return list.filter(
+      (ev) =>
+        (ev.approvalStatus || "").toLowerCase() === "approved"
+    );
+  };
 
-      if (mountedRef.current) setEvents(list.map(normalizeEvent));
-    } finally {
-      if (mountedRef.current) setSearching(false);
-    }
-  }, []);
+  /** FETCH TẤT CẢ EVENT */
+  const fetchAllEvents = useCallback(
+    async (search = "") => {
+      setSearching(true);
+      try {
+        const url = search
+          ? `/event?search=${encodeURIComponent(search)}`
+          : `/event`;
 
-  
+        const res = await api.get(url);
+        let list = Array.isArray(res.data) ? res.data.map(normalizeEvent) : [];
+
+        // lọc approved nếu là tuyển dụng
+        list = applyApprovalFilter(list, form.getFieldValue("postType"));
+
+        if (mountedRef.current) setEvents(list);
+      } finally {
+        if (mountedRef.current) setSearching(false);
+      }
+    },
+    [form]
+  );
+
+  /** FETCH EVENT CỦA MANAGER */
   const fetchManagerEvents = useCallback(
     async (search = "") => {
       setSearching(true);
       try {
         const res = await api.get(`/event/manager/${user.id}`);
-        let list = Array.isArray(res.data) ? res.data : [];
+        let list = Array.isArray(res.data) ? res.data.map(normalizeEvent) : [];
 
         if (search.trim() !== "") {
           const q = search.trim().toLowerCase();
@@ -64,7 +82,10 @@ export default function CreatePostModal({ visible, onClose }) {
           );
         }
 
-        if (mountedRef.current) setEvents(list.map(normalizeEvent));
+        // lọc approved
+        list = applyApprovalFilter(list, "recruitment");
+
+        if (mountedRef.current) setEvents(list);
       } finally {
         if (mountedRef.current) setSearching(false);
       }
@@ -75,27 +96,25 @@ export default function CreatePostModal({ visible, onClose }) {
   /** postType state */
   const [postType, setPostType] = useState(allowedTypes[0].value);
 
-  /** INIT LOAD - always load full event list */
+  /** INIT LOAD */
   useEffect(() => {
     fetchAllEvents();
     return () => {
       mountedRef.current = false;
       if (searchRef.current) clearTimeout(searchRef.current);
     };
-  }, [fetchAllEvents]);
+  }, []);
 
-  /**
-   * Reload events when postType changes
-   */
+  /** Reload event khi đổi postType */
   useEffect(() => {
     if (postType === "recruitment") {
       fetchManagerEvents();
     } else {
       fetchAllEvents();
     }
-  }, [postType, fetchManagerEvents, fetchAllEvents]);
+  }, [postType]);
 
-  
+  /** SEARCH DROPDOWN */
   const handleSearch = useCallback(
     (text) => {
       form.setFieldsValue({ eventSearchText: text });
@@ -110,34 +129,27 @@ export default function CreatePostModal({ visible, onClose }) {
         }
       }, 300);
     },
-    [postType, fetchAllEvents, fetchManagerEvents]
+    [postType]
   );
 
-  
+  /** FILTER LOCAL BY SEARCH */
   const filteredEvents = useMemo(() => {
     const search = (form.getFieldValue("eventSearchText") || "")
       .trim()
       .toLowerCase();
 
-    if (!search) return events.slice(0, 40);
+    let list = [...events];
 
-    const result = events
-      .filter((ev) => (ev.title || "").toLowerCase().includes(search))
-      .sort((a, b) => {
-        const aStarts = a.title.toLowerCase().startsWith(search);
-        const bStarts = b.title.toLowerCase().startsWith(search);
-        if (aStarts && !bStarts) return -1;
-        if (!aStarts && bStarts) return 1;
+    if (search) {
+      list = list.filter((ev) =>
+        (ev.title || "").toLowerCase().includes(search)
+      );
+    }
 
-        return a.title.length - b.title.length;
-      });
-
-    return result.slice(0, 40);
+    return list.slice(0, 40);
   }, [events, form]);
 
-  /**
-   * Submit form
-   */
+  /** SUBMIT */
   const handleSubmit = async (values) => {
     setLoading(true);
     try {
@@ -154,7 +166,7 @@ export default function CreatePostModal({ visible, onClose }) {
         message.success("Đăng bài thành công");
         window.dispatchEvent(new CustomEvent("post:created", { detail: res.data }));
       } else {
-        message.info("Bài viết đã được gửi và đang chờ duyệt.");
+        message.info("Bài viết đang chờ duyệt.");
       }
 
       form.resetFields();
@@ -187,7 +199,6 @@ export default function CreatePostModal({ visible, onClose }) {
         }}
       >
 
-        {/* Hidden field để lưu text search */}
         <Form.Item name="eventSearchText" style={{ display: "none" }}>
           <Input type="hidden" />
         </Form.Item>
@@ -197,11 +208,7 @@ export default function CreatePostModal({ visible, onClose }) {
         </Form.Item>
 
         <Form.Item
-          label={
-            postType === "recruitment"
-              ? "Chọn sự kiện (bắt buộc)"
-              : "Chọn sự kiện (tuỳ chọn)"
-          }
+          label={postType === "recruitment" ? "Chọn sự kiện (bắt buộc)" : "Chọn sự kiện (tuỳ chọn)"}
           name="eventId"
           rules={[
             ({ getFieldValue }) => ({
@@ -226,9 +233,7 @@ export default function CreatePostModal({ visible, onClose }) {
               label: e.title || `Event ${e.id}`,
               value: e.id,
             }))}
-            notFoundContent={
-              searching ? <Spin size="small" /> : "Không tìm thấy sự kiện"
-            }
+            notFoundContent={searching ? <Spin size="small" /> : "Không tìm thấy sự kiện"}
             popupMatchSelectWidth={360}
           />
         </Form.Item>
@@ -240,6 +245,7 @@ export default function CreatePostModal({ visible, onClose }) {
         >
           <TextArea rows={5} placeholder="Viết gì đó..." />
         </Form.Item>
+
       </Form>
     </Modal>
   );
