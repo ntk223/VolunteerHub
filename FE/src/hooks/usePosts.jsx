@@ -142,7 +142,13 @@ export const PostsProvider = ({ children, postType }) => {
         authorId: user.id,
         content,
       });
-
+      setPosts((prev) =>
+        prev.map((p) =>
+          p.id === postId
+            ? { ...p, commentCount: p.commentCount + 1 } 
+            : p
+        )
+      );
       setCommentsMap((prev) => ({
         ...prev,
         [postId]: [...(prev[postId] || []), res.data],
