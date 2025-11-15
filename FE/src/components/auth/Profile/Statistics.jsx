@@ -4,7 +4,7 @@ import { BarChartOutlined } from '@ant-design/icons';
 import api from '../../../api';
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-
+import { Link } from 'react-router-dom';
 const Statistics = ({ userId }) => {
   const location = useLocation();
   const [statsData, setStatsData] = useState([]);
@@ -37,6 +37,7 @@ const Statistics = ({ userId }) => {
       title={<span><BarChartOutlined style={{ marginRight: 8 }} />Thống kê hoạt động</span>}
       style={{ borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', height: '100%' }}
     >
+      <Link to={`/user/posts/${userId}`}>Xem các bài viết đã đăng</Link>
       <Row gutter={[16, 16]}>
         <Col span={12}><Statistic title="Bài đăng" value={statsData[0].value || 0} /></Col>
         <Col span={12}><Statistic title="Lượt thích" value={statsData[1].value || 0} /></Col>

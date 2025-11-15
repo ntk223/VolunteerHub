@@ -14,7 +14,9 @@ export const PostsProvider = ({ children, postType }) => {
   const { user } = useAuth();
 
   const [posts, setPosts] = useState([]);
+  const [originalPosts, setOriginalPosts] = useState([]); // Lưu posts gốc để sorting
   const [loading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState('createdAt'); // 'createdAt' hoặc 'popularity'
 
   // 🔹 State quản lý comment theo postId
   const [commentsMap, setCommentsMap] = useState({});
@@ -30,14 +32,17 @@ export const PostsProvider = ({ children, postType }) => {
     
     setLoading(true);
     setPosts([]);
-    if (!postType) {
-      setLoading(false);
-      return;
-    }
 
     const fetchPosts = async () => {
       try {
+        if (!postType) {
+          const resAll = await api.get(`/post/`);
+          setOriginalPosts(resAll.data);
+          setPosts(resAll.data);
+          return;
+        }
         const res = await api.get(`/post/${postType}`);
+        setOriginalPosts(res.data);
         setPosts(res.data);
       } catch (err) {
         console.error(err);
@@ -65,7 +70,38 @@ export const PostsProvider = ({ children, postType }) => {
       }
     };
     fetchUserLikes();
-  }, [user?.id]);
+}, [user?.id]);
+
+  // 🔹 Sắp xếp bài viết
+  const sortPosts = useCallback((posts, sortType) => {
+    const sortedPosts = [...posts];
+    
+    if (sortType === 'popularity') {
+      return sortedPosts.sort((a, b) => {
+        const popularityA = (a.likeCount || 0) + (a.commentCount || 0);
+        const popularityB = (b.likeCount || 0) + (b.commentCount || 0);
+        return popularityB - popularityA; // Giảm dần
+      });
+    } else {
+      return sortedPosts.sort((a, b) => {
+        return new Date(b.createdAt) - new Date(a.createdAt); // Mới nhất trước
+      });
+    }
+  }, []);
+
+  // 🔹 Effect để sắp xếp khi sortBy thay đổi
+  useEffect(() => {
+    if (originalPosts.length > 0) {
+      const sorted = sortPosts(originalPosts, sortBy);
+      setPosts(sorted);
+    }
+  }, [sortBy, originalPosts, sortPosts]);
+
+  // 🔹 Hàm thay đổi kiểu sắp xếp
+  const changeSortBy = useCallback((newSortBy) => {
+    setSortBy(newSortBy);
+  }, []);
+
   // 🔹 Like / Unlike bài viết
   const toggleLike = useCallback(async (postId) => {
     try {
@@ -75,13 +111,14 @@ export const PostsProvider = ({ children, postType }) => {
         const { like, isLiked } = res.data; // Lấy dữ liệu mới
         let cnt = -1;
         if (isLiked) cnt = 1;
-        setPosts((prev) =>
-            prev.map((p) =>
+        setPosts((prev) => {
+            const updatedPosts = prev.map((p) =>
                 p.id === postId
                     ? { ...p, likeCount: p.likeCount + cnt } 
                     : p
-            )
-        );
+            );
+            return updatedPosts;
+        });
         setPostLikedbyUser((prev) => ({
         ...prev,
         [postId]: isLiked,
@@ -142,7 +179,14 @@ export const PostsProvider = ({ children, postType }) => {
         authorId: user.id,
         content,
       });
-
+      setPosts((prev) => {
+        const updatedPosts = prev.map((p) =>
+          p.id === postId
+            ? { ...p, commentCount: p.commentCount + 1 } 
+            : p
+        );
+        return updatedPosts;
+      });
       setCommentsMap((prev) => ({
         ...prev,
         [postId]: [...(prev[postId] || []), res.data],
@@ -157,6 +201,73 @@ export const PostsProvider = ({ children, postType }) => {
     }
   }, [newComments, user.id]);
 
+  // 🔹 Sửa bình luận
+  const editComment = useCallback(async (commentId, content) => {
+    try {
+      const res = await api.put(`/comment/${commentId}`, { content });
+      
+      // Cập nhật comment trong commentsMap
+      setCommentsMap((prev) => {
+        const updatedMap = { ...prev };
+        Object.keys(updatedMap).forEach((postId) => {
+          updatedMap[postId] = updatedMap[postId].map((comment) =>
+            comment.id === commentId ? res.data : comment
+          );
+        });
+        return updatedMap;
+      });
+      
+      return res.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }, []);
+
+  // 🔹 Xóa bình luận
+  const deleteComment = useCallback(async (commentId) => {
+    try {
+      await api.delete(`/comment/${commentId}`);
+      
+      // Xóa comment khỏi commentsMap và giảm commentCount
+      setCommentsMap((prev) => {
+        const updatedMap = { ...prev };
+        let postIdToUpdate = null;
+        
+        Object.keys(updatedMap).forEach((postId) => {
+          const commentIndex = updatedMap[postId].findIndex((comment) => comment.id === commentId);
+          if (commentIndex !== -1) {
+            updatedMap[postId] = updatedMap[postId].filter((comment) => comment.id !== commentId);
+            postIdToUpdate = postId;
+          }
+        });
+        
+        // Cập nhật commentCount trong posts
+        if (postIdToUpdate) {
+          setPosts((prev) => {
+            const updatedPosts = prev.map((p) =>
+              p.id === parseInt(postIdToUpdate)
+                ? { ...p, commentCount: Math.max(0, p.commentCount - 1) }
+                : p
+            );
+            // Cập nhật originalPosts
+            setOriginalPosts(updatedPosts);
+            // Nếu đang sắp xếp theo popularity, sắp xếp lại
+            if (sortBy === 'popularity') {
+              return sortPosts(updatedPosts, sortBy);
+            }
+            return updatedPosts;
+          });
+        }
+        
+        return updatedMap;
+      });
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }, []);
+
   const value = {
     posts,
     loading,
@@ -166,26 +277,34 @@ export const PostsProvider = ({ children, postType }) => {
     likeUsers,
     postLikedbyUser,
     isOpenedComments,
+    sortBy,
     toggleLike,
     openLikes,
     closeLikes,
     toggleComments,
     handleCommentChange,
     submitComment,
+    editComment,
+    deleteComment,
+    changeSortBy,
   };
 
   useEffect(() => {
       const onCreated = (e) => {
         const created = e.detail;
         if (!created) return;
-        // Nếu postType khớp hoặc đang fetch all, thêm vào đầu list
+        // Nếu postType khớp hoặc đang fetch all, thêm vào list và sắp xếp lại
         if (!postType || created.postType === postType) {
-          setPosts((prev) => [created, ...prev]);
+          setOriginalPosts((prev) => [created, ...prev]);
+          setPosts((prevPosts) => {
+            const newPosts = [created, ...prevPosts];
+            return sortPosts(newPosts, sortBy);
+          });
         }
       };
       window.addEventListener("post:created", onCreated);
       return () => window.removeEventListener("post:created", onCreated);
-    }, [postType]);
+    }, [postType, sortBy, sortPosts]);
 
   return <PostsContext.Provider value={value}>{children}</PostsContext.Provider>;
 };

@@ -1,5 +1,7 @@
-import { Input, Button, List, Avatar, Spin, Typography } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { Input, Button, List, Avatar, Spin, Typography, Dropdown, message, Modal } from "antd";
+import { UserOutlined, MoreOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { useState } from "react";
+import { useAuth } from "../../hooks/useAuth";
 
 const { Text } = Typography;
 
@@ -9,8 +11,67 @@ const CommentSection = ({
   newComment,     // 👈 Nhận từ props
   onCommentChange,  // 👈 Nhận từ props
   onSubmitComment,  // 👈 Nhận từ props
+  onEditComment,    // 👈 Thêm callback để sửa comment
+  onDeleteComment,  // 👈 Thêm callback để xóa comment
 }) => {
-  
+  const { user } = useAuth();
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editingContent, setEditingContent] = useState("");
+
+  const handleEditComment = (comment) => {
+    setEditingCommentId(comment.id);
+    setEditingContent(comment.content);
+  };
+
+  const handleSaveEdit = async (commentId) => {
+    try {
+      await onEditComment(commentId, editingContent);
+      setEditingCommentId(null);
+      setEditingContent("");
+      message.success("Cập nhật bình luận thành công");
+    } catch (error) {
+      message.error("Có lỗi xảy ra khi cập nhật bình luận");
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCommentId(null);
+    setEditingContent("");
+  };
+
+  const handleDeleteComment = (commentId) => {
+    Modal.confirm({
+      title: "Xóa bình luận",
+      content: "Bạn có chắc chắn muốn xóa bình luận này?",
+      okText: "Xóa",
+      cancelText: "Hủy",
+      okType: "danger",
+      onOk: async () => {
+        try {
+          await onDeleteComment(commentId);
+          message.success("Xóa bình luận thành công");
+        } catch (error) {
+          message.error("Có lỗi xảy ra khi xóa bình luận");
+        }
+      },
+    });
+  };
+
+  const getMenuItems = (comment) => [
+    {
+      key: "edit",
+      icon: <EditOutlined />,
+      label: "Sửa",
+      onClick: () => handleEditComment(comment),
+    },
+    {
+      key: "delete",
+      icon: <DeleteOutlined />,
+      label: "Xóa",
+      onClick: () => handleDeleteComment(comment.id),
+      danger: true,
+    },
+  ];
   
   return (
     <>
@@ -18,11 +79,52 @@ const CommentSection = ({
         dataSource={comments} // 👈 Dùng 'comments' từ props
         locale={{ emptyText: "Chưa có bình luận nào" }}
         renderItem={(c) => (
-          <List.Item>
+          <List.Item
+            actions={
+              user && user.id === c.author?.id ? [
+                <Dropdown
+                  menu={{ items: getMenuItems(c) }}
+                  trigger={['click']}
+                  placement="bottomRight"
+                >
+                  <Button type="text" icon={<MoreOutlined />} />
+                </Dropdown>
+              ] : []
+            }
+          >
             <List.Item.Meta
               avatar={<Avatar src={c.author?.avatarUrl} icon={<UserOutlined />} />}
               title={<Text strong>{c.author?.name || "Người dùng"}</Text>}
-              description={c.content}
+              description={
+                editingCommentId === c.id ? (
+                  <div>
+                    <Input.TextArea
+                      value={editingContent}
+                      onChange={(e) => setEditingContent(e.target.value)}
+                      rows={2}
+                      style={{ marginBottom: 8 }}
+                    />
+                    <div>
+                      <Button
+                        type="primary"
+                        size="small"
+                        onClick={() => handleSaveEdit(c.id)}
+                        style={{ marginRight: 8 }}
+                      >
+                        Lưu
+                      </Button>
+                      <Button
+                        size="small"
+                        onClick={handleCancelEdit}
+                      >
+                        Hủy
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  c.content
+                )
+              }
             />
           </List.Item>
         )}

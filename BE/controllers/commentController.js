@@ -16,6 +16,29 @@ class CommentController {
         const comments = await commentService.getCommentsByPostId(postId);
         res.status(StatusCodes.OK).json(comments);
     }
+
+    async updateComment(req, res) {
+        const { commentId } = req.params;
+        const { content } = req.body;
+        
+        try {
+            const updatedComment = await commentService.updateComment(commentId, content);
+            res.status(StatusCodes.OK).json(updatedComment);
+        } catch (error) {
+            res.status(StatusCodes.BAD_REQUEST).json({ error: error.message });
+        }
+    }
+
+    async deleteComment(req, res) {
+        const { commentId } = req.params;
+        
+        try {
+            const result = await commentService.deleteComment(commentId);
+            res.status(StatusCodes.OK).json(result);
+        } catch (error) {
+            res.status(StatusCodes.BAD_REQUEST).json({ error: error.message });
+        }
+    }
 }
 
 export const commentController = new CommentController();

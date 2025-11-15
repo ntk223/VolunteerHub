@@ -2,6 +2,7 @@ import { Spin } from 'antd';
 import { usePosts } from '../../hooks/usePosts';
 import PostList from '../../components/post/PostList';
 import LikesModal from '../../components/post/LikesModal';
+import PostSorter from '../../components/common/PostSorter';
 import { useAuth } from '../../hooks/useAuth';
 import './DiscussPage.css';
 
@@ -13,7 +14,9 @@ const DiscussPage = () => {
     posts,
     likeModalVisible,
     likeUsers,
+    sortBy,
     closeLikes,
+    changeSortBy,
   } = usePosts('discuss');
 
   // Xử lý khi đang tải hoặc chưa đăng nhập
@@ -28,7 +31,8 @@ const DiscussPage = () => {
   return (
     <div className="discuss-page-container"> 
       <div className="discuss-page-content"> 
-        <div className="post-list-wrapper"> 
+        <div className="post-list-wrapper">
+            <PostSorter sortBy={sortBy} onSortChange={changeSortBy} />
             <PostList posts={posts} />
         </div>
       </div>

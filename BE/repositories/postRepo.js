@@ -1,4 +1,4 @@
-import { Post, User, Event, Notification } from '../models/Model.js';
+import { Post, User, Event } from '../models/Model.js';
 import sequelize from '../config/database.js';
 import ApiError from '../utils/ApiError.js';
 import { StatusCodes } from "http-status-codes";
@@ -20,6 +20,7 @@ class PostRepository {
                 'postType',
                 'content',
                 'status',
+                "createdAt",
                 [sequelize.literal('(SELECT COUNT(*) FROM likes WHERE likes.post_id = Post.id and likes.deleted_at IS NULL)'), 'likeCount'],
                 [sequelize.literal('(SELECT COUNT(*) FROM comments WHERE comments.post_id = Post.id and comments.deleted_at IS NULL)'), 'commentCount'],
             ],
@@ -40,6 +41,8 @@ class PostRepository {
                 'id',
                 'postType',
                 'content',
+                'status',
+                "createdAt",
                 [sequelize.literal('(SELECT COUNT(*) FROM likes WHERE likes.post_id = Post.id and likes.deleted_at IS NULL)'), 'likeCount'],
                 [sequelize.literal('(SELECT COUNT(*) FROM comments WHERE comments.post_id = Post.id and comments.deleted_at IS NULL)'), 'commentCount'],
             ],
