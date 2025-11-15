@@ -7,20 +7,14 @@ const { TextArea } = Input;
 
 export default function CreateEventModal({ visible, onClose }) {
   const { user } = useAuth();
+  if (user.role !== "manager") {
+    return null;
+  }
+  const managerId = user.manager.id;
   const [loading, setLoading] = useState(false);
-  const [managerId, setManagerId] = useState(null);
 
   const [form] = Form.useForm();
 
-  // Lấy managerId từ API mới
-  useEffect(() => {
-    if (visible && user?.id) {
-      api
-        .get(`/manager/by-user/${user.id}`)
-        .then((res) => setManagerId(res.data.id))
-        .catch(() => message.error("Không tìm thấy manager cho user này!"));
-    }
-  }, [visible, user]);
 
   const categoryOptions = [
     { value: 1, label: "Môi trường" },
@@ -50,7 +44,7 @@ export default function CreateEventModal({ visible, onClose }) {
       setLoading(true);
       await api.post("/event", payload);
 
-      message.success("Tạo sự kiện thành công!");
+      message.success("Tạo sự kiện thành công hãy chờ phê duyệt!");
       form.resetFields();
       onClose();
     } catch (err) {

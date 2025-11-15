@@ -2,7 +2,6 @@ import express from "express";
 
 import { authRoute } from "./authRoute.js";
 import { userRoute } from "./userRoute.js";
-import { managerRoute } from "./managerRoute.js";   
 
 import { postRoute } from "./postRoute.js";
 import { eventRoute } from "./eventRoute.js";
@@ -18,7 +17,6 @@ const router = express.Router();
 // 1. Routes xác thực & người dùng
 router.use('/auth', authRoute)
 router.use('/user', userRoute)
-router.use('/manager', managerRoute)     
 router.use('/file', fileRoute)
 
 // 2. Routes tài nguyên chính

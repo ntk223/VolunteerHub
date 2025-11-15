@@ -1,9 +1,8 @@
-import {User, Post, Like, Comment} from "../models/Model.js"
+import {User} from "../models/Model.js"
 import ApiError from "../utils/ApiError.js"
 import { StatusCodes } from "http-status-codes"
 import { hashPassword, comparePassword } from "../utils/password.js";
 import { generateToken } from "../utils/jwt.js";
-import { Op, fn, col, literal } from "sequelize";
 
 import connection from "../config/databaseUsingSQL.js";
 class UserRepository {
