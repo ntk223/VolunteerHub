@@ -19,6 +19,14 @@ class CommentService {
     async getCommentsByPostId(postId) {
         return await commentRepo.getCommentsByPostId(postId);
     }
+
+    async updateComment(commentId, content) {
+        return await commentRepo.updateComment(commentId, content);
+    }
+
+    async deleteComment(commentId) {
+        return await commentRepo.deleteComment(commentId);
+    }
 }
 
 export const commentService = new CommentService();

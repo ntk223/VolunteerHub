@@ -1,12 +1,14 @@
-import { Spin } from 'antd'; 
 import { usePosts } from '../../hooks/usePosts';
 import PostList from '../../components/post/PostList';
 import LikesModal from '../../components/post/LikesModal';
 import PostSorter from '../../components/common/PostSorter';
 import { useAuth } from '../../hooks/useAuth';
-import './DiscussPage.css';
+import '../Feed/DiscussPage.css';
+import { useParams } from 'react-router-dom';
 
-const RecruitmentPage = () => {
+const UserPost = () => {    
+    const { id: userId } = useParams();
+    console.log("UserPost userId:", userId);
   const { user } = useAuth();
   
   // 2. GỌI HOOK LẤY TẤT CẢ DATA VÀ HÀM
@@ -17,13 +19,15 @@ const RecruitmentPage = () => {
     sortBy,
     closeLikes,
     changeSortBy,
-  } = usePosts('recruitment');
+  } = usePosts();
+  
+  const userPosts = posts?.filter(post => post.author?.id === Number(userId));
 
   // Xử lý khi đang tải hoặc chưa đăng nhập
-  if (!user || !posts) { 
+  if (!userPosts || userPosts.length === 0) { 
       return (
         <div className="ant-spin-container-full">
-            <Spin size="large" />
+            Người dùng này chưa có bài viết.
         </div>
       );
   }
@@ -33,7 +37,7 @@ const RecruitmentPage = () => {
       <div className="discuss-page-content"> 
         <div className="post-list-wrapper">
             <PostSorter sortBy={sortBy} onSortChange={changeSortBy} />
-            <PostList posts={posts} />
+            <PostList posts={userPosts} />
         </div>
       </div>
 
@@ -46,4 +50,4 @@ const RecruitmentPage = () => {
   );
 };
 
-export default RecruitmentPage;
+export default UserPost;

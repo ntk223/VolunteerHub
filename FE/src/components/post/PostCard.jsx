@@ -21,6 +21,8 @@ const PostCard = ({post}) => {
     handleCommentChange,
     submitComment,
     isOpenedComments,
+    editComment,
+    deleteComment,
   } = usePosts();
   const postId = post.id;
   const postComments = commentsMap[postId] || [];
@@ -100,6 +102,8 @@ const PostCard = ({post}) => {
             newComment={newComments[postId] || ""}
             onCommentChange={handleCommentChange}
             onSubmitComment={submitComment}
+            onEditComment={editComment}
+            onDeleteComment={deleteComment}
           />
         </div>
       )}

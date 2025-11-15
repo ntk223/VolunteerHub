@@ -11,6 +11,7 @@ import AdminPage from "./pages/Admin/AdminPage";
 import MyProfile from "./pages/Profile/MyProfile.jsx";
 import OtherProfile from "./pages/Profile/OtherProfile.jsx";
 import NotificationPage from "./pages/Notification/NotificationPage.jsx";
+import UserPost from "./pages/Profile/UserPost.jsx";
 import 'antd/dist/reset.css';
 import { ConfigProvider } from 'antd';
 
@@ -73,6 +74,14 @@ function AppInitializer() {
             path="notification"
             element={
               <NotificationPage />
+            }
+          />
+          <Route
+            path="user/posts/:id"
+            element={
+              <PostsProvider postType={null}>
+              <UserPost />
+              </PostsProvider>
             }
           />
           <Route
