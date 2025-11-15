@@ -33,6 +33,37 @@ class CommentRepository {
             attributes: ['id', 'name', 'avatarUrl'],
         }] });
     }
+
+    async updateComment(commentId, content) {
+        const comment = await Comment.findByPk(commentId);
+        if (!comment) {
+            throw new Error(`Comment with ID ${commentId} not found`);
+        }
+        
+        await comment.update({ content });
+        
+        // Lấy lại comment đã cập nhật cùng thông tin người dùng
+        const updatedComment = await Comment.findOne({
+            where: { id: commentId },
+            include: [{
+                model: User,
+                as: 'author',
+                attributes: ['id', 'name', 'avatarUrl'],
+            }],
+        });
+
+        return updatedComment;
+    }
+
+    async deleteComment(commentId) {
+        const comment = await Comment.findByPk(commentId);
+        if (!comment) {
+            throw new Error(`Comment with ID ${commentId} not found`);
+        }
+        
+        await comment.destroy();
+        return { success: true, message: 'Comment deleted successfully' };
+    }
 }
 
 export const commentRepo = new CommentRepository();

@@ -49,4 +49,52 @@ Router.post('/', validate(commentValidator.createComment), commentController.cre
  *         description: Danh sách bình luận
  */
 Router.get('/post/:postId', commentController.getCommentsByPostId)
+
+/**
+ * @swagger
+ * /api/comment/{commentId}:
+ *   put:
+ *     tags:
+ *       - Comments
+ *     summary: Cập nhật bình luận
+ *     parameters:
+ *       - in: path
+ *         name: commentId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               content:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Bình luận đã được cập nhật
+ */
+Router.put('/:commentId', commentController.updateComment)
+
+/**
+ * @swagger
+ * /api/comment/{commentId}:
+ *   delete:
+ *     tags:
+ *       - Comments
+ *     summary: Xóa bình luận
+ *     parameters:
+ *       - in: path
+ *         name: commentId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Bình luận đã được xóa
+ */
+Router.delete('/:commentId', commentController.deleteComment)
+
 export const commentRoute = Router;
