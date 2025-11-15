@@ -1,27 +1,40 @@
+import React from 'react';
 import { Layout } from "antd";
-import AppHeader  from "../../components/layout/AppHeader";
-import Sidebar from "../../components/layout/Sidebar";
-import SearchSidebar from "../../components/layout/SearchSidebar";
 import { Outlet } from "react-router-dom";
-import "./Home.css";
+import AppHeader from "../../components/layout/AppHeader";
+import Sidebar from "../../components/layout/Sidebar";
+import { SearchProvider } from "../../hooks/useSearch";
 
 const { Content } = Layout;
 
 const Home = () => {
   return (
-    <Layout className="main-layout">
-      <AppHeader />
+    <SearchProvider>
+      <Layout style={{ minHeight: "100vh", background: "#f5f5f5" }}>
 
-      <Layout className="content-layout">
-        <Sidebar />
+        {/* HEADER CỐ ĐỊNH */}
+        <AppHeader />
 
-        <Content className="main-content">
-          <Outlet />
-        </Content>
+        {/* PHẦN DƯỚI HEADER */}
+        <Layout style={{ marginTop: 64 }}> {/* để tránh bị header đè lên */}
+          
+          {/* SIDEBAR BÊN TRÁI */}
+          <Sidebar />
 
-        <SearchSidebar />
+          {/* NỘI DUNG CHÍNH */}
+          <Content
+            style={{
+              padding: "24px",
+              background: "#f5f5f5",
+              overflowY: "auto",
+              height: "calc(100vh - 64px)"
+            }}
+          >
+            <Outlet />
+          </Content>
+        </Layout>
       </Layout>
-    </Layout>
+    </SearchProvider>
   );
 };
 
