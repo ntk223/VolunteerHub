@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import api from "../api";
 import { useAuth } from "./useAuth.jsx";
+import { useSearch } from "./useSearch.jsx";
 
 const AdminContext = createContext();
 
@@ -8,6 +9,13 @@ export const useAdminData = () => useContext(AdminContext);
 
 export const AdminProvider = ({ children }) => {
   const { user, isAdmin } = useAuth();
+
+  const { 
+    searchResults, 
+    searchLoading, 
+    searchError, 
+    searchApprovedEvents 
+  } = useSearch();
 
   const [users, setUsers] = useState([]);
   const [events, setEvents] = useState([]);
@@ -118,6 +126,12 @@ export const AdminProvider = ({ children }) => {
     changeEventApprovalStatus,
     deleteEvent,
     changePostStatus,
+    
+    // 👈 THÔNG TIN TÌM KIẾM MỚI
+    searchResults,
+    searchLoading,
+    searchError,
+    searchApprovedEvents,
   };
 
   return (

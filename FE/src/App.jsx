@@ -14,6 +14,7 @@ import NotificationPage from "./pages/Notification/NotificationPage.jsx";
 import 'antd/dist/reset.css';
 import { ConfigProvider } from 'antd';
 
+
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
   console.log("ProtectedRoute isAuthenticated:", isAuthenticated);
@@ -83,6 +84,7 @@ function AppInitializer() {
               </AdminProvider>
             }
           />
+          
 
         </Route>
         
