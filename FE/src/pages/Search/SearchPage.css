@@ -1,0 +1,112 @@
+/*
+  ==============================================
+  SearchPage.css - Thiết kế trang tìm kiếm
+  ==============================================
+*/
+
+/* --- Tổng quan và Container --- */
+.search-page-container {
+  /* Đảm bảo div ngoài cùng của bạn có class này, hiện tại code React đang dùng style inline
+     nhưng nếu bạn chuyển style vào CSS, hãy thêm class này vào div bao ngoài. */
+  padding: 20px;
+  max-width: 1200px;
+  /* Giới hạn chiều rộng để nội dung không bị trải quá rộng */
+  margin: 0 auto;
+  /* Căn giữa container */
+  background-color: #f9f9f9;
+  /* Màu nền nhẹ cho toàn bộ trang */
+  min-height: 80vh;
+  /* Đảm bảo trang có chiều cao tối thiểu */
+}
+
+/* --- Tiêu đề và Tóm tắt Kết quả (renderSummary) --- */
+.search-page h2 {
+  color: #1890ff;
+  /* Màu xanh của Ant Design primary */
+  font-size: 24px;
+  font-weight: 600;
+  margin-top: 30px;
+  /* Thêm khoảng cách phía trên */
+  margin-bottom: 30px;
+  /* Thêm khoảng cách phía dưới */
+  color: #333;
+}
+
+.search-page p {
+  color: #555;
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.search-page p b {
+  color: #333;
+  /* Làm nổi bật từ khóa */
+}
+
+.search-page .ant-divider {
+  margin: 15px 0;
+  border-top: 1px solid #ddd;
+}
+
+/* --- Trạng thái (Đang tải/Chưa nhập từ khóa/Không tìm thấy) --- */
+.search-loading-container {
+  padding: 50px 0;
+  text-align: center;
+}
+
+.search-empty-state {
+  padding: 30px;
+  text-align: center;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  background-color: #fff;
+  margin-top: 20px;
+}
+
+/* --- Các Phần Kết Quả Cụ Thể --- */
+.search-page h3 {
+  color: #333;
+  font-size: 20px;
+  font-weight: 500;
+  margin-top: 25px;
+  margin-bottom: 15px;
+  border-left: 4px solid #1890ff;
+  /* Dùng đường viền nổi bật */
+  padding-left: 10px;
+}
+
+/* --- Danh sách Kết quả (ul) --- */
+.search-results-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* --- Mục Kết quả (li) --- */
+.search-results-list li {
+  padding: 12px 15px;
+  margin-bottom: 8px;
+  background-color: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.search-results-list li:hover {
+  background-color: #f0f8ff;
+  /* Hiệu ứng hover nhẹ */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.search-results-list li b {
+  color: #1890ff;
+  margin-right: 5px;
+  font-weight: 700;
+}
+
+.search-results-list li:last-child {
+  border-bottom: none;
+  /* Xóa đường viền nếu bạn dùng border bottom trong li */
+}

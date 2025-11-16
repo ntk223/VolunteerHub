@@ -1,0 +1,80 @@
+.search-sidebar {
+    width: 100%;
+    /* Điều chỉnh kích thước: Giảm max-width để cho nội dung chính có nhiều không gian hơn */
+    max-width: 350px; 
+    padding: 16px; /* Tăng padding để có không gian thở */
+    border: 1px solid #e0e0e0;
+    border-radius: 12px; /* Tăng bo tròn góc */
+    background: #fcfcfc;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Thêm bóng đổ nhẹ */
+    transition: all 0.3s ease;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 12px; /* Tăng padding */
+    margin-bottom: 15px; /* Tăng khoảng cách dưới */
+    border-radius: 8px; /* Tăng bo tròn */
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+
+.category-filter button {
+    margin-right: 8px; /* Tăng khoảng cách giữa các nút */
+    margin-bottom: 8px;
+    padding: 7px 14px; /* Tăng kích thước nút */
+    border-radius: 6px;
+    border: 1px solid #bbb;
+    background: #fff;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    font-size: 0.9em;
+}
+
+.category-filter button.active {
+    background: #4a5d6a; /* Màu tối hơn */
+    color: white;
+    border-color: #313e47;
+}
+
+.search-grid {
+    margin-top: 15px; /* Tăng khoảng cách trên */
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Tăng khoảng cách giữa các card */
+}
+
+.search-card {
+    padding: 10px 12px; /* Tăng padding card */
+    border-radius: 6px;
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.search-card .muted {
+    font-size: 0.8em; /* Giữ kích thước nhỏ */
+    color: #666;
+    margin-left: 6px;
+}
+
+.status.approved {
+    color: #16a34a; /* Xanh lá đậm */
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+.status.pending {
+    color: #f59e0b; /* Vàng hổ phách */
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+.tags {
+    font-size: 0.75em; /* Kích thước tags nhỏ hơn */
+    color: #777;
+    margin-top: 4px;
+    padding-top: 4px;
+    border-top: 1px dashed #eee;
+}
