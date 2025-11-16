@@ -2,7 +2,7 @@ import React from 'react';
 import { Spin, Divider } from "antd";
 import { useSearch } from '../../hooks/useSearch';
 import "./SearchPage.css"; // Đảm bảo đã import CSS
-
+import { Link } from 'react-router-dom';
 const SearchPage = () => {
   const {
     searchQuery = '',
@@ -85,7 +85,9 @@ const SearchPage = () => {
                   key={e.id}
                   // Xóa style inline và dùng CSS
                 >
-                  <b>[Sự kiện]</b> {e.title}
+                  <Link to={`/event/${e.id}`}>
+                    <b>[Sự kiện]</b> {e.title}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -104,7 +106,9 @@ const SearchPage = () => {
                   key={u.id}
                   // Xóa style inline và dùng CSS
                 >
-                  <b>[Người dùng]</b> {u.name}
+                  <Link to={`/profile/${u.id}`}>
+                    <b>[Người dùng]</b> {u.name}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -123,7 +127,9 @@ const SearchPage = () => {
                   key={p.id}
                   // Xóa style inline và dùng CSS
                 >
-                  <b>[Bài viết]</b> {p.title}
+                  <Link to={`/post/${p.id}`}>
+                    <b>[Bài viết]</b> {p.content}
+                  </Link>
                 </li>
               ))}
             </ul>

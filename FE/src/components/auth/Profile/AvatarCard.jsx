@@ -68,7 +68,7 @@ const AvatarCard = ({ user, updateUser, isMe }) => {
                       top: 0,
                       left: 0,
                       width: '100%',
-                      height: '85%',
+                      height: '94%',
                       background: 'rgba(0, 0, 0, 0.5)',
                       display: 'flex',
                       justifyContent: 'center',
