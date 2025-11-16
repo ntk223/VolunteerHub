@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useSearch } from "../../hooks/useSearch";
-import { Layout, Input, Spin } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom"; // 👈 THÊM HOOK NAVIGATE
+import { Layout, Input, Spin, Button } from "antd";
+import { SearchOutlined, EyeOutlined } from "@ant-design/icons";
+import { useNavigate, Link } from "react-router-dom"; // 👈 THÊM HOOK NAVIGATE
 import "./SearchSidebar.css";
 
 const { Sider } = Layout;
@@ -17,76 +17,119 @@ const SearchSidebar = () => {
     searchLoading,
     searchError,
     handleSearch,
+    setSearchCategory,
   } = useSearch();
 
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [displayLimit, setDisplayLimit] = useState(10);
   const navigate = useNavigate(); // 👈 KHỞI TẠO NAVIGATE
+
+  // Reset display limit when search query changes
+  const resetDisplayLimit = () => setDisplayLimit(10);
 
   // Hàm xử lý khi người dùng gõ
   const handleInputChange = (e) => {
     setSearchQuery(e.target.value);
-    setShowDropdown(e.target.value.trim() !== "");
+    resetDisplayLimit(); // Reset limit when search query changes
+    // Tự động tìm kiếm khi người dùng gõ (debounce có thể được thêm ở useSearch hook)
+    // if (e.target.value.trim() !== "") {
+    //   handleSearch();
+    // }
   };
 
   // Xử lý khi nhấn Enter (Ant Design sử dụng onPressEnter)
   const handlePressEnter = () => {
     handleSearch();
-    setShowDropdown(false);
   };
 
-  // 💡 HÀM XỬ LÝ CHUYỂN HƯỚNG KHI CLICK VÀO ITEM
-  const handleNavigate = (type, id) => {
-    let path = '';
+  const highlightText = (text, query) => {
+    if (!query) return text;
 
-    // Xác định đường dẫn dựa trên loại kết quả
-    switch (type) {
-      case 'user':
-        path = `/profile/${id}`;
-        break;
-      case 'event':
-        path = `/event/${id}`; // Giả định đường dẫn chi tiết sự kiện
-        break;
-      case 'post':
-        path = `/post/${id}`; // Giả định đường dẫn chi tiết bài viết
-        break;
-      default:
-        return;
-    }
-
-    navigate(path);
-    setShowDropdown(false); // Đóng dropdown
-    setSearchQuery(''); // Xóa từ khóa tìm kiếm
+    const regex = new RegExp(`(${query})`, "gi");
+    return text.replace(regex, `<span class="highlight">$1</span>`);
   };
 
-  // Hiển thị kết quả autocomplete
-  const renderDropdown = () => {
-    if (!showDropdown || searchQuery.trim() === "" || searchLoading) return null;
+
+
+  // Hiển thị kết quả tìm kiếm
+  const renderResults = () => {
+    if (searchQuery.trim() === "" && !searchLoading) return null;
 
     // 💡 Xây dựng danh sách kết quả kèm theo thông tin loại (type)
     const items = [
       ...searchApprovedEvents.map(item => ({ ...item, resultType: 'Sự kiện', type: 'event' })),
-      ...searchResults.users.map(item => ({ ...item, resultType: 'Người dùng', type: 'user' })),
+      ...searchResults.users.map(item => ({ ...item, resultType: 'Người dùng', type: 'profile' })),
       ...searchResults.posts.map(item => ({ ...item, resultType: 'Bài viết', type: 'post' })),
     ];
 
-    const limitedItems = items.slice(0, 5);
+    const displayedItems = items.slice(0, displayLimit);
+    const hasMore = items.length > displayLimit;
 
-    if (limitedItems.length === 0) {
-      return <div className="dropdown-item muted">Không tìm thấy kết quả</div>;
+    if (!searchLoading && items.length === 0 && searchQuery.trim() !== "") {
+      return (
+        <div className="search-results">
+          <div className="no-results">
+            <span>🔍</span>
+            <p>Không tìm thấy kết quả phù hợp</p>
+            <small>Thử tìm kiếm với từ khóa khác</small>
+          </div>
+        </div>
+      );
     }
 
-    return limitedItems.map((item) => (
-      <div
-        key={item.id}
-        className="dropdown-item"
-        // GẮN SỰ KIỆN CLICK VÀO ĐÂY
-        onClick={() => handleNavigate(item.type, item.id)}
-      >
-        <span className="result-type-label">[{item.resultType}]</span>
-        {item.name || item.title || `ID: ${item.id}`}
-        {item.approvalStatus === "approved" && <span className="approved-badge">✔</span>}
-      </div>
-    ));
+    if (items.length > 0) {
+      return (
+        <div className="search-results">
+          <div className="results-header">
+            <h4>Kết quả tìm kiếm ({items.length})</h4>
+            <small>Hiển thị {displayedItems.length} / {items.length} kết quả</small>
+          </div>
+          <div className="results-list">
+            {displayedItems.map((item) => (
+              <Link
+                key={`${item.type}-${item.id}`}
+                className="result-item"
+                to={`/${item.type}/${item.id}`}
+                onClick={() => {
+                  setSearchQuery('');
+                  resetDisplayLimit();
+                }}
+              >
+                <span className="result-type-label">{item.resultType}</span>
+                <span
+                  className="result-title"
+                  dangerouslySetInnerHTML={{
+                    __html: highlightText(
+                      item.name || item.title || item.content || `ID: ${item.id}`,
+                      searchQuery
+                    ),
+                  }}
+                ></span>
+
+                {item.approvalStatus === "approved" && (
+                  <span className="approved-badge">✓</span>
+                )}
+              </Link>
+            ))}
+          </div>
+          
+          {hasMore && (
+            <div className="show-more-container">
+              <Button 
+                type="primary"
+                icon={<EyeOutlined />}
+                className="show-more-btn"
+                onClick={() => setDisplayLimit(prev => prev + 10)}
+                size="small"
+              >
+                Hiển thị thêm ({items.length - displayLimit})
+              </Button>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    return null;
   };
 
   return (
@@ -105,20 +148,16 @@ const SearchSidebar = () => {
 
       <div className="search-input-container">
         <Input
-          placeholder="Tìm kiếm..."
+          placeholder="Tìm kiếm sự kiện, người dùng, bài viết..."
           prefix={<SearchOutlined />}
           allowClear
           style={{ borderRadius: 8 }}
           value={searchQuery}
           onChange={handleInputChange}
           onPressEnter={handlePressEnter}
+          onClear={() => setSearchQuery('')}
           className="search-input"
         />
-
-        <div className="dropdown">
-          {searchLoading && <div className="dropdown-item loading">Đang tải...</div>}
-          {!searchLoading && renderDropdown()}
-        </div>
       </div>
 
       <div className="category-select">
@@ -134,13 +173,19 @@ const SearchSidebar = () => {
         </select>
       </div>
 
+      {/* Loading state */}
       {searchLoading && (
-        <div style={{ marginTop: 15, textAlign: "center" }}>
+        <div className="loading-container">
           <Spin size="small" />
+          <span style={{ marginLeft: 8, color: '#64748b' }}>Đang tìm kiếm...</span>
         </div>
       )}
 
+      {/* Error state */}
       {searchError && <div className="error">{searchError}</div>}
+
+      {/* Search results */}
+      {renderResults()}
     </Sider>
   );
 };

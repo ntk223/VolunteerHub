@@ -145,7 +145,7 @@ Router.delete('/:id', authorize(['admin']), userController.deleteUser)
  *       200:
  *         description: Danh sách users
  */
-Router.get('/', authorize(['admin']), userController.getAllUsers)
+Router.get('/', userController.getAllUsers)
 
 /**
  * @swagger

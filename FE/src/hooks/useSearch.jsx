@@ -36,8 +36,8 @@ export const SearchProvider = ({ children }) => {
 
                 const fetchedData = {
                     events: eventsRes.data || [],
-                    users: usersRes.data || [],
-                    posts: postsRes.data || [],
+                    users: usersRes.data.filter(user => user.status === "active") || [],
+                    posts: postsRes.data.filter(post => post.status === "approved") || [],
                 };
 
                 setAllLocalData(fetchedData);
@@ -89,11 +89,11 @@ export const SearchProvider = ({ children }) => {
         }
         
         if (category === "all" || category === "users") {
-            users = filterBasic(allLocalData.users, ['name', 'username']);
+            users = filterBasic(allLocalData.users, ['name']);
         }
 
         if (category === "all" || category === "posts") {
-            posts = filterBasic(allLocalData.posts, ['title', 'content']);
+            posts = filterBasic(allLocalData.posts, ['content']);
         }
         
         setSearchResults({ events, users, posts });
