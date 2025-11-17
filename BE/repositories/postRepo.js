@@ -81,5 +81,15 @@ class PostRepository {
         await post.destroy();
         return post;
     }
+
+    async updatePostContent(postId, newContent) {
+        const post = await Post.findByPk(postId);
+        if (!post) {
+            throw new ApiError(StatusCodes.NOT_FOUND, 'Post not found');
+        }
+        post.content = newContent;
+        await post.save();
+        return post;
+    }
 }
 export const postRepo = new PostRepository();

@@ -35,7 +35,7 @@ export const SearchProvider = ({ children }) => {
                 ]);
 
                 const fetchedData = {
-                    events: eventsRes.data || [],
+                    events: eventsRes.data.filter(event => event.approvalStatus === "approved") || [],
                     users: usersRes.data.filter(user => user.status === "active") || [],
                     posts: postsRes.data.filter(post => post.status === "approved") || [],
                 };

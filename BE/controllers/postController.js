@@ -30,6 +30,13 @@ class PostController {
         const deletedPost = await postService.deletePost(postId);
         res.status(StatusCodes.OK).json(deletedPost);
     }
+
+    async updatePostContent(req, res) {
+        const postId = req.params.id;
+        const { content } = req.body;
+        const updatedPost = await postService.updatePostContent(postId, content);
+        res.status(StatusCodes.OK).json(updatedPost);
+    }
 }
 
 export const postController = new PostController()
