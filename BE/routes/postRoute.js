@@ -58,6 +58,7 @@ Router.post('/', validate(postValidator.createPost), postController.createPost)
  */
 Router.get("/:postType", postController.getPostByType)
 
+Router.put("/:id", postController.updatePostContent)
 // route for admin only
 /**
  * @swagger

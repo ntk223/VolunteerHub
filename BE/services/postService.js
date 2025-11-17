@@ -30,6 +30,10 @@ class PostService {
     async deletePost(postId) {
         return await postRepo.deletePost(postId);
     }
+
+    async updatePostContent(postId, newContent) {
+        return await postRepo.updatePostContent(postId, newContent);
+    }
 }
 
 

@@ -92,7 +92,9 @@ export const PostsProvider = ({ children, postType }) => {
   // 🔹 Effect để sắp xếp khi sortBy thay đổi
   useEffect(() => {
     if (originalPosts.length > 0) {
-      const sorted = sortPosts(originalPosts, sortBy);
+      // setOriginalPosts(posts)
+
+      const sorted = sortPosts(posts, sortBy);
       setPosts(sorted);
     }
   }, [sortBy, originalPosts, sortPosts]);
@@ -117,6 +119,7 @@ export const PostsProvider = ({ children, postType }) => {
                     ? { ...p, likeCount: p.likeCount + cnt } 
                     : p
             );
+            // setOriginalPosts(updatedPosts);
             return updatedPosts;
         });
         setPostLikedbyUser((prev) => ({
@@ -185,6 +188,7 @@ export const PostsProvider = ({ children, postType }) => {
             ? { ...p, commentCount: p.commentCount + 1 } 
             : p
         );
+        // setOriginalPosts(updatedPosts);
         return updatedPosts;
       });
       setCommentsMap((prev) => ({
@@ -252,10 +256,6 @@ export const PostsProvider = ({ children, postType }) => {
             );
             // Cập nhật originalPosts
             setOriginalPosts(updatedPosts);
-            // Nếu đang sắp xếp theo popularity, sắp xếp lại
-            if (sortBy === 'popularity') {
-              return sortPosts(updatedPosts, sortBy);
-            }
             return updatedPosts;
           });
         }
@@ -265,6 +265,24 @@ export const PostsProvider = ({ children, postType }) => {
     } catch (error) {
       console.error(error);
       throw error;
+    }
+  }, []);
+
+  const updatePostContent = useCallback(async (postId, newContent) => {
+    try {
+      await api.put(`/post/${postId}`, { content: newContent });
+      setPosts((prev) => {
+        const updatedPosts = prev.map((p) =>
+          p.id === postId
+            ? { ...p, content: newContent } 
+            : p
+        );
+        // setOriginalPosts(updatedPosts);
+        return updatedPosts;
+      });
+    }
+    catch (error) {
+      console.error(error);
     }
   }, []);
 
@@ -287,6 +305,7 @@ export const PostsProvider = ({ children, postType }) => {
     editComment,
     deleteComment,
     changeSortBy,
+    updatePostContent,
   };
 
   useEffect(() => {
