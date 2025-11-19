@@ -6,7 +6,8 @@ import {
   BellOutlined, 
   UserOutlined, 
   PlusCircleOutlined,
-  CalendarOutlined // icon cho create event
+  CalendarOutlined, 
+  SettingOutlined
 } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
 import CreatePostModal from "../createPost/CreatePostModal"; 
@@ -50,6 +51,12 @@ const Sidebar = () => {
       if (!user) return navigate("/login");
       setShowCreateEvent(true);
     }
+
+    // thêm điều hướng cho trang quản lý sự kiện
+    if (e.key === "manage-events") {
+      if (!user) return navigate("/login");
+      navigate("/manage-events");
+    }
   };
 
   // Danh sách items của Menu
@@ -72,6 +79,14 @@ const Sidebar = () => {
       key: "create-event",
       icon: <CalendarOutlined style={{ fontSize: 24 }} />,
       label: <span className="menu-label">Create Event</span>,
+    });
+  }
+
+  if (user?.role === "manager") {
+    menuItems.push({
+      key: "manage-events", 
+      icon: <SettingOutlined style={{ fontSize: 24 }} />,
+      label: <span className="menu-label">Manage Event</span>,
     });
   }
 
@@ -128,6 +143,7 @@ const Sidebar = () => {
         visible={showCreateEvent}
         onClose={() => setShowCreateEvent(false)}
       />}
+
     </>
   );
 };
