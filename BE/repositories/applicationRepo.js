@@ -1,4 +1,4 @@
-import {Application} from "../models/Model.js";
+import {Application, User, Volunteer} from "../models/Model.js";
 import ApiError from "../utils/ApiError.js";
 import {StatusCodes} from "http-status-codes";
 class ApplicationRepository {
@@ -7,7 +7,22 @@ class ApplicationRepository {
     }
 
     async getApplicationsByEventId(eventId) {
-        return await Application.findAll({ where: { eventId } });
+        return await Application.findAll({ 
+            include : [
+                { 
+                    model: Volunteer, 
+                    as: 'volunteer', 
+                    include: [
+                    { 
+                        model: User, 
+                        as: 'user', 
+                        attributes: ['id', 'name', 'email']
+                    }
+                ] 
+                }
+            ],
+            where: { eventId } 
+        });
     }
 
     async changeApplicationStatus(applicationId, status) {
