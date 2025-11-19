@@ -16,6 +16,7 @@ import NotificationPage from "./pages/Notification/NotificationPage.jsx";
 import UserPost from "./pages/Profile/UserPost.jsx";
 import OnePost from "./pages/Feed/OnePost.jsx";
 import SearchPage from "./pages/Search/SearchPage.jsx";
+import ManageEvent from "./pages/ManageEvent/ManageEvent.jsx";
 
 import 'antd/dist/reset.css';
 import { ConfigProvider } from 'antd';
@@ -43,6 +44,11 @@ function AppInitializer() {
                             </ProtectedRoute>
                         }
                     >
+                        {/* Manager events page */}
+                        <Route
+                            path="manage-events"
+                            element={<ManageEvent />}
+                        />
                         <Route index element={<Navigate to="discuss" replace />} />
                         <Route
                             path="discuss"
