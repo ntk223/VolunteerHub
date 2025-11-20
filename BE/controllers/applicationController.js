@@ -34,5 +34,11 @@ class ApplicationController {
         const cancelledApplication = await applicationService.cancelApplication(applicationId);
         res.status(StatusCodes.OK).json(cancelledApplication);
     }
+
+    async getApplcationByVolunteerId(req, res) {
+        const volunteerId = req.params.volunteerId;
+        const applications = await applicationService.getApplcationByVolunteerId(volunteerId);
+        res.status(StatusCodes.OK).json(applications);
+    }
 }
 export const applicationController = new ApplicationController();
