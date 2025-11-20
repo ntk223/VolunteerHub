@@ -1,4 +1,4 @@
-import {Application, User, Volunteer} from "../models/Model.js";
+import {Application, User, Volunteer, Event} from "../models/Model.js";
 import ApiError from "../utils/ApiError.js";
 import {StatusCodes} from "http-status-codes";
 class ApplicationRepository {
@@ -26,7 +26,28 @@ class ApplicationRepository {
     }
 
     async changeApplicationStatus(applicationId, status) {
-        const application = await Application.findByPk(applicationId);
+        console.log(applicationId, status);
+        const application = await Application.findOne({ 
+            include : [
+                { 
+                    model: Volunteer, 
+                    as: 'volunteer', 
+                    include: [
+                    { 
+                        model: User, 
+                        as: 'user', 
+                        attributes: ['id', 'name', 'email']
+                    }
+                ] 
+                },
+                {
+                    model: Event,
+                    as: 'event',
+                    attributes: ['id', 'title']
+                }
+            ],
+            where: { id: applicationId } 
+        });
         if (application) {
             application.status = status;
             await application.save();
@@ -45,6 +66,30 @@ class ApplicationRepository {
             return application;
         }
         throw new ApiError(StatusCodes.NOT_FOUND, "Application not found");
+    }
+
+    async getApplcationByVolunteerId(volunteerId) {
+        return await Application.findAll({
+            include : [
+                { 
+                    model: Volunteer, 
+                    as: 'volunteer', 
+                    include: [
+                    { 
+                        model: User, 
+                        as: 'user', 
+                        attributes: ['id', 'name', 'email']
+                    }
+                ] 
+                },
+                {
+                    model: Event,
+                    as: 'event',
+                    attributes: ['id', 'title']
+                }
+            ],
+            where: { volunteerId }
+        });
     }
 }
 

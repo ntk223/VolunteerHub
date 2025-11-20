@@ -93,4 +93,6 @@ Router.patch('/:id', applicationController.changeApplicationStatus)
  *         description: Đơn đã được hủy
  */
 Router.patch('/:id/cancel', applicationController.cancelApplication)
+
+Router.get('/volunteer/:volunteerId', applicationController.getApplcationByVolunteerId);
 export const applicationRoute = Router;
