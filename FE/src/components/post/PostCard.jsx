@@ -10,7 +10,7 @@ import {
 } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import CommentSection from "./CommentSection";
-import PostImages from "./PostImages";
+import PostMedia from "./PostMedia";
 import { usePosts } from "../../hooks/usePosts";
 import { useAuth } from "../../hooks/useAuth";
 import { Link } from "react-router-dom";
@@ -131,7 +131,7 @@ const PostCard = ({post}) => {
         )}
       </div>
 
-      <PostImages images={post.images} />
+      <PostMedia media={post.media} />
 
       {/* --- Stats --- */}
       <div className="fb-post-stats" style={{ marginTop: 8, display: 'flex', justifyContent: 'space-between', cursor: 'pointer' }}>

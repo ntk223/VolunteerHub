@@ -5,6 +5,7 @@ const createPostSchema = Joi.object({
   content: Joi.string().min(5).required(),
   eventId: Joi.number().integer(),
   authorId: Joi.number().integer().required(),
+  media: Joi.array().items(Joi.string().uri()),
 });
 
 

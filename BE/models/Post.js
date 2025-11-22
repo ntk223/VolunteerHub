@@ -28,7 +28,7 @@ const Post = sequelize.define("Post", {
     },
     content: { type: DataTypes.TEXT, allowNull: false },
     status: { type: DataTypes.ENUM('pending', 'approved', 'rejected'), allowNull: false, defaultValue: 'pending' },
-    imageUrl: { type: DataTypes.JSON, allowNull: true },
+    media: { type: DataTypes.JSON, allowNull: true },
     createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
     updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
 

@@ -1,4 +1,5 @@
 import { Modal, Avatar } from "antd";
+import PostMedia from "../post/PostMedia";
 const PostPreview = ({selectedPost, isModalOpen, setIsModalOpen }) => {
     return (
         <Modal
@@ -30,6 +31,7 @@ const PostPreview = ({selectedPost, isModalOpen, setIsModalOpen }) => {
                 }}
               />
             )}
+            {selectedPost.media && <PostMedia media={selectedPost.media} />}
           </div>
         )}
       </Modal>

@@ -1,181 +1,196 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { Modal, Form, Input, Select, message, Spin } from "antd";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react"; // <--- Thêm useMemo
+import { Modal, Form, Input, Select, message, Spin, Upload } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import api from "../../api";
 import { useAuth } from "../../hooks/useAuth";
 
 const { TextArea } = Input;
 
+const normalizeEvent = (e) => ({
+  id: e.id,
+  title: e.title,
+  managerId: e.manager_id,
+  approvalStatus: e.approval_status ?? e.approvalStatus ?? e.status,
+});
+
 export default function CreatePostModal({ visible, onClose }) {
   const { user } = useAuth();
-  const role = user?.role;
+  const [form] = Form.useForm();
 
   const [loading, setLoading] = useState(false);
   const [events, setEvents] = useState([]);
-  const [searching, setSearching] = useState(false);
+  const [fetchingEvents, setFetchingEvents] = useState(false);
+  const [fileList, setFileList] = useState([]);
+  const [postType, setPostType] = useState("discuss");
 
-  const [form] = Form.useForm();
-  const searchRef = useRef(null);
+  const searchTimeoutRef = useRef(null);
   const mountedRef = useRef(true);
 
-  const allowedTypes =
-    role === "manager"
+  const isManager = user?.role === "manager";
+
+  // --- FIX: Dùng useMemo để tránh tạo lại mảng này mỗi lần render ---
+  const allowedTypes = useMemo(() => {
+    return isManager
       ? [
-          { label: "Discussion", value: "discuss" },
-          { label: "Recruitment", value: "recruitment" },
+          { label: "Thảo luận (Discussion)", value: "discuss" },
+          { label: "Tuyển dụng (Recruitment)", value: "recruitment" },
         ]
-      : [{ label: "Discussion", value: "discuss" }];
+      : [{ label: "Thảo luận (Discussion)", value: "discuss" }];
+  }, [isManager]);
 
-  // chuẩn hoá event
-  const normalizeEvent = (e) => ({
-    id: e.id,
-    title: e.title,
-    managerId: e.manager_id,
-    approvalStatus: e.approval_status ?? e.approvalStatus ?? e.status,
-    raw: e,
-  });
+  // --- Fetch Events ---
+  const fetchEvents = useCallback(async (searchText = "") => {
+    setFetchingEvents(true);
+    try {
+      const currentType = form.getFieldValue("postType") || "discuss";
+      let list = [];
 
-  // Hàm lọc event approved khi postType = recruitment
-  const applyApprovalFilter = (list, postType) => {
-    if (postType !== "recruitment") return list;
-
-    return list.filter(
-      (ev) =>
-        (ev.approvalStatus || "").toLowerCase() === "approved"
-    );
-  };
-
-  /** FETCH TẤT CẢ EVENT */
-  const fetchAllEvents = useCallback(
-    async (search = "") => {
-      setSearching(true);
-      try {
-        const url = search
-          ? `/event?search=${encodeURIComponent(search)}`
-          : `/event`;
-
-        const res = await api.get(url);
-        let list = Array.isArray(res.data) ? res.data.map(normalizeEvent) : [];
-
-        // lọc approved nếu là tuyển dụng
-        list = applyApprovalFilter(list, form.getFieldValue("postType"));
-
-        if (mountedRef.current) setEvents(list);
-      } finally {
-        if (mountedRef.current) setSearching(false);
-      }
-    },
-    [form]
-  );
-
-  /** FETCH EVENT CỦA MANAGER */
-  const fetchManagerEvents = useCallback(
-    async (search = "") => {
-      setSearching(true);
-      try {
+      if (currentType === "recruitment") {
         const res = await api.get(`/event/manager/${user.id}`);
-        let list = Array.isArray(res.data) ? res.data.map(normalizeEvent) : [];
-
-        if (search.trim() !== "") {
-          const q = search.trim().toLowerCase();
-          list = list.filter((ev) =>
-            (ev.title || "").toLowerCase().includes(q)
-          );
+        list = Array.isArray(res.data) ? res.data.map(normalizeEvent) : [];
+        if (searchText) {
+          const lower = searchText.toLowerCase();
+          list = list.filter((e) => e.title.toLowerCase().includes(lower));
         }
-
-        // lọc approved
-        list = applyApprovalFilter(list, "recruitment");
-
-        if (mountedRef.current) setEvents(list);
-      } finally {
-        if (mountedRef.current) setSearching(false);
+        list = list.filter((ev) => (ev.approvalStatus || "").toLowerCase() === "approved");
+      } else {
+        // const url = searchText
+        const res = await api.get(`/event`); 
+        list = Array.isArray(res.data) ? res.data.filter(((e) => e.approvalStatus == "approved")).map(normalizeEvent) : [];
+        const lower = searchText.toLowerCase().trim();
+              // Dùng includes để lọc title
+        list = list.filter((e) => e.title.toLowerCase().includes(lower));
       }
-    },
-    [user?.id]
-  );
 
-  /** postType state */
-  const [postType, setPostType] = useState(allowedTypes[0].value);
+      if (mountedRef.current) {
+        setEvents(list);
+      }
+    } catch (error) {
+      console.error("Lỗi lấy danh sách sự kiện:", error);
+    } finally {
+      if (mountedRef.current) setFetchingEvents(false);
+    }
+  }, [form, user.id]); // allowedTypes không cần thiết ở đây vì ta đọc từ form
 
-  /** INIT LOAD */
+  // --- Effect Init ---
   useEffect(() => {
-    fetchAllEvents();
+    mountedRef.current = true;
+    if (visible) {
+      // Đặt giá trị mặc định khi mở modal
+      const defaultType = allowedTypes[0].value;
+      setPostType(defaultType);
+      form.setFieldsValue({ postType: defaultType });
+      
+      // Gọi fetch ngay lập tức
+      fetchEvents();
+    }
+
     return () => {
       mountedRef.current = false;
-      if (searchRef.current) clearTimeout(searchRef.current);
+      if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
     };
-  }, []);
+    // FIX: dependency array an toàn vì allowedTypes đã được memoized
+  }, [visible, fetchEvents, allowedTypes, form]); 
 
-  /** Reload event khi đổi postType */
-  useEffect(() => {
-    if (postType === "recruitment") {
-      fetchManagerEvents();
-    } else {
-      fetchAllEvents();
+  // ... (Phần còn lại của component giữ nguyên như cũ)
+  
+  const handlePostTypeChange = (value) => {
+    setPostType(value);
+    form.setFieldsValue({ eventId: null });
+    setEvents([]);
+    setTimeout(() => fetchEvents(), 0);
+  };
+
+  const handleSearch = (value) => {
+    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+    searchTimeoutRef.current = setTimeout(() => {
+      fetchEvents(value);
+    }, 400);
+  };
+
+  const uploadSingleFile = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file.originFileObj);
+    formData.append("userId", user.id);
+    try {
+      const res = await api.post("/file/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      return res.data?.file?.url;
+    } catch (err) {
+      console.error(`Lỗi upload file ${file.name}:`, err);
+      message.error(`Không thể upload file: ${file.name}`);
+      return null;
     }
-  }, [postType]);
+  };
 
-  /** SEARCH DROPDOWN */
-  const handleSearch = useCallback(
-    (text) => {
-      form.setFieldsValue({ eventSearchText: text });
-
-      if (searchRef.current) clearTimeout(searchRef.current);
-
-      searchRef.current = setTimeout(() => {
-        if (postType === "recruitment") {
-          fetchManagerEvents(text);
-        } else {
-          fetchAllEvents(text);
-        }
-      }, 300);
-    },
-    [postType]
-  );
-
-  /** FILTER LOCAL BY SEARCH */
-  const filteredEvents = useMemo(() => {
-    const search = (form.getFieldValue("eventSearchText") || "")
-      .trim()
-      .toLowerCase();
-
-    let list = [...events];
-
-    if (search) {
-      list = list.filter((ev) =>
-        (ev.title || "").toLowerCase().includes(search)
-      );
-    }
-
-    return list.slice(0, 40);
-  }, [events, form]);
-
-  /** SUBMIT */
   const handleSubmit = async (values) => {
     setLoading(true);
     try {
+      const uploadPromises = fileList.map((file) => uploadSingleFile(file));
+      const results = await Promise.all(uploadPromises);
+      const uploadedMediaUrls = results.filter((url) => url !== null);
+
+      if (fileList.length > 0 && uploadedMediaUrls.length === 0) {
+        throw new Error("Tất cả file đều upload thất bại. Vui lòng thử lại.");
+      }
+
       const payload = {
         authorId: user.id,
         content: values.content,
         postType: values.postType,
         eventId: values.eventId || null,
+        media: uploadedMediaUrls,
       };
 
       const res = await api.post("/post", payload);
 
       if (res.data?.status === "approved") {
-        message.success("Đăng bài thành công");
+        message.success("Đăng bài thành công!");
         window.dispatchEvent(new CustomEvent("post:created", { detail: res.data }));
       } else {
         message.info("Bài viết đang chờ duyệt.");
       }
-
-      form.resetFields();
-      setPostType(allowedTypes[0].value);
-      onClose();
+      handleClose();
     } catch (err) {
-      message.error(err?.response?.data?.message || "Không thể tạo bài viết");
+      console.error(err);
+      message.error(err.message || "Có lỗi xảy ra khi tạo bài viết");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleClose = () => {
+    form.resetFields();
+    setFileList([]);
+    setPostType(allowedTypes[0].value);
+    onClose();
+  };
+
+  const handlePreview = async (file) => {
+    let src = file.url || file.preview;
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj);
+        reader.onload = () => resolve(reader.result);
+      });
+      file.preview = src;
+    }
+    if (file.type?.startsWith("video/") || file.originFileObj?.type?.startsWith("video/")) {
+      const win = window.open("", "_blank");
+      win.document.write(`
+        <html><body style='margin:0;display:flex;align-items:center;justify-content:center;background:black;'>
+          <video src="${src}" controls autoplay style="max-width:100%;max-height:100vh;"></video>
+        </body></html>
+      `);
+    } else {
+      const imgWindow = window.open(src);
+      if (imgWindow) {
+        const image = new Image();
+        image.src = src;
+        imgWindow.document.write(image.outerHTML);
+      }
     }
   };
 
@@ -183,40 +198,33 @@ export default function CreatePostModal({ visible, onClose }) {
     <Modal
       title="Tạo bài viết mới"
       open={visible}
-      onCancel={onClose}
-      okText="Đăng"
+      onCancel={handleClose}
+      okText="Đăng bài"
+      cancelText="Hủy"
       onOk={() => form.submit()}
       confirmLoading={loading}
-      destroyOnHidden
+      destroyOnClose
+      maskClosable={!loading}
+      width={600}
     >
       <Form
         form={form}
         layout="vertical"
         onFinish={handleSubmit}
         initialValues={{ postType: allowedTypes[0].value }}
-        onValuesChange={(changed, all) => {
-          if (changed.postType) setPostType(all.postType);
-        }}
       >
-
-        <Form.Item name="eventSearchText" style={{ display: "none" }}>
-          <Input type="hidden" />
-        </Form.Item>
-
         <Form.Item label="Loại bài viết" name="postType">
-          <Select options={allowedTypes} />
+          <Select options={allowedTypes} onChange={handlePostTypeChange} />
         </Form.Item>
 
         <Form.Item
-          label={postType === "recruitment" ? "Chọn sự kiện (bắt buộc)" : "Chọn sự kiện (tuỳ chọn)"}
+          label={postType === "recruitment" ? "Chọn sự kiện (Bắt buộc)" : "Chọn sự kiện (Tùy chọn)"}
           name="eventId"
           rules={[
             ({ getFieldValue }) => ({
               validator(_, value) {
                 if (getFieldValue("postType") === "recruitment" && !value) {
-                  return Promise.reject(
-                    new Error("Vui lòng chọn sự kiện cho bài tuyển dụng")
-                  );
+                  return Promise.reject(new Error("Vui lòng chọn sự kiện cho bài tuyển dụng"));
                 }
                 return Promise.resolve();
               },
@@ -225,27 +233,52 @@ export default function CreatePostModal({ visible, onClose }) {
         >
           <Select
             showSearch
-            allowClear={postType !== "recruitment"}
-            placeholder="Chọn sự kiện"
+            allowClear
+            placeholder="Tìm kiếm sự kiện..."
             onSearch={handleSearch}
             filterOption={false}
-            options={filteredEvents.map((e) => ({
-              label: e.title || `Event ${e.id}`,
-              value: e.id,
-            }))}
-            notFoundContent={searching ? <Spin size="small" /> : "Không tìm thấy sự kiện"}
-            popupMatchSelectWidth={360}
+            notFoundContent={fetchingEvents ? <Spin size="small" /> : "Không tìm thấy sự kiện"}
+            options={events.map((e) => ({ label: e.title, value: e.id }))}
           />
         </Form.Item>
 
         <Form.Item
           label="Nội dung"
           name="content"
-          rules={[{ required: true, message: "Vui lòng nhập nội dung" }]}
+          rules={[{ required: true, message: "Vui lòng nhập nội dung bài viết" }]}
         >
-          <TextArea rows={5} placeholder="Viết gì đó..." />
+          <TextArea rows={5} placeholder="Bạn đang nghĩ gì?" showCount maxLength={2000} />
         </Form.Item>
 
+        <Form.Item label="Hình ảnh / Video">
+          <Upload
+            listType="picture-card"
+            accept="image/*,video/*"
+            fileList={fileList}
+            onChange={({ fileList: newFileList }) => setFileList(newFileList)}
+            beforeUpload={(file) => {
+              const isMedia = file.type.startsWith("image/") || file.type.startsWith("video/");
+              if (!isMedia) {
+                message.error("Chỉ chấp nhận file Ảnh hoặc Video!");
+                return Upload.LIST_IGNORE;
+              }
+              const isLt20M = file.size / 1024 / 1024 < 20;
+              if (!isLt20M) {
+                message.error("File phải nhỏ hơn 20MB!");
+                return Upload.LIST_IGNORE;
+              }
+              return false;
+            }}
+            onPreview={handlePreview}
+          >
+            {fileList.length >= 10 ? null : (
+              <div>
+                <PlusOutlined />
+                <div style={{ marginTop: 8 }}>Thêm</div>
+              </div>
+            )}
+          </Upload>
+        </Form.Item>
       </Form>
     </Modal>
   );

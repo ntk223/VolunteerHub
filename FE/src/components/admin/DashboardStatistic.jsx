@@ -40,7 +40,8 @@ const DashboardStatistic = ({ users = [], posts = [], events = [] }) => {
         </Col>
         <Col span={8}>
           <Card>
-            <Statistic title="Tổng sự kiện" value={events.length} valueStyle={{ color: "#cf1322" }} />
+            <Statistic title="Bài chờ duyệt" value={postStatusCounts.pending} valueStyle={{ color: "#faad14" }} />
+
           </Card>
         </Col>
       </Row>
@@ -49,17 +50,17 @@ const DashboardStatistic = ({ users = [], posts = [], events = [] }) => {
       <Row gutter={16} style={{ marginBottom: 20 }}>
         <Col span={8}>
           <Card>
-            <Statistic title="Bài chờ duyệt" value={postStatusCounts.pending} valueStyle={{ color: "#faad14" }} />
+            <Statistic title="Tổng sự kiện" value={events.length} valueStyle={{ color: "#cf1322" }} />
           </Card>
         </Col>
         <Col span={8}>
           <Card>
-            <Statistic title="Bài đã duyệt" value={postStatusCounts.approved} valueStyle={{ color: "#52c41a" }} />
+            <Statistic title="Sự kiện chờ duyệt" value={events.filter((e) => e.approvalStatus == "pending").length} valueStyle={{ color: "#52c41a" }} />
           </Card>
         </Col>
         <Col span={8}>
           <Card>
-            <Statistic title="Bài từ chối" value={postStatusCounts.rejected} valueStyle={{ color: "#f5222d" }} />
+            <Statistic title="Sự kiện từ chối" value={postStatusCounts.rejected} valueStyle={{ color: "#f5222d" }} />
           </Card>
         </Col>
       </Row>
