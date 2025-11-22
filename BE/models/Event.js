@@ -34,11 +34,11 @@ const Event = sequelize.define("Event", {
     publishedAt: {type: DataTypes.DATE, allowNull: true},
     createdAt: {type: DataTypes.DATE, defaultValue: DataTypes.NOW},
     updatedAt: {type: DataTypes.DATE, defaultValue: DataTypes.NOW},
+    deletedAt: {type: DataTypes.DATE, allowNull: true},
 }, {
     tableName: 'events',
     timestamps: true,
     paranoid: true,
-    deletedAt: 'deleted_at',
     underscored: true,
 })
 // console.log(sequelize.config);
