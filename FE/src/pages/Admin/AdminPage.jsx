@@ -10,7 +10,6 @@ import "./AdminPage.css";
 const AdminPage = () => {
   const { user, isAdmin } = useAuth();
   const {
-    stats,
     users,
     posts,
     events,
@@ -20,6 +19,7 @@ const AdminPage = () => {
     deleteEvent,
     toggleUserStatus,
     changePostStatus,
+    deletePost,
   } = useAdminData();
 
   if (loading || !user)
@@ -77,7 +77,7 @@ const AdminPage = () => {
           {
             key: "posts",
             label: "📝 Quản lý bài viết",
-            children: <PostManage posts={posts} changePostStatus={changePostStatus} />,
+            children: <PostManage posts={posts} changePostStatus={changePostStatus} deletePost={deletePost} />,
           },
           {
             key: "events",

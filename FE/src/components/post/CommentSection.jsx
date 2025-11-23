@@ -30,7 +30,7 @@ const CommentSection = ({
       setEditingContent("");
       message.success("Cập nhật bình luận thành công");
     } catch (error) {
-      message.error("Có lỗi xảy ra khi cập nhật bình luận");
+      message.error("Có lỗi xảy ra khi cập nhật bình luận", error.response?.data?.message || "");
     }
   };
 
@@ -51,7 +51,7 @@ const CommentSection = ({
           await onDeleteComment(commentId);
           message.success("Xóa bình luận thành công");
         } catch (error) {
-          message.error("Có lỗi xảy ra khi xóa bình luận");
+          message.error("Có lỗi xảy ra khi xóa bình luận", error.response?.data?.message || "");
         }
       },
     });

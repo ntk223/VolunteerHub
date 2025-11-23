@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth.jsx';
-// Import các component form
 import LoginForm from '../../components/auth/LoginForm/LoginForm';
 import RegisterForm from '../../components/auth/RegisterForm/RegisterForm';
 import './Login.css';
@@ -13,16 +12,13 @@ const Login = () => {
   const handleSwitchToLogin = () => {
     setIsLogin(true);
   };
-
   // Nếu đã đăng nhập, redirect về trang chủ
   if (isAuthenticated) {
     window.location.href = '/';
     return null;
   }
 
- 
   const containerClass = isLogin ? 'container' : 'container active';
-
   return (
     
     <div className="login-page-wrapper">
@@ -39,8 +35,6 @@ const Login = () => {
         {/* Panel Lật (Overlay) - Chứa các nút chuyển đổi */}
         <div className="toggle-container">
           <div className="toggle">
-
-            
             <div className="toggle-panel toggle-left">
               <img
                 src={logo}
@@ -70,10 +64,8 @@ const Login = () => {
                 Đăng ký
               </button>
             </div>
-
           </div>
         </div>
-
       </div>
     </div>
   );

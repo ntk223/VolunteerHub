@@ -1,14 +1,11 @@
 import { usePosts } from '../../hooks/usePosts';
 import PostList from '../../components/post/PostList';
 import LikesModal from '../../components/post/LikesModal';
-import { useAuth } from '../../hooks/useAuth';
 import './DiscussPage.css';
 import { useParams } from 'react-router-dom';
 
-const UserPost = () => {    
+const OnePost = () => {    
     const { id: postId } = useParams();
-    // console.log("UserPost postId:", postId);
-  const { user } = useAuth();
   
   // 2. GỌI HOOK LẤY TẤT CẢ DATA VÀ HÀM
   const {
@@ -46,4 +43,4 @@ const UserPost = () => {
   );
 };
 
-export default UserPost;
+export default OnePost;

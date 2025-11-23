@@ -9,8 +9,6 @@ import Statistics from '../../components/auth/Profile/Statistics';
 import Activities from '../../components/auth/Profile/Activities';
 import { useLocation } from 'react-router-dom';
 
-import api from '../../api';
-import { useEffect } from 'react';
 const MyProfile = () => {
   const location = useLocation();
 

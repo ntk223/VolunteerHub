@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Modal, Form, Input, DatePicker, Select, InputNumber, message } from "antd";
 import api from "../../api";
 import { useAuth } from "../../hooks/useAuth";
-
 const { TextArea } = Input;
 
 export default function CreateEventModal({ visible, onClose }) {
@@ -14,7 +13,6 @@ export default function CreateEventModal({ visible, onClose }) {
   const [loading, setLoading] = useState(false);
 
   const [form] = Form.useForm();
-
 
   const categoryOptions = [
     { value: 1, label: "Môi trường" },
