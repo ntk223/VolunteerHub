@@ -1,3 +1,4 @@
+/* --- LAYOUT CHÍNH --- */
 .main-layout {
   min-height: 100vh;
   display: flex;
@@ -8,9 +9,10 @@
 .content-layout {
   display: flex;
   flex: 1;
+  position: relative; /* Quan trọng để định vị absolute cho trigger */
 }
 
-
+/* Nội dung chính ở giữa */
 .main-content {
   flex-grow: 1;
   padding: 24px;
@@ -18,55 +20,75 @@
   overflow-y: auto;
   background-color: #f0f2f5;
   min-height: 280px;
+  transition: all 0.2s;
 }
 
+/* --- SIDEBAR TRÊN DESKTOP --- */
+/* Class này bọc bên ngoài component Sidebar */
+.desktop-sidebar {
+  background: #fff;
+  height: calc(100vh - 64px); /* Full chiều cao trừ header */
+  position: sticky;
+  top: 64px;
+  overflow-y: auto;
+  flex-shrink: 0; /* Không bị co lại */
+}
 
-.ant-layout-sider {
-  background-color: #fff !important;
-  padding: 16px 0;
+/* Sidebar Trái (Menu) */
+.desktop-sidebar.left {
+  width: 250px;
   border-right: 1px solid #f0f0f0;
 }
 
-
-.content-layout>.ant-layout-sider:first-child {
-  max-width: 250px !important;
-  min-width: 200px !important;
-}
-
-
-.content-layout>.ant-layout-sider:last-child {
-  max-width: 300px !important;
-  min-width: 250px !important;
+/* Sidebar Phải (Search) */
+.desktop-sidebar.right {
+  width: 300px;
   border-left: 1px solid #f0f0f0;
 }
 
-
-
-@media (max-width: 1200px) {
-  .content-layout>.ant-layout-sider:first-child {
-    max-width: 200px !important;
-    min-width: 180px !important;
-  }
-
-  .content-layout>.ant-layout-sider:last-child {
-    max-width: 250px !important;
-    min-width: 220px !important;
-  }
+/* --- VÙNG CẢM ỨNG (TRIGGER ZONE) --- */
+/* Mặc định ẩn trên Desktop, chỉ hiện bằng media query */
+.edge-trigger {
+  display: none; 
+  position: fixed;
+  top: 64px;       /* Bắt đầu từ dưới Header */
+  bottom: 0;       /* Kéo dài xuống đáy */
+  width: 20px;     /* Độ rộng vùng cảm ứng */
+  z-index: 999;    /* Nằm trên content */
+  cursor: pointer;
+  transition: background 0.3s;
 }
 
+.edge-trigger.left {
+  left: 0;
+}
+
+.edge-trigger.right {
+  right: 0;
+}
+
+/* Hiệu ứng khi rê chuột vào mép: hiện màu xanh nhạt */
+.edge-trigger:hover {
+  background: rgba(22, 119, 255, 0.15); 
+  box-shadow: 0 0 10px rgba(22, 119, 255, 0.1);
+}
+
+/* --- RESPONSIVE (QUAN TRỌNG) --- */
+/* Khi màn hình nhỏ hơn 992px (Tablet dọc & Mobile) */
 @media (max-width: 992px) {
-  .content-layout>.ant-layout-sider:last-child {
+  
+  /* 1. Ẩn Sidebar tĩnh (React đã xử lý, nhưng thêm CSS để chắc chắn không vỡ layout lúc load) */
+  .desktop-sidebar {
     display: none !important;
   }
 
+  /* 2. Hiện vùng cảm ứng */
+  .edge-trigger {
+    display: block;
+  }
+
+  /* 3. Giảm padding nội dung cho thoáng */
   .main-content {
     padding: 16px;
-    /* Giảm padding */
-  }
-}
-
-@media (max-width: 768px) {
-  .content-layout>.ant-layout-sider:first-child {
-    display: none !important;
   }
 }

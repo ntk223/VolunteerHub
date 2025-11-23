@@ -134,7 +134,7 @@ const SearchSidebar = () => {
 
   return (
     <Sider
-      width={450}
+      width={300}
       style={{
         background: "#fff",
         borderLeft: "1px solid #cfc6c6ff",

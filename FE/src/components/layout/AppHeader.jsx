@@ -5,32 +5,43 @@ import {
   Avatar,
   Button,
   Tooltip,
+  Grid, // <--- 1. Import Grid
 } from "antd";
 import {
-  HomeOutlined,
   TeamOutlined,
   UserOutlined,
-  LogoutOutlined,
-  SettingOutlined,
+  ScheduleOutlined,
   CommentOutlined,
+  AreaChartOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../hooks/useAuth.jsx";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const { Header } = Layout;
 const { Title, Text } = Typography;
+const { useBreakpoint } = Grid; // <--- 2. Lấy hook useBreakpoint
 
 const AppHeader = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  
+  // screens sẽ trả về object dạng { xs: true, sm: true, md: false, ... }
+  // screens.md = true nghĩa là chiều rộng > 768px (Tablet trở lên)
+  const screens = useBreakpoint(); 
 
-  // Các mục điều hướng ở giữa header
   const navItems = [
     { key: "/discuss", icon: <CommentOutlined />, label: "Discuss" },
     { key: "/recruitment", icon: <TeamOutlined />, label: "Recruitment" },
-    { key: "/admin", icon: <SettingOutlined />, label: "Admin" },
   ];
+  if (user?.role === "admin")
+    navItems.push({ key: "/admin", icon: <AreaChartOutlined />, label: "Admin" });
+  if (user?.role === "manager")
+    navItems.push({
+      key: "/manage-events",
+      icon: <ScheduleOutlined />,
+      label: "Manage Events",
+    });
 
   return (
     <Header
@@ -48,19 +59,37 @@ const AppHeader = () => {
         padding: "0 24px",
       }}
     >
-      {/* ==== BÊN TRÁI: Logo==== */}
-      <div style={{ marginRight: 60, display: "flex", alignItems: "center", gap: 12 }}>
-        <Title
-          level={2}
-          style={{ margin: 0, cursor: "pointer" }}
-          onClick={() => navigate("/")}
-        >
-          VolunteerHub
-        </Title>
+      {/* ==== BÊN TRÁI: Logo ==== */}
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        {/* LOGIC: Chỉ hiện Title khi màn hình từ md trở lên */}
+        {screens.md ? (
+          <Title
+            level={2}
+            style={{ margin: 0, cursor: "pointer", whiteSpace: "nowrap" }}
+            onClick={() => navigate("/")}
+          >
+            VolunteerHub
+          </Title>
+        ) : (
+          // Khi màn hình nhỏ, có thể hiện 1 icon logo nhỏ thay thế (tuỳ chọn)
+          <div onClick={() => navigate("/")} style={{ cursor: "pointer", fontWeight: 'bold', fontSize: 20 }}>
+             VH
+          </div>
+        )}
       </div>
 
-      {/* ==== Ở GIỮA: Nút điều hướng ==== */}
-      <div style={{ display: "flex", alignItems: "center", gap: 34 }}>
+      {/* ==== Ở GIỮA: CĂN GIỮA TUYỆT ĐỐI ==== */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 16,
+          position: "absolute",
+          left: "50%",
+          transform: "translateX(-50%)",
+          height: "100%",
+        }}
+      >
         {navItems.map((item) => (
           <Tooltip key={item.key} title={item.label}>
             <Button
@@ -68,19 +97,20 @@ const AppHeader = () => {
               icon={item.icon}
               onClick={() => navigate(item.key)}
               style={{
-                // --- CÁC THUỘC TÍNH CŨ ---
-                margin: 30,
-                fontSize: 35,
-                color: location.pathname === item.key ? "#1677ff" : "rgba(0,0,0,0.65)",
-                background: location.pathname === item.key ? "rgba(22,119,255,0.1)" : "transparent",
-                borderRadius: 12, // Tăng border-radius một chút cho mềm mại nếu nút to ra
+                margin: screens.md ? "0 10px" : "0 2px", // Thu nhỏ khoảng cách khi màn hình bé
+                fontSize: 28,
+                color:
+                  location.pathname === item.key
+                    ? "#1677ff"
+                    : "rgba(0,0,0,0.65)",
+                background:
+                  location.pathname === item.key
+                    ? "rgba(22,119,255,0.1)"
+                    : "transparent",
+                borderRadius: 12,
                 transition: "0.2s",
-                
-                // --- THÊM CÁC DÒNG NÀY ĐỂ TĂNG KÍCH THƯỚC BG ---
-                width: 65,  // Tăng chiều rộng
-                height: 65, // Tăng chiều cao (để bằng width thì sẽ thành hình vuông/tròn)
-                
-                // Đảm bảo icon luôn nằm giữa khi tăng kích thước
+                width: 55,
+                height: 55,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -93,15 +123,18 @@ const AppHeader = () => {
       {/* ==== BÊN PHẢI: Thông tin người dùng ==== */}
       <Space>
         <Avatar src={user?.avatarUrl} icon={<UserOutlined />} />
-        <Text style={{ fontSize: 14 }}>{user?.email}</Text>
-        <Button
-          type="primary"
-          icon={<LogoutOutlined />}
-          onClick={logout}
-          size="small"
-        >
-          Logout
-        </Button>
+        
+        {/* LOGIC: Chỉ hiện Tên khi màn hình từ md trở lên */}
+        {screens.md && (
+          <Text
+            style={{ fontSize: 15, cursor: "pointer" }}
+            onClick={() => {
+              navigate("/profile");
+            }}
+          >
+            {user?.name}
+          </Text>
+        )}
       </Space>
     </Header>
   );

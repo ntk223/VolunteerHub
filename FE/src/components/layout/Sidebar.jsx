@@ -1,13 +1,13 @@
 // Sidebar.jsx
 import { useState } from "react";
-import { Layout, Menu, Badge } from "antd";
+import { Layout, Menu, Badge, Button, Popconfirm } from "antd";
 import { 
   HomeOutlined, 
   BellOutlined, 
   UserOutlined, 
   PlusCircleOutlined,
   CalendarOutlined, 
-  SettingOutlined
+  LogoutOutlined
 } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
 import CreatePostModal from "../createPost/CreatePostModal"; 
@@ -20,7 +20,7 @@ const { Sider } = Layout;
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { notifications, markNotificationsAsRead } = useSocket();
 
   let countUnread = notifications.filter(n => !n.isRead).length;
@@ -53,10 +53,10 @@ const Sidebar = () => {
     }
 
     // thêm điều hướng cho trang quản lý sự kiện
-    if (e.key === "manage-events") {
-      if (!user) return navigate("/login");
-      navigate("/manage-events");
-    }
+    // if (e.key === "manage-events") {
+    //   if (!user) return navigate("/login");
+    //   navigate("/manage-events");
+    // }
   };
 
   // Danh sách items của Menu
@@ -82,13 +82,13 @@ const Sidebar = () => {
     });
   }
 
-  if (user?.role === "manager") {
-    menuItems.push({
-      key: "manage-events", 
-      icon: <SettingOutlined style={{ fontSize: 24 }} />,
-      label: <span className="menu-label">Manage Event</span>,
-    });
-  }
+  // if (user?.role === "manager") {
+  //   menuItems.push({
+  //     key: "manage-events", 
+  //     icon: <SettingOutlined style={{ fontSize: 24 }} />,
+  //     label: <span className="menu-label">Manage Event</span>,
+  //   });
+  // }
 
   menuItems.push(
     {
@@ -110,26 +110,61 @@ const Sidebar = () => {
 
   return (
     <>
-      <Sider
+ <Sider
         className="home-sider"
         width={250}
         style={{
           background: "#fff",
           borderRight: "1px solid #cfc6c6ff",
-          paddingTop: 16,
           height: "calc(100vh - 64px)",
           position: "sticky",
           top: 64,
           alignSelf: "flex-start",
         }}
       >
-        <Menu
-          mode="inline"
-          selectedKeys={[selectedKey]}
-          onClick={handleMenuClick}
-          style={{ borderRight: 0 }}
-          items={menuItems}
-        />
+        {/* --- TẠO MỘT DIV WRAPPER VỚI CHIỀU CAO 100% --- */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100%", // Quan trọng: Chiếm trọn chiều cao của Sider
+          }}
+        >
+          {/* Phần Menu: flex: 1 để đẩy các phần tử khác xuống */}
+          <div style={{ flex: 1, overflowY: "auto", paddingTop: 16 }}>
+            <Menu
+              mode="inline"
+              selectedKeys={[selectedKey]}
+              onClick={handleMenuClick}
+              style={{ borderRight: 0 }}
+              items={menuItems}
+            />
+          </div>
+<div style={{ padding: "16px", borderTop: "1px solid #f0f0f0" }}>
+    <Popconfirm
+              title="Đăng xuất"
+              description="Bạn có chắc chắn muốn đăng xuất không?"
+              onConfirm={logout} // Hàm logout chỉ chạy khi bấm "Đồng ý"
+              okText="Đồng ý"
+              cancelText="Hủy"
+              okButtonProps={{ danger: true }} // Nút Đồng ý màu đỏ
+            >
+              <Button
+                type="primary"
+                block
+                size="middle"
+                icon={<LogoutOutlined />}
+                style={{
+                   backgroundColor: "#16aefaff", // Màu cam
+                   borderColor: "#16aefaff",
+                   color: "white"
+                }}
+              >
+                Logout
+              </Button>
+            </Popconfirm>
+        </div>
+        </div>
       </Sider>
 
       {/* Modal Create Post */}

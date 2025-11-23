@@ -17,13 +17,14 @@ import UserPost from "./pages/Profile/UserPost.jsx";
 import OnePost from "./pages/Feed/OnePost.jsx";
 import SearchPage from "./pages/Search/SearchPage.jsx";
 import ManageEvent from "./pages/ManageEvent/ManageEvent.jsx";
-
+import LandingPage from "./pages/LandingPage/LandingPage.jsx";
 import 'antd/dist/reset.css';
 import { ConfigProvider } from 'antd';
 
+import './App.css';
 const ProtectedRoute = ({ children }) => {
     const { isAuthenticated } = useAuth();
-    return isAuthenticated ? children : <Navigate to="/login" replace />;
+    return isAuthenticated ? children : <Navigate to="/landing" replace />;
 };
 
 function AppInitializer() {
@@ -31,16 +32,17 @@ function AppInitializer() {
     return (
         <Router>
             {/* SearchProvider PHẢI LÀ CON CỦA Router để useNavigate hoạt động */}
-            <SearchProvider>
                 <Routes>
                     {/* Public */}
-                    <Route path="/login" element={<Login />} />
+                    <Route path="/auth/:mode" element={<Login />} />
 
                     <Route
                         path="/"
                         element={
                             <ProtectedRoute>
-                                <Home />
+                                <SearchProvider>
+                                    <Home />
+                                </SearchProvider>
                             </ProtectedRoute>
                         }
                     >
@@ -71,7 +73,11 @@ function AppInitializer() {
                         <Route path="profile" element={<MyProfile />} />
                         <Route path="profile/:id" element={<OtherProfile />} />
                         <Route path="notification" element={<NotificationPage />} />
-                        <Route path="search" element={<SearchPage />} />
+                        <Route path="search" element={
+                            <SearchProvider>
+                                <SearchPage />
+                            </SearchProvider>
+                        } />
 
                         <Route
                             path="user/posts/:id"
@@ -101,8 +107,8 @@ function AppInitializer() {
                     </Route>
 
                     <Route path="*" element={<Navigate to="/discuss" replace />} />
+                    <Route path="/landing" element={<LandingPage />} />
                 </Routes>
-            </SearchProvider>
         </Router>
     );
 }

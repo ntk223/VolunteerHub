@@ -4,12 +4,12 @@ import { useAuth } from '../../hooks/useAuth.jsx';
 import LoginForm from '../../components/auth/LoginForm/LoginForm';
 import RegisterForm from '../../components/auth/RegisterForm/RegisterForm';
 import './Login.css';
-import logo from '/logo.png';
-
+import logo from '../../assets/AppLogo.png';
+import { useParams } from 'react-router-dom';
 const Login = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const { mode } = useParams();
+  const [isLogin, setIsLogin] = useState(mode !== 'register');
   const { isAuthenticated } = useAuth();
-
   const handleSwitchToLogin = () => {
     setIsLogin(true);
   };
