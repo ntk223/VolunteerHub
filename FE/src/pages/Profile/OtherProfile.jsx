@@ -1,4 +1,4 @@
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, Form, Row, Col, Spin, message } from 'antd';
 import UpdateProfileForm from '../../components/auth/Profile/UpdateProfileForm';
 import AvatarCard from '../../components/auth/Profile/AvatarCard';

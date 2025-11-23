@@ -1,4 +1,3 @@
-// components/posts/LikesModal.jsx
 import { Modal, List, Avatar, Typography, Spin, Empty } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 

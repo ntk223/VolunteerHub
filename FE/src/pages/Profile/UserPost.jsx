@@ -2,15 +2,11 @@ import { usePosts } from '../../hooks/usePosts';
 import PostList from '../../components/post/PostList';
 import LikesModal from '../../components/post/LikesModal';
 import PostSorter from '../../components/common/PostSorter';
-import { useAuth } from '../../hooks/useAuth';
 import '../Feed/DiscussPage.css';
 import { useParams } from 'react-router-dom';
 
 const UserPost = () => {    
     const { id: userId } = useParams();
-    console.log("UserPost userId:", userId);
-  const { user } = useAuth();
-  
   // 2. GỌI HOOK LẤY TẤT CẢ DATA VÀ HÀM
   const {
     posts,

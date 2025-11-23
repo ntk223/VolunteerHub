@@ -13,7 +13,7 @@ const UpdateProfileForm = ({ profileForm, user, updateUser, setIsEditing, isEdit
                   setIsEditing(false);
                   // Reload user info here if needed
                 } catch (error) {
-                  message.error('Có lỗi xảy ra khi cập nhật thông tin');
+                  message.error('Có lỗi xảy ra khi cập nhật thông tin', error.response?.data?.message || '');
                 }
               }}
             >

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useSearch } from "../../hooks/useSearch";
 import { Layout, Input, Spin, Button } from "antd";
 import { SearchOutlined, EyeOutlined } from "@ant-design/icons";
-import { useNavigate, Link } from "react-router-dom"; // 👈 THÊM HOOK NAVIGATE
+import { Link } from "react-router-dom"; // 👈 THÊM HOOK NAVIGATE
 import "./SearchSidebar.css";
 
 const { Sider } = Layout;
@@ -21,7 +21,6 @@ const SearchSidebar = () => {
   } = useSearch();
 
   const [displayLimit, setDisplayLimit] = useState(10);
-  const navigate = useNavigate(); // 👈 KHỞI TẠO NAVIGATE
 
   // Reset display limit when search query changes
   const resetDisplayLimit = () => setDisplayLimit(10);

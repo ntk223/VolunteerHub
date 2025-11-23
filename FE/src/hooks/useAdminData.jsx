@@ -115,7 +115,15 @@ export const AdminProvider = ({ children }) => {
       setError(err.response?.data?.message || "Không thể cập nhật trạng thái bài viết.");
     }
   }, []);
-
+  const deletePost = useCallback(async (postId) => {
+    try {
+      await api.delete(`/post/${postId}`);
+      setPosts(prev => prev.filter(p => p.id !== postId));
+    } catch (err) {
+      console.error("Lỗi khi xóa bài viết:", err);
+      setError(err.response?.data?.message || "Không thể xóa bài viết.");
+    }
+  }, []);
   const value = {
     users,
     events,
@@ -126,7 +134,7 @@ export const AdminProvider = ({ children }) => {
     changeEventApprovalStatus,
     deleteEvent,
     changePostStatus,
-    
+    deletePost,
     // 👈 THÔNG TIN TÌM KIẾM MỚI
     searchResults,
     searchLoading,

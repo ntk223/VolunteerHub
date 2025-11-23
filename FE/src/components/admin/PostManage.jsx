@@ -1,7 +1,9 @@
 import { Table, Tag, Button, message, Space, Avatar, Modal } from "antd";
 import { useState } from "react";
 import PostPreview from "./PostPreview";
-const PostManage = ({ posts, changePostStatus }) => {
+import { useAuth } from "../../hooks/useAuth";
+const PostManage = ({ posts, changePostStatus, deletePost }) => {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const [selectedPost, setSelectedPost] = useState(null);
@@ -125,10 +127,10 @@ const PostManage = ({ posts, changePostStatus }) => {
             style={{ width: "70px", textAlign: "center" }} // tùy chỉnh thêm nếu muốn
             onClick={async () => {
               try {
-                await deleteEvent(record.id);
-                message.success(`Đã xóa "${record.title}" bởi ${user.name}`);
+                await deletePost(record.id);
+                message.success(`Đã xóa bài viết ID: "${record.id}" bởi ${user.name}`);
               } catch {
-                message.error("Không thể xóa sự kiện.");
+                message.error("Không thể xóa bài viết.");
               }
             }}
           >

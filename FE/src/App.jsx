@@ -28,10 +28,8 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function AppInitializer() {
-    // FIX: Router là container gốc cho navigation
     return (
         <Router>
-            {/* SearchProvider PHẢI LÀ CON CỦA Router để useNavigate hoạt động */}
                 <Routes>
                     {/* Public */}
                     <Route path="/auth/:mode" element={<Login />} />
@@ -118,7 +116,6 @@ export default function App() {
         <ConfigProvider>
             <AuthProvider>
                 <SocketProvider>
-                    {/* AppInitializer chứa Router, và Router bọc SearchProvider */}
                     <AppInitializer />
                 </SocketProvider>
             </AuthProvider>

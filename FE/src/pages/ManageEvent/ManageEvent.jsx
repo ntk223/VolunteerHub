@@ -33,7 +33,9 @@ export default function ManageEventPage() {
         if (managerUserId) {
           try {
             res = await api.get(`/event/manager/${managerUserId}`);
-          } catch (_) {}
+          } catch (err) {
+            message.error("Không thể tải danh sách sự kiện", err?.response?.data?.message || "");
+          }
         }
         if (!res) res = await api.get("/event");
 
@@ -53,7 +55,7 @@ export default function ManageEventPage() {
 
         setEvents(list);
       } catch (err) {
-        message.error("Không thể tải danh sách sự kiện");
+        message.error("Không thể tải danh sách sự kiện", err?.response?.data?.message || "");
       } finally {
         setLoadingEvents(false);
       }
@@ -111,7 +113,7 @@ export default function ManageEventPage() {
       }));
     } catch (err) {
       setAppsMap((m) => ({ ...m, [eventId]: { loading: false, list: [] } }));
-      message.error("Không thể tải danh sách ứng viên");
+      message.error("Không thể tải danh sách ứng viên", err?.response?.data?.message || "");
     }
   };
 
@@ -121,7 +123,7 @@ export default function ManageEventPage() {
       message.success("Cập nhật trạng thái thành công");
       fetchApplicationsForEvent(eventId);
     } catch (err) {
-      message.error("Không thể cập nhật trạng thái");
+      message.error("Không thể cập nhật trạng thái", err?.response?.data?.message || "");
     }
   };
 

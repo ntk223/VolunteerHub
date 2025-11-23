@@ -51,15 +51,8 @@ const Sidebar = () => {
       if (!user) return navigate("/login");
       setShowCreateEvent(true);
     }
-
-    // thêm điều hướng cho trang quản lý sự kiện
-    // if (e.key === "manage-events") {
-    //   if (!user) return navigate("/login");
-    //   navigate("/manage-events");
-    // }
   };
 
-  // Danh sách items của Menu
   const menuItems = [
     {
       key: "home",
@@ -81,14 +74,6 @@ const Sidebar = () => {
       label: <span className="menu-label">Create Event</span>,
     });
   }
-
-  // if (user?.role === "manager") {
-  //   menuItems.push({
-  //     key: "manage-events", 
-  //     icon: <SettingOutlined style={{ fontSize: 24 }} />,
-  //     label: <span className="menu-label">Manage Event</span>,
-  //   });
-  // }
 
   menuItems.push(
     {
@@ -140,8 +125,8 @@ const Sidebar = () => {
               items={menuItems}
             />
           </div>
-<div style={{ padding: "16px", borderTop: "1px solid #f0f0f0" }}>
-    <Popconfirm
+          <div style={{ padding: "16px", borderTop: "1px solid #f0f0f0" }}>
+              <Popconfirm
               title="Đăng xuất"
               description="Bạn có chắc chắn muốn đăng xuất không?"
               onConfirm={logout} // Hàm logout chỉ chạy khi bấm "Đồng ý"
