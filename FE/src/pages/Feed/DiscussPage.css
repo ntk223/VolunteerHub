@@ -10,9 +10,9 @@
 /* Thêm class này vào thẻ cha ngoài cùng của DiscussPage nếu muốn áp dụng */
 /* Ví dụ: <div className="discuss-page-container"><PostList posts={posts} />...</div> */
 .discuss-page-content {
-    max-width: 800px; /* Giới hạn chiều rộng nội dung chính để dễ đọc */
+    max-width: 950px; /* Giới hạn chiều rộng nội dung chính để dễ đọc */
     margin: 0 auto; /* Căn giữa nội dung */
-    padding: 0 15px; /* Khoảng đệm hai bên cho màn hình nhỏ */
+    padding: 0 10px; /* Khoảng đệm hai bên cho màn hình nhỏ */
 }
 
 /* --- Xử lý Component Tải (Spin) --- */
