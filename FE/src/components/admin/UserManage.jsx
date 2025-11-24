@@ -1,6 +1,21 @@
-import { Table, Tag, Button, message } from "antd";
+import { Table, Tag, Button, message, Select, Space } from "antd";
+import { DownloadOutlined } from "@ant-design/icons";
+import { useState, useMemo } from "react";
+import { exportUsersToExcel } from "../../utils/excelExport";
+
+const { Option } = Select;
 
 const UserManage = ({ users, toggleUserStatus }) => {
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [roleFilter, setRoleFilter] = useState('all');
+
+  const filteredUsers = useMemo(() => {
+    return users.filter(user => {
+      const statusMatch = statusFilter === 'all' || user.status === statusFilter;
+      const roleMatch = roleFilter === 'all' || user.role === roleFilter;
+      return statusMatch && roleMatch;
+    });
+  }, [users, statusFilter, roleFilter]);
   const userColumns = [
     { title: "Tên người dùng", dataIndex: "name", key: "name" },
     {
@@ -71,12 +86,56 @@ const UserManage = ({ users, toggleUserStatus }) => {
   ];
 
   return (
-    <Table
-      dataSource={users}
-      columns={userColumns}
-      rowKey={(r) => r.id || r._id}
-      pagination={{ pageSize: 5 }}
-    />
+    <div>
+      <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Space>
+          <span>Lọc theo trạng thái:</span>
+          <Select
+            value={statusFilter}
+            onChange={setStatusFilter}
+            style={{ width: 150 }}
+          >
+            <Option value="all">Tất cả</Option>
+            <Option value="active">Hoạt động</Option>
+            <Option value="blocked">Bị khóa</Option>
+          </Select>
+          
+          <span>Lọc theo vai trò:</span>
+          <Select
+            value={roleFilter}
+            onChange={setRoleFilter}
+            style={{ width: 150 }}
+          >
+            <Option value="all">Tất cả</Option>
+            <Option value="admin">Admin</Option>
+            <Option value="user">User</Option>
+            <Option value="manager">Manager</Option>
+          </Select>
+        </Space>
+        
+        <Button 
+          type="primary" 
+          icon={<DownloadOutlined />}
+          onClick={() => {
+            try {
+              exportUsersToExcel(filteredUsers);
+              message.success('Đã xuất danh sách người dùng thành công!');
+            } catch (error) {
+              message.error('Lỗi khi xuất file Excel');
+            }
+          }}
+        >
+          Xuất Excel
+        </Button>
+      </div>
+      
+      <Table
+        dataSource={filteredUsers}
+        columns={userColumns}
+        rowKey={(r) => r.id || r._id}
+        pagination={{ pageSize: 5 }}
+      />
+    </div>
   );
 };
 

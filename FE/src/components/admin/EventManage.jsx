@@ -1,6 +1,18 @@
-import { Table, Tag, Button, message } from "antd";
+import { Table, Tag, Button, message, Select, Space } from "antd";
+import { DownloadOutlined } from "@ant-design/icons";
+import { useState, useMemo } from "react";
+import { exportEventsToExcel } from "../../utils/excelExport";
+
+const { Option } = Select;
 
 const EventManage = ({ events, changeEventApprovalStatus, deleteEvent, user }) => {
+  const [statusFilter, setStatusFilter] = useState('all');
+
+  const filteredEvents = useMemo(() => {
+    return events.filter(event => {
+      return statusFilter === 'all' || event.approvalStatus === statusFilter;
+    });
+  }, [events, statusFilter]);
   const eventColumns = [
     { title: "Tên sự kiện", dataIndex: "title", key: "title" },
     {
@@ -148,12 +160,45 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent, user }) =
   ];
 
   return (
-    <Table
-      dataSource={events}
-      columns={eventColumns}
-      rowKey={(r) => r.id || r._id}
-      pagination={{ pageSize: 5 }}
-    />
+    <div>
+      <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Space>
+          <span>Lọc theo trạng thái duyệt:</span>
+          <Select
+            value={statusFilter}
+            onChange={setStatusFilter}
+            style={{ width: 150 }}
+          >
+            <Option value="all">Tất cả</Option>
+            <Option value="pending">Chờ duyệt</Option>
+            <Option value="approved">Đã duyệt</Option>
+            <Option value="rejected">Từ chối</Option>
+          </Select>
+        </Space>
+        
+        <Button 
+          type="primary" 
+          icon={<DownloadOutlined />}
+          onClick={() => {
+            try {
+              exportEventsToExcel(filteredEvents);
+              message.success('Đã xuất danh sách sự kiện thành công!');
+            } catch (error) {
+              message.error('Lỗi khi xuất file Excel');
+            }
+          }}
+        >
+          Xuất Excel
+        </Button>
+      </div>
+      
+      <Table
+        dataSource={filteredEvents}
+        columns={eventColumns}
+        rowKey={(r) => r.id || r._id}
+        pagination={{ pageSize: 5 }}
+      />
+    </div>
   );
 };
 
