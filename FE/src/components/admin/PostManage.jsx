@@ -1,13 +1,28 @@
-import { Table, Tag, Button, message, Space, Avatar, Modal } from "antd";
-import { useState } from "react";
+import { Table, Tag, Button, message, Space, Avatar, Modal, Select } from "antd";
+import { DownloadOutlined } from "@ant-design/icons";
+import { useState, useMemo } from "react";
 import PostPreview from "./PostPreview";
 import { useAuth } from "../../hooks/useAuth";
+import { exportPostsToExcel } from "../../utils/excelExport";
+
+const { Option } = Select;
+
 const PostManage = ({ posts, changePostStatus, deletePost }) => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [typeFilter, setTypeFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   const [selectedPost, setSelectedPost] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const filteredPosts = useMemo(() => {
+    return posts.filter(post => {
+      const typeMatch = typeFilter === 'all' || post.postType === typeFilter;
+      const statusMatch = statusFilter === 'all' || post.status === statusFilter;
+      return typeMatch && statusMatch;
+    });
+  }, [posts, typeFilter, statusFilter]);
   const columns = [
       {
         title: "Tác giả",
@@ -150,9 +165,51 @@ const handlePreview = (record) => {
 
   return (
     <>
+      <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Space>
+          <span>Lọc theo loại:</span>
+          <Select
+            value={typeFilter}
+            onChange={setTypeFilter}
+            style={{ width: 150 }}
+          >
+            <Option value="all">Tất cả</Option>
+            <Option value="discuss">Thảo luận</Option>
+            <Option value="recruitment">Tuyển tình nguyện viên</Option>
+          </Select>
+          
+          <span>Lọc theo trạng thái:</span>
+          <Select
+            value={statusFilter}
+            onChange={setStatusFilter}
+            style={{ width: 150 }}
+          >
+            <Option value="all">Tất cả</Option>
+            <Option value="pending">Chờ duyệt</Option>
+            <Option value="approved">Đã duyệt</Option>
+            <Option value="rejected">Từ chối</Option>
+          </Select>
+        </Space>
+        
+        <Button 
+          type="primary" 
+          icon={<DownloadOutlined />}
+          onClick={() => {
+            try {
+              exportPostsToExcel(filteredPosts);
+              message.success('Đã xuất danh sách bài viết thành công!');
+            } catch (error) {
+              message.error('Lỗi khi xuất file Excel');
+            }
+          }}
+        >
+          Xuất Excel
+        </Button>
+      </div>
+      
       <Table
         columns={columns}
-        dataSource={posts}
+        dataSource={filteredPosts}
         rowKey="id"
         loading={loading}
         pagination={{ pageSize: 8 }}

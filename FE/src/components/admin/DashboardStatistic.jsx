@@ -1,9 +1,19 @@
-import { Card, Col, Row, Statistic } from "antd";
+import { Card, Col, Row, Statistic, Button, message } from "antd";
+import { DownloadOutlined } from "@ant-design/icons";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Legend } from "recharts";
+import { exportStatisticsToExcel } from "../../utils/excelExport";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 const DashboardStatistic = ({ users = [], posts = [], events = [] }) => {
+  const handleExportExcel = () => {
+    try {
+      exportStatisticsToExcel(users, posts, events);
+      message.success('Đã xuất file Excel thành công!');
+    } catch (error) {
+      message.error('Lỗi khi xuất file Excel');
+    }
+  };
   // Thống kê bài viết theo trạng thái
   const postStatusCounts = {
     pending: posts.filter(p => p.status === "pending").length,
@@ -26,6 +36,17 @@ const DashboardStatistic = ({ users = [], posts = [], events = [] }) => {
 
   return (
     <div style={{ padding: "20px" }}>
+      {/* Header with Export Button */}
+      <div style={{ marginBottom: 20, textAlign: 'right' }}>
+        <Button 
+          type="primary" 
+          icon={<DownloadOutlined />}
+          onClick={handleExportExcel}
+        >
+          Xuất Excel
+        </Button>
+      </div>
+      
       {/* Row 1: Tổng quan */}
       <Row gutter={16} style={{ marginBottom: 20 }}>
         <Col span={8}>
