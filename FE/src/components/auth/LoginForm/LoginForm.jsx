@@ -1,4 +1,3 @@
-import Cookies from "js-cookie";
 import React, { useState } from 'react';
 import { useAuth } from '../../../hooks/useAuth.jsx';
 import api from '../../../api/index.js';
@@ -37,34 +36,24 @@ const LoginForm = () => {
     setError('');
 
     try {
-      console.log('Submitting login form with data:', formData);
-
       // Gọi API đăng nhập
       const res = await api.post('/auth/login', formData);
-      console.log('Login response:', res);
 
       const { user, token } = res.data;
-
-      // Lưu token vào cookie
-      Cookies.set("access_token", token, {
-        expires: 7,
-        secure: window.location.protocol === "https:",
-        sameSite: "Strict",
-      });
-
-      // Gọi hàm login trong context
       await login(user, token);
-      
-      // Hiển thị thông báo thành công
       message.success('Đăng nhập thành công!');
 
-      // navigate('/');
-
     } catch (err) {
-      console.error("Login failed:", err);
-      console.log('Error response data:', err.response?.data);
-      const message = err.response?.data?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.';
-      setError(message);
+      const statusCode = err.response?.status;
+      const listError = {
+        400: 'Yêu cầu không hợp lệ. Vui lòng kiểm tra lại thông tin.',
+        401: 'Email hoặc mật khẩu không đúng.',
+        403: 'Tài khoản của bạn không có quyền truy cập.',
+        500: 'Lỗi máy chủ. Vui lòng thử lại sau.'
+      }
+      const messageErr = listError[statusCode] || 'Đăng nhập thất bại. Vui lòng thử lại.';
+      message.error(messageErr);
+      setError(messageErr);
     } finally {
       setLoading(false);
     }
@@ -72,7 +61,6 @@ const LoginForm = () => {
 
 
   return (
-    // Component này chỉ nên trả về thẻ <form> để khớp với cấu trúc CSS
     <form onSubmit={handleSubmit}>
       <h1>Đăng nhập</h1>
 

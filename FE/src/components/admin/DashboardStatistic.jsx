@@ -11,6 +11,7 @@ const DashboardStatistic = ({ users = [], posts = [], events = [] }) => {
       exportStatisticsToExcel(users, posts, events);
       message.success('Đã xuất file Excel thành công!');
     } catch (error) {
+      console.error(error);
       message.error('Lỗi khi xuất file Excel');
     }
   };

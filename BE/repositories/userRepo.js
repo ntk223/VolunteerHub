@@ -8,7 +8,6 @@ import connection from "../config/databaseUsingSQL.js";
 class UserRepository {
 
     async createUser(userData)  {
-        console.log(userData);
         const existingUser = await User.findOne({ 
             where: { 
                 email: userData.email,
