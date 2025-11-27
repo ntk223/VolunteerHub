@@ -18,6 +18,7 @@ import OnePost from "./pages/Feed/OnePost.jsx";
 import SearchPage from "./pages/Search/SearchPage.jsx";
 import ManageEvent from "./pages/ManageEvent/ManageEvent.jsx";
 import LandingPage from "./pages/LandingPage/LandingPage.jsx";
+import ServerErrorPage from "./pages/ServerErrorPage/ServerErrorPage.jsx";
 import 'antd/dist/reset.css';
 import { ConfigProvider } from 'antd';
 
@@ -106,6 +107,7 @@ function AppInitializer() {
 
                     <Route path="*" element={<Navigate to="/discuss" replace />} />
                     <Route path="/landing" element={<LandingPage />} />
+                    <Route path="/server-error" element={<ServerErrorPage />} />
                 </Routes>
         </Router>
     );
