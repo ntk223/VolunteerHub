@@ -1,11 +1,11 @@
-import { Table, Tag, Button, message, Select, Space } from "antd";
+import { Table, Tag, Button, message, Select, Space, Modal } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import { useState, useMemo } from "react";
 import { exportEventsToExcel } from "../../utils/excelExport";
 
 const { Option } = Select;
 
-const EventManage = ({ events, changeEventApprovalStatus, deleteEvent, user }) => {
+const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
   const [statusFilter, setStatusFilter] = useState('all');
 
   const filteredEvents = useMemo(() => {
@@ -141,14 +141,23 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent, user }) =
           <Button
             danger
             style={{ width: "70px", textAlign: "center" }} // tùy chỉnh thêm nếu muốn
-            onClick={async () => {
-              try {
-                await deleteEvent(record.id);
-                message.success(`Đã xóa "${record.title}" bởi ${user.name}`);
-              } catch {
-                message.error("Không thể xóa sự kiện.");
-              }
-            }}
+            onClick={async () => Modal.confirm({
+              title: "Bạn có chắc muốn xóa sự kiện?",
+              content: `Sự kiện: "${record.title}" sẽ bị xóa vĩnh viễn.`,
+              okText: "Xóa",
+              okType: "danger",
+              cancelText: "Hủy",
+              onOk: async () => {
+                try {
+                  await deleteEvent(record.id);
+                  message.success(`Đã xóa sự kiện "${record.title}"`);
+                } catch {
+                  message.error("Không thể xóa sự kiện.");
+                }
+              },
+            })
+              
+            }
           >
             Xóa
           </Button>
@@ -184,6 +193,7 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent, user }) =
               exportEventsToExcel(filteredEvents);
               message.success('Đã xuất danh sách sự kiện thành công!');
             } catch (error) {
+              console.error(error);
               message.error('Lỗi khi xuất file Excel');
             }
           }}

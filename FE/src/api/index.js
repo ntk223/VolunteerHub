@@ -24,15 +24,10 @@ api.interceptors.response.use(
   (error) => {
     if (error.response) {
       const { status } = error.response;
-
       if (status === 401) {
         message.error("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!");
         apiEvents.emit("unauthorized"); // 👈 bắn sự kiện ra ngoài
-      } else {
-        message.error(error.response.data?.message || "Có lỗi xảy ra khi gọi API");
       }
-    } else {
-      message.error("Không thể kết nối đến server");
     }
     return Promise.reject(error);
   }

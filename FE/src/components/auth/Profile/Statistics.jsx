@@ -21,7 +21,6 @@ const Statistics = ({ userId }) => {
           { name: 'Bình luận', value: response.data[0].totalComments },
           { name: 'Tương tác', value: response.data[0].totalInteractions },
         ]);
-        console.log('Fetched stats:', response.data[0]);
       } catch (error) {
         console.error(error);
       }

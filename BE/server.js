@@ -1,6 +1,5 @@
 import express from 'express'
 import { APIs } from './routes/index.js'
-// import sequelize from './config/database.js'
 import { env } from './config/environment.js'
 import { errorHandlingMiddleware } from './middlewares/errorHandlingMiddleware.js'
 import { corsOptions } from './config/cors.js'

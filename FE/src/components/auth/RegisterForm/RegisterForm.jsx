@@ -105,7 +105,6 @@ const RegisterForm = ({ onSwitchToLogin }) => {
 
     try {
       const { confirmPassword, ...dataToSubmit } = formData;
-      console.log("Submitting registration data:", dataToSubmit);
       // Thêm bước làm sạch số điện thoại trước khi gửi lên API
       dataToSubmit.phone = dataToSubmit.phone.replace(/[\s-]/g, ''); 
       await api.post('/auth/register', dataToSubmit);
