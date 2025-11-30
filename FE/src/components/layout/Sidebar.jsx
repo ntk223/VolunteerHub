@@ -9,6 +9,7 @@ import {
   PlusCircleOutlined,
   CalendarOutlined,
   LogoutOutlined,
+  FileTextOutlined,
   MoonOutlined,
   SunOutlined
 } from "@ant-design/icons";
@@ -56,6 +57,14 @@ const Sidebar = ({ isMobile, onClose }) => {
         break;
       default: break;
     }
+    if (e.key === "manage-events") {
+      if (!user) return navigate("/login");
+      navigate("/manage-events");
+    }
+    if (e.key === "manage-applications") {
+      if (!user) return navigate("/login");
+      navigate("/manage-applications");
+    }
   };
 
   const menuItems = [
@@ -76,6 +85,14 @@ const Sidebar = ({ isMobile, onClose }) => {
       key: "create-event",
       icon: <CalendarOutlined style={{ fontSize: 20 }} />,
       label: "Tạo sự kiện",
+    });
+  }
+
+  if (user?.role === "volunteer") {
+    menuItems.push({
+      key: "manage-applications",
+      icon: <FileTextOutlined style={{ fontSize: 24 }} />,
+      label: <span className="menu-label">My Applications</span>,
     });
   }
 
