@@ -1,0 +1,51 @@
+/* --- MENU ITEMS --- */
+
+/* 1. Trạng thái bình thường */
+.custom-sider .ant-menu-item {
+  color: var(--text-color) !important; /* Màu chữ theo theme */
+  margin-bottom: 8px !important;       /* Khoảng cách giữa các mục */
+  border-radius: 8px !important;       /* Bo góc mềm mại */
+  transition: all 0.2s ease !important; /* Hiệu ứng chuyển mượt */
+}
+
+/* 2. Khi rê chuột vào (HOVER) */
+.custom-sider .ant-menu-item:hover {
+  color: var(--primary-color) !important;       /* Chữ chuyển xanh */
+  background-color: rgba(22, 119, 255, 0.1) !important; /* Nền xanh nhạt trong suốt */
+}
+
+/* 3. Khi đang được chọn (ACTIVE) */
+.custom-sider .ant-menu-item-selected {
+  background-color: rgba(22, 119, 255, 0.15) !important; /* Nền xanh đậm hơn chút */
+  color: var(--primary-color) !important;
+  font-weight: 600;
+}
+
+/* Xử lý icon bên trong menu */
+.custom-sider .ant-menu-item .anticon {
+  font-size: 20px !important;
+  transition: color 0.2s;
+}
+
+/* --- NÚT ĐĂNG XUẤT (LOGOUT) --- */
+
+.btn-logout {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-color) !important;
+  background-color: transparent !important; /* Nền trong suốt mặc định */
+  font-weight: 600 !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Khi hover vào nút Logout -> Chuyển màu đỏ cảnh báo */
+.btn-logout:hover {
+  border-color: #ff4d4f !important;       /* Viền đỏ Ant Design */
+  color: #ff4d4f !important;              /* Chữ đỏ */
+  background-color: rgba(255, 77, 79, 0.1) !important; /* Nền đỏ nhạt */
+  transform: translateY(-1px);            /* Nổi lên nhẹ 1 chút */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
