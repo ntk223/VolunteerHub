@@ -108,7 +108,7 @@ const UserManage = ({ users, toggleUserStatus }) => {
           >
             <Option value="all">Tất cả</Option>
             <Option value="admin">Admin</Option>
-            <Option value="user">User</Option>
+            <Option value="volunteer">Volunteer</Option>
             <Option value="manager">Manager</Option>
           </Select>
         </Space>
@@ -121,6 +121,7 @@ const UserManage = ({ users, toggleUserStatus }) => {
               exportUsersToExcel(filteredUsers);
               message.success('Đã xuất danh sách người dùng thành công!');
             } catch (error) {
+              console.error(error);
               message.error('Lỗi khi xuất file Excel');
             }
           }}

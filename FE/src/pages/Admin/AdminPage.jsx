@@ -1,14 +1,20 @@
-import { Tabs, Spin } from "antd";
+import { Tabs, Spin, Button } from "antd";
 import { useAuth } from "../../hooks/useAuth.jsx";
 import { useAdminData } from "../../hooks/useAdminData.jsx";
 import UserManage from "../../components/admin/UserManage.jsx";
 import PostManage from "../../components/admin/PostManage.jsx";
 import EventManage from "../../components/admin/EventManage.jsx";
 import DashboardStatistic from "../../components/admin/DashboardStatistic.jsx";
+import UnauthorizePage from "../UnauthorizePage/UnauthorizePage.jsx";
 import "./AdminPage.css";
 
 const AdminPage = () => {
   const { user, isAdmin } = useAuth();
+
+  // 3. Render giao diện từ chối
+  if (!isAdmin) {
+    return <UnauthorizePage />;
+  }
   const {
     users,
     posts,
@@ -37,13 +43,7 @@ const AdminPage = () => {
       </div>
     );
 
-  if (!isAdmin)
-    return (
-      <div className="admin-page admin-denied">
-        <h2>⛔ Quyền truy cập bị từ chối</h2>
-        <p>Bạn không có quyền vào trang quản trị.</p>
-      </div>
-    );
+
 
   return (
     <div className="admin-page">

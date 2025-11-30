@@ -25,7 +25,7 @@ const OtherProfile = () => {
         const response = await api.get(`/user/profile/${id}`);
         setUser(response.data);
       } catch (error) {
-        console.error("Failed to fetch user:", error);
+        console.error(error);
         message.error("Không thể tải thông tin người dùng");
       } finally {
         setLoading(false);

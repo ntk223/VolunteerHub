@@ -12,13 +12,14 @@ import {
 import { UserOutlined } from "@ant-design/icons";
 import api from "../../api";
 import { useAuth } from "../../hooks/useAuth";
-
+import UnauthorizePage from "../UnauthorizePage/UnauthorizePage";
 const { Text } = Typography;
 
 export default function ManageEventPage() {
   const { user } = useAuth();
-  if (!user || user.role !== "manager") return null;
+    console.log("Current user:", user);
 
+  if (!user || user.role !== "manager") return <UnauthorizePage />;
   const managerUserId = user?.id ?? user?._id ?? null;
   const [events, setEvents] = useState([]);
   const [loadingEvents, setLoadingEvents] = useState(false);

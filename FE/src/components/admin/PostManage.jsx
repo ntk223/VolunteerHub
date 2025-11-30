@@ -137,20 +137,31 @@ const PostManage = ({ posts, changePostStatus, deletePost }) => {
             >
               Xem
             </Button>
-          <Button
-            danger
-            style={{ width: "70px", textAlign: "center" }} // tùy chỉnh thêm nếu muốn
-            onClick={async () => {
-              try {
-                await deletePost(record.id);
-                message.success(`Đã xóa bài viết ID: "${record.id}" bởi ${user.name}`);
-              } catch {
-                message.error("Không thể xóa bài viết.");
-              }
-            }}
-          >
-            Xóa
-          </Button>
+            <Button
+              danger
+              style={{ width: "70px", textAlign: "center" }}
+              onClick={() => {
+                Modal.confirm({
+                  title: "Bạn có chắc muốn xóa bài viết?",
+                  content: `Bài viết ID: "${record.id}" sẽ bị xóa vĩnh viễn.`,
+                  okText: "Xóa",
+                  okType: "danger",
+                  cancelText: "Hủy",
+                  centered: true,
+
+                  async onOk() {
+                    try {
+                      await deletePost(record.id);
+                      message.success(`Đã xóa bài viết ID: "${record.id}" bởi ${user.name}`);
+                    } catch {
+                      message.error("Không thể xóa bài viết.");
+                    }
+                  }
+                });
+              }}
+            >
+              Xóa
+            </Button>
         </div>
         </div>
       ),
@@ -199,6 +210,7 @@ const handlePreview = (record) => {
               exportPostsToExcel(filteredPosts);
               message.success('Đã xuất danh sách bài viết thành công!');
             } catch (error) {
+              console.error(error);
               message.error('Lỗi khi xuất file Excel');
             }
           }}

@@ -107,9 +107,7 @@ export const PostsProvider = ({ children, postType }) => {
   // 🔹 Like / Unlike bài viết
   const toggleLike = useCallback(async (postId) => {
     try {
-        console.log("Toggling like for postId:", postId, "by userId:", user.id);
         const res = await api.post(`/like`, { postId, userId: user.id }); 
-        // console.log(res);
         const { like, isLiked } = res.data; // Lấy dữ liệu mới
         let cnt = -1;
         if (isLiked) cnt = 1;
@@ -157,7 +155,6 @@ export const PostsProvider = ({ children, postType }) => {
         ...prev,
         [postId]: !prev[postId], // toggle trạng thái hiển thị
       }));
-      // console.log("aaa", res);
     } catch (error) {
       console.error(error);
     }
