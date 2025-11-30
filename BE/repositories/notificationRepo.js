@@ -7,7 +7,7 @@ class NotificationRepository {
   }
 
   async getNotificationsByUserId(userId) {
-    return await Notification.findAll({ where: { userId } });
+    return await Notification.findAll({ where: { userId }, order: [['createdAt', 'DESC']] });
   }
 
   async markNotificationAsRead(userId) {

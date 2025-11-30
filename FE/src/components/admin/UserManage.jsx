@@ -4,7 +4,11 @@ import { useState, useMemo } from "react";
 import { exportUsersToExcel } from "../../utils/excelExport";
 
 const { Option } = Select;
-
+const roleMap = {
+  admin: "Quản trị viên",
+  volunteer: "Tình nguyện viên",
+  manager: "Quản lý",
+}
 const UserManage = ({ users, toggleUserStatus }) => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [roleFilter, setRoleFilter] = useState('all');
@@ -23,7 +27,7 @@ const UserManage = ({ users, toggleUserStatus }) => {
       dataIndex: "role",
       key: "role",
       render: (role) => (
-        <Tag color={role === "admin" ? "volcano" : "blue"}>{role}</Tag>
+        <Tag color={role === "admin" ? "volcano" : role === "volunteer" ? "blue" : "green"}>{roleMap[role]}</Tag>
       ),
     },
     {

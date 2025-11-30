@@ -1,35 +1,71 @@
-/* --- Thiết Lập Chung cho Trang Thảo Luận --- */
+/* --- 1. Container Chính --- */
 .discuss-page-container {
-    /* Đảm bảo trang có thể cuộn và chiếm đủ chiều cao */
-    min-height: 100vh;
-    background-color: #f0f2f5; /* Nền nhẹ nhàng, đồng bộ với Ant Design */
-    padding: 20px 0; /* Khoảng đệm trên dưới */
+  min-height: 100vh;
+  /* Dùng biến nền chính (Xám nhạt ở Light, Đen ở Dark) */
+  background-color: var(--bg-color); 
+  padding: 24px 0;
+  transition: background-color 0.3s ease;
 }
 
-/* --- Bố Cục Nội Dung Chính --- */
-/* Thêm class này vào thẻ cha ngoài cùng của DiscussPage nếu muốn áp dụng */
-/* Ví dụ: <div className="discuss-page-container"><PostList posts={posts} />...</div> */
+/* --- 2. Vùng Nội Dung (Căn giữa) --- */
 .discuss-page-content {
-    max-width: 950px; /* Giới hạn chiều rộng nội dung chính để dễ đọc */
-    margin: 0 auto; /* Căn giữa nội dung */
-    padding: 0 10px; /* Khoảng đệm hai bên cho màn hình nhỏ */
+  /* Thu hẹp lại chút (700-800px) để giống Facebook/Instagram, dễ đọc hơn */
+  max-width: 800px; 
+  margin: 0 auto;
+  padding: 0 16px;
 }
 
-/* --- Xử lý Component Tải (Spin) --- */
-/* Đảm bảo Spin chiếm toàn bộ màn hình khi đang tải */
+/* --- 3. Loading State --- */
 .ant-spin-container-full {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  /* Đảm bảo nền loading cũng ăn theo theme */
+  background-color: var(--bg-color); 
 }
 
-/* --- Gợi ý: CSS cho PostList (Nếu chưa có) --- */
-/* Vì PostList là component con, CSS của nó nên nằm trong file riêng. */
-/* Nhưng đây là ví dụ để đảm bảo khoảng cách giữa các bài viết */
+/* --- 4. Style cho từng Bài Viết (Card) --- */
+/* Giả sử cấu trúc: <div className="post-list-wrapper"> <div className="post-item">...</div> </div> */
 .post-list-wrapper > div {
-    margin-bottom: 15px; /* Khoảng cách giữa các bài viết */
-    background-color: #fff; /* Nền trắng cho từng bài viết */
-    border-radius: 8px; /* Bo góc */
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Đổ bóng nhẹ */
+  margin-bottom: 20px; /* Tăng khoảng cách cho thoáng */
+  
+  /* QUAN TRỌNG: Nền của Card bài viết */
+  background-color: var(--content-bg, #fff); /* Fallback là trắng nếu chưa định nghĩa var */
+  
+  /* Viền và Bóng */
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  border-radius: 12px; /* Bo góc mềm mại hơn */
+  
+  /* Hiệu ứng chuyển màu mượt mà */
+  transition: all 0.3s ease;
+  overflow: hidden; /* Để nội dung con không bị lòi ra khỏi bo góc */
+}
+
+/* Hiệu ứng Hover vào bài viết (Tuỳ chọn) */
+.post-list-wrapper > div:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: var(--primary-color); /* Viền xanh nhẹ khi hover */
+  transform: translateY(-1px);
+}
+
+/* --- 5. Responsive --- */
+@media (max-width: 576px) {
+  .discuss-page-container {
+    padding: 12px 0;
+  }
+  
+  .discuss-page-content {
+    padding: 0; /* Trên mobile cho tràn viền hoặc padding rất nhỏ */
+    width: 100%;
+  }
+
+  .post-list-wrapper > div {
+    border-radius: 0; /* Trên mobile có thể để vuông góc hoặc bo ít */
+    border-left: none;
+    border-right: none;
+    box-shadow: none; /* Giảm shadow trên mobile để nhẹ máy */
+    border-bottom: 1px solid var(--border-color);
+  }
 }

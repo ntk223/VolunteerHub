@@ -5,6 +5,8 @@ import { AdminProvider } from "./hooks/useAdminData.jsx";
 import { SocketProvider } from "./hooks/useSocket.jsx";
 import { SearchProvider } from "./hooks/useSearch.jsx";
 
+// 1. Import useTheme để lấy trạng thái theme hiện tại
+import { ThemeProvider, useTheme } from "./hooks/useTheme.jsx"; 
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import DiscussPage from "./pages/Feed/DiscussPage";
@@ -21,22 +23,61 @@ import LandingPage from "./pages/LandingPage/LandingPage.jsx";
 import ServerErrorPage from "./pages/ServerErrorPage/ServerErrorPage.jsx";
 import ManageApplications from "./pages/ManageApplications/ManageApplications";
 import 'antd/dist/reset.css';
-import { ConfigProvider } from 'antd';
+// 2. Import theme từ antd
+import { ConfigProvider, theme } from 'antd'; 
 
 import './App.css';
+
 const ProtectedRoute = ({ children }) => {
     const { isAuthenticated } = useAuth();
     return isAuthenticated ? children : <Navigate to="/landing" replace />;
 };
 
 function AppInitializer() {
-  return (
-    <Router>
-      {/* SearchProvider PHẢI LÀ CON CỦA Router để useNavigate hoạt động */}
-      <SearchProvider>
-        <Routes>
-          {/* Public */}
-          <Route path="/login" element={<Login />} />
+    // 3. Lấy biến xác định dark mode từ hook (giả sử hook trả về { isDarkMode })
+    const { isDarkMode } = useTheme(); 
+
+    return (
+        // 4. Cấu hình ConfigProvider bao bọc toàn bộ ứng dụng
+        <ConfigProvider
+            theme={{
+                // Thuật toán tự động chuyển đổi giữa giao diện Sáng/Tối
+                algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
+                token: {
+                    // Bạn có thể tùy chỉnh màu chủ đạo toàn app tại đây nếu muốn
+                    // colorPrimary: '#1677ff', 
+                },
+            }}
+        >
+            <Router>
+                <Routes>
+                    {/* Public */}
+                    <Route path="/auth/:mode" element={<Login />} />
+
+                    <Route
+                        path="/"
+                        element={
+                            <ProtectedRoute>
+                                <SearchProvider>
+                                    <Home />
+                                </SearchProvider>
+                            </ProtectedRoute>
+                        }
+                    >
+                        {/* Manager events page */}
+                        <Route
+                            path="manage-events"
+                            element={<ManageEvent />}
+                        />
+                        <Route index element={<Navigate to="discuss" replace />} />
+                        <Route
+                            path="discuss"
+                            element={
+                                <PostsProvider postType="discuss">
+                                    <DiscussPage />
+                                </PostsProvider>
+                            }
+                        />
 
           <Route
             path="/"
@@ -109,21 +150,31 @@ function AppInitializer() {
               }
             />
 
-          </Route>
-        </Routes>
-      </SearchProvider>
-    </Router>
-  );
+                    <Route path="*" element={<Navigate to="/discuss" replace />} />
+                    <Route path="/landing" element={
+                        <ConfigProvider
+                            theme={{
+                                algorithm: theme.defaultAlgorithm
+                            }}
+                        >
+                            <LandingPage />
+                        </ConfigProvider>
+                    } />
+                    <Route path="/server-error" element={<ServerErrorPage />} />
+                </Routes>
+            </Router>
+        </ConfigProvider>
+    );
 }
 
 export default function App() {
     return (
-        <ConfigProvider>
+        <ThemeProvider> 
             <AuthProvider>
                 <SocketProvider>
                     <AppInitializer />
                 </SocketProvider>
             </AuthProvider>
-        </ConfigProvider>
+        </ThemeProvider>
     );
 }

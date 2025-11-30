@@ -92,7 +92,7 @@ const LandingPage = () => {
                   size="large"
                   shape="round"
                   style={{ height: 56, padding: "0 40px", fontSize: 18 }}
-                  onClick={() => navigate("/login")}
+                  onClick={() => navigate("/auth/login")}
                   icon={<HeartOutlined />}
                 >
                   Tham gia ngay

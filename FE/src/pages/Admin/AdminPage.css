@@ -1,34 +1,78 @@
+/* --- CONTAINER CHÍNH --- */
 .admin-page {
   padding: 32px;
-  background: #fafafa;
+  /* Thay màu cứng #fafafa bằng biến nền */
+  background-color: var(--bg-color); 
   min-height: 100vh;
+  /* Thêm màu chữ chuẩn */
+  color: var(--text-color); 
+  /* Hiệu ứng chuyển theme mượt */
+  transition: all 0.3s ease;
 }
 
+/* --- LOADING SCREEN --- */
 .admin-loading {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  width: 100%;
+  background-color: var(--bg-color);
 }
 
+/* --- ERROR / ACCESS DENIED --- */
 .admin-error,
 .admin-denied {
   text-align: center;
-  padding: 50px;
+  padding: 80px 20px;
+  color: var(--text-color);
+  background-color: var(--bg-color);
 }
 
-.admin-stats {
-  background: white;
-  padding: 20px;
-  margin-bottom: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+/* Style cho icon hoặc text trong trang lỗi */
+.admin-error h1, 
+.admin-denied h1 {
+  color: var(--text-color);
+  font-weight: 700;
 }
 
+/* --- CÁC KHỐI THỐNG KÊ & SECTION --- */
+/* Gộp chung style cho các Card để code gọn */
+.admin-stats,
 .admin-section {
-  background: white;
-  padding: 20px;
+  /* Thay background white bằng content-bg (Trắng ở Light, Xám đậm ở Dark) */
+  background: var(--content-bg);
+  
+  padding: 24px; /* Tăng padding chút cho thoáng */
   margin-bottom: 24px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  
+  /* Thay shadow cứng bằng biến shadow */
+  box-shadow: var(--shadow-sm);
+  
+  /* QUAN TRỌNG: Thêm viền để tách biệt khối trong Dark Mode (khi shadow bị chìm) */
+  border: 1px solid var(--border-color);
+  
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hiệu ứng hover nhẹ làm nổi khối (Optional) */
+.admin-stats:hover,
+.admin-section:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+/* --- RESPONSIVE CHO ADMIN --- */
+@media (max-width: 768px) {
+  .admin-page {
+    padding: 16px; /* Giảm padding trên mobile */
+  }
+  
+  .admin-stats,
+  .admin-section {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
 }

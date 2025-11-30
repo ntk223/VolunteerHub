@@ -1,94 +1,68 @@
-/* --- LAYOUT CHÍNH --- */
-.main-layout {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-color: #f0f2f5;
-}
-
-.content-layout {
-  display: flex;
-  flex: 1;
-  position: relative; /* Quan trọng để định vị absolute cho trigger */
-}
-
-/* Nội dung chính ở giữa */
-.main-content {
-  flex-grow: 1;
-  padding: 24px;
-  margin: 0;
-  overflow-y: auto;
-  background-color: #f0f2f5;
-  min-height: 280px;
-  transition: all 0.2s;
-}
-
-/* --- SIDEBAR TRÊN DESKTOP --- */
-/* Class này bọc bên ngoài component Sidebar */
-.desktop-sidebar {
-  background: #fff;
-  height: calc(100vh - 64px); /* Full chiều cao trừ header */
-  position: sticky;
-  top: 64px;
-  overflow-y: auto;
-  flex-shrink: 0; /* Không bị co lại */
-}
-
-/* Sidebar Trái (Menu) */
-.desktop-sidebar.left {
-  width: 250px;
-  border-right: 1px solid #f0f0f0;
-}
-
-/* Sidebar Phải (Search) */
-.desktop-sidebar.right {
-  width: 300px;
-  border-left: 1px solid #f0f0f0;
-}
-
-/* --- VÙNG CẢM ỨNG (TRIGGER ZONE) --- */
-/* Mặc định ẩn trên Desktop, chỉ hiện bằng media query */
-.edge-trigger {
-  display: none; 
-  position: fixed;
-  top: 64px;       /* Bắt đầu từ dưới Header */
-  bottom: 0;       /* Kéo dài xuống đáy */
-  width: 20px;     /* Độ rộng vùng cảm ứng */
-  z-index: 999;    /* Nằm trên content */
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.edge-trigger.left {
-  left: 0;
-}
-
-.edge-trigger.right {
-  right: 0;
-}
-
-/* Hiệu ứng khi rê chuột vào mép: hiện màu xanh nhạt */
-.edge-trigger:hover {
-  background: rgba(22, 119, 255, 0.15); 
-  box-shadow: 0 0 10px rgba(22, 119, 255, 0.1);
-}
-
-/* --- RESPONSIVE (QUAN TRỌNG) --- */
-/* Khi màn hình nhỏ hơn 992px (Tablet dọc & Mobile) */
-@media (max-width: 992px) {
+/* --- 1. CẬP NHẬT LẠI :ROOT (Thêm màu chữ mặc định) --- */
+:root {
+  /* Màu Layout */
+  --primary-color: #1677ff;
+  --bg-color: #f0f2f5;       /* Xám nhạt */
+  --sidebar-bg: #ffffff;     /* Trắng */
+  --content-bg: #ffffff;     /* Nền nội dung (nếu có card) */
   
-  /* 1. Ẩn Sidebar tĩnh (React đã xử lý, nhưng thêm CSS để chắc chắn không vỡ layout lúc load) */
-  .desktop-sidebar {
-    display: none !important;
-  }
+  /* Màu Text & Border */
+  --text-color: rgba(0, 0, 0, 0.88);
+  --text-secondary: rgba(0, 0, 0, 0.45);
+  --border-color: rgba(5, 5, 5, 0.06);
+  
+  /* Scrollbar */
+  --scroll-thumb: #ccc;
+  --scroll-track: transparent;
 
-  /* 2. Hiện vùng cảm ứng */
-  .edge-trigger {
-    display: block;
-  }
+  /* Kích thước & Shadow giữ nguyên như cũ */
+  --header-height: 64px;
+  --trigger-width: 24px;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+}
 
-  /* 3. Giảm padding nội dung cho thoáng */
-  .main-content {
-    padding: 16px;
-  }
+/* --- 2. ĐỊNH NGHĨA DARK MODE --- */
+[data-theme="dark"] {
+  /* Màu Layout - Tông màu tối dịu mắt (giống Ant Design Dark) */
+  --primary-color: #1668dc;  /* Xanh đậm hơn chút để đỡ chói */
+  --bg-color: #000000;       /* Nền đen sâu */
+  --sidebar-bg: #141414;     /* Xám đen cho Sidebar */
+  --content-bg: #1f1f1f;     /* Xám nhẹ hơn cho các Card nội dung */
+
+  /* Màu Text & Border - Đảo ngược lại */
+  --text-color: rgba(255, 255, 255, 0.85); /* Trắng đục dễ đọc */
+  --text-secondary: rgba(255, 255, 255, 0.45);
+  --border-color: #303030;   /* Viền xám tối */
+
+  /* Shadow - Giảm độ gắt hoặc đổi sang shadow âm bản */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+
+  /* Scrollbar tối */
+  --scroll-thumb: #444;
+}
+
+/* --- 3. ÁP DỤNG MÀU VÀO ELEMENT (Quan trọng) --- */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  /* Thêm transition để khi bấm nút chuyển màu nó mượt, không bị chớp */
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.main-layout, 
+.main-content, 
+.desktop-sidebar {
+  /* Đảm bảo các thành phần này ăn theo biến màu */
+  background-color: var(--bg-color); /* Hoặc --sidebar-bg tùy vị trí */
+  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.desktop-sidebar {
+  background-color: var(--sidebar-bg); /* Ghi đè lại nền cho sidebar */
+  border-color: var(--border-color) !important; /* Ghi đè border */
+}
+
+/* Cập nhật lại Scrollbar để ăn theo biến */
+::-webkit-scrollbar-thumb {
+  background: var(--scroll-thumb);
 }
