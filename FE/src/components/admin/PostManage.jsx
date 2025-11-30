@@ -6,7 +6,10 @@ import { useAuth } from "../../hooks/useAuth";
 import { exportPostsToExcel } from "../../utils/excelExport";
 
 const { Option } = Select;
-
+const postTypeMap = {
+  discuss: "Thảo luận",
+  recruitment: "Tuyển tình nguyện viên",
+}
 const PostManage = ({ posts, changePostStatus, deletePost }) => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -41,7 +44,7 @@ const PostManage = ({ posts, changePostStatus, deletePost }) => {
         title: "Loại bài viết",
         dataIndex: "postType",
         key: "postType",
-        render: (type) => <Tag color="blue">{type}</Tag>,
+        render: (type) => <Tag color={type === "discuss" ? "blue" : "green"}>{postTypeMap[type]}</Tag>,
       },
       {
         title: "Nội dung",
