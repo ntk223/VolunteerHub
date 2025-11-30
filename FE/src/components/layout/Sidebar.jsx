@@ -92,7 +92,7 @@ const Sidebar = ({ isMobile, onClose }) => {
     menuItems.push({
       key: "manage-applications",
       icon: <FileTextOutlined style={{ fontSize: 24 }} />,
-      label: <span className="menu-label">My Applications</span>,
+      label: <span className="menu-label">Đơn ứng tuyển</span>,
     });
   }
 

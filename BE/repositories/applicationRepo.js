@@ -3,6 +3,12 @@ import ApiError from "../utils/ApiError.js";
 import {StatusCodes} from "http-status-codes";
 class ApplicationRepository {
     async createApplication(eventId, volunteerId) {
+        const existingApplication = await Application.findOne({ where: { eventId, volunteerId } });
+        if (existingApplication && existingApplication.isCancelled === true) {
+            existingApplication.isCancelled = false;
+            await existingApplication.save();
+            return existingApplication;
+        }
         return await Application.create({ eventId, volunteerId });
     }
 

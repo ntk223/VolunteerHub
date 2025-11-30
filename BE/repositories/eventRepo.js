@@ -1,6 +1,7 @@
-import {Event, Manager, User} from "../models/Model.js";
+import {Event, Manager, User, Application} from "../models/Model.js";
 import ApiError from "../utils/ApiError.js";
 import { StatusCodes } from "http-status-codes";
+import { fn, col } from "sequelize";
 class EventRepository {
 
     async getEventsByManagerId(userId) {
@@ -8,8 +9,21 @@ class EventRepository {
         if (!manager) return [];
 
         return Event.findAll({
-            where: { manager_id: manager.id },
-            order: [["created_at", "DESC"]]
+            where: { managerId: manager.id },
+              attributes: {
+                include: [
+                [fn('COUNT', col('applications.volunteer_id')), 'currentApplied']
+                ]
+            },
+            include: [
+                {
+                model: Application,
+                as: 'applications',
+                attributes: []  // không lấy cột nào của Application, chỉ để COUNT
+                }
+            ],
+            group: ['Event.id'],  // nhóm theo Event.id
+            order: [["createdAt", "DESC"]]
         });
     }
 
