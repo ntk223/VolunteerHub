@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import {Card, Form, Button, Row, Col} from 'antd';
+import { Card, Form, Button, Row, Col, theme } from 'antd'; // 1. Import theme
 import { EditOutlined, SaveOutlined } from '@ant-design/icons';
 import { useAuth } from '../../hooks/useAuth';
 import UpdateProfileForm from '../../components/auth/Profile/UpdateProfileForm';
@@ -11,8 +11,11 @@ import { useLocation } from 'react-router-dom';
 
 const MyProfile = () => {
   const location = useLocation();
-
   const { user, updateUser } = useAuth();
+  
+  // 2. Sử dụng hook useToken để lấy các biến màu (token)
+  const { token } = theme.useToken();
+
   const [isEditing, setIsEditing] = useState(false);
   const [form] = Form.useForm();
   const [profileForm] = Form.useForm();
@@ -21,18 +24,20 @@ const MyProfile = () => {
   return (
     <div
       style={{
-        background: '#f5f6fa',
+        // 3. Thay màu cứng '#f5f6fa' bằng token.colorBgLayout
+        background: token.colorBgLayout, 
         minHeight: '100vh',
         padding: '40px 0',
         display: 'flex',
         justifyContent: 'center',
+        color: token.colorText, // Đảm bảo màu chữ chính xác
       }}
     >
       <div style={{ width: '100%', maxWidth: 1200 }}>
         <Row gutter={[24, 24]}>
           {/* Hàng 1 */}
           <Col xs={24} md={12}>
-              <AvatarCard user={user} updateUser={updateUser} isMe={true} />
+            <AvatarCard user={user} updateUser={updateUser} isMe={true} />
           </Col>
 
           <Col xs={24} md={12}>
@@ -44,9 +49,11 @@ const MyProfile = () => {
             <Card
               title="Thông tin cá nhân"
               style={{
-                borderRadius: 12,
-                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                borderRadius: token.borderRadiusLG, // Dùng token bo góc chuẩn của Antd
+                // 4. Xử lý Shadow: Dark mode thường ít dùng shadow nổi hơn Light mode
+                boxShadow: token.boxShadowTertiary, 
                 height: '100%',
+                // Card của Antd tự động xử lý background (trắng hoặc đen), không cần set thủ công
               }}
               extra={
                 isEditing ? (
@@ -82,7 +89,8 @@ const MyProfile = () => {
               />
 
               <Button
-                type="primary"
+                type="primary" // Hoặc 'default' tùy thiết kế
+                // ghost // Thêm thuộc tính ghost nếu muốn nút trong suốt trên nền tối
                 onClick={() => setIsChangePasswordVisible(true)}
                 style={{
                   marginTop: isEditing ? 16 : 0,

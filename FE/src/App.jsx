@@ -5,7 +5,8 @@ import { AdminProvider } from "./hooks/useAdminData.jsx";
 import { SocketProvider } from "./hooks/useSocket.jsx";
 import { SearchProvider } from "./hooks/useSearch.jsx";
 
-import { ThemeProvider } from "./hooks/useTheme.jsx";
+// 1. Import useTheme để lấy trạng thái theme hiện tại
+import { ThemeProvider, useTheme } from "./hooks/useTheme.jsx"; 
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import DiscussPage from "./pages/Feed/DiscussPage";
@@ -19,18 +20,35 @@ import OnePost from "./pages/Feed/OnePost.jsx";
 import SearchPage from "./pages/Search/SearchPage.jsx";
 import ManageEvent from "./pages/ManageEvent/ManageEvent.jsx";
 import LandingPage from "./pages/LandingPage/LandingPage.jsx";
+
 import 'antd/dist/reset.css';
-import { ConfigProvider } from 'antd';
+// 2. Import theme từ antd
+import { ConfigProvider, theme } from 'antd'; 
 
 import './App.css';
+
 const ProtectedRoute = ({ children }) => {
     const { isAuthenticated } = useAuth();
     return isAuthenticated ? children : <Navigate to="/landing" replace />;
 };
 
 function AppInitializer() {
+    // 3. Lấy biến xác định dark mode từ hook (giả sử hook trả về { isDarkMode })
+    const { isDarkMode } = useTheme(); 
+
     return (
-        <Router>
+        // 4. Cấu hình ConfigProvider bao bọc toàn bộ ứng dụng
+        <ConfigProvider
+            theme={{
+                // Thuật toán tự động chuyển đổi giữa giao diện Sáng/Tối
+                algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
+                token: {
+                    // Bạn có thể tùy chỉnh màu chủ đạo toàn app tại đây nếu muốn
+                    // colorPrimary: '#1677ff', 
+                },
+            }}
+        >
+            <Router>
                 <Routes>
                     {/* Public */}
                     <Route path="/auth/:mode" element={<Login />} />
@@ -108,7 +126,8 @@ function AppInitializer() {
                     <Route path="*" element={<Navigate to="/discuss" replace />} />
                     <Route path="/landing" element={<LandingPage />} />
                 </Routes>
-        </Router>
+            </Router>
+        </ConfigProvider>
     );
 }
 
