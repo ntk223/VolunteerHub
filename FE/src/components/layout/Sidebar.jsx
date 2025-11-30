@@ -1,16 +1,17 @@
 // Sidebar.jsx
 import { useState } from "react";
 import { Layout, Menu, Badge, Button, Popconfirm } from "antd";
-import { 
-  HomeOutlined, 
-  BellOutlined, 
-  UserOutlined, 
+import {
+  HomeOutlined,
+  BellOutlined,
+  UserOutlined,
   PlusCircleOutlined,
-  CalendarOutlined, 
-  LogoutOutlined
+  CalendarOutlined,
+  LogoutOutlined,
+  FileTextOutlined,
 } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
-import CreatePostModal from "../createPost/CreatePostModal"; 
+import CreatePostModal from "../createPost/CreatePostModal";
 import CreateEventModal from "../createEvent/CreateEventModal";
 import { useAuth } from "../../hooks/useAuth";
 import { useSocket } from "../../hooks/useSocket";
@@ -23,33 +24,36 @@ const Sidebar = () => {
   const { user, logout } = useAuth();
   const { notifications, markNotificationsAsRead } = useSocket();
 
-  let countUnread = notifications.filter(n => !n.isRead).length;
+  let countUnread = notifications.filter((n) => !n.isRead).length;
 
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [showCreateEvent, setShowCreateEvent] = useState(false);
 
-  const selectedKey = location.pathname === "/" 
-    ? "home" 
-    : location.pathname.slice(1);
+  const selectedKey =
+    location.pathname === "/" ? "home" : location.pathname.slice(1);
 
   const handleMenuClick = (e) => {
     if (e.key === "home") navigate("/");
-
     if (e.key === "notification") {
       markNotificationsAsRead();
       navigate("/notification");
     }
-
     if (e.key === "profile") navigate("/profile");
-
     if (e.key === "create-post") {
       if (!user) return navigate("/login");
       setShowCreatePost(true);
     }
-
     if (e.key === "create-event") {
       if (!user) return navigate("/login");
       setShowCreateEvent(true);
+    }
+    if (e.key === "manage-events") {
+      if (!user) return navigate("/login");
+      navigate("/manage-events");
+    }
+    if (e.key === "manage-applications") {
+      if (!user) return navigate("/login");
+      navigate("/manage-applications");
     }
   };
 
@@ -66,7 +70,6 @@ const Sidebar = () => {
     },
   ];
 
-  // ➕ Thêm mục Create Event nếu user là manager
   if (user?.role === "manager") {
     menuItems.push({
       key: "create-event",
@@ -75,12 +78,26 @@ const Sidebar = () => {
     });
   }
 
+  if (user?.role === "volunteer") {
+    menuItems.push({
+      key: "manage-applications",
+      icon: <FileTextOutlined style={{ fontSize: 24 }} />,
+      label: <span className="menu-label">My Applications</span>,
+    });
+  }
+
   menuItems.push(
     {
       key: "notification",
       icon: <BellOutlined style={{ fontSize: 24 }} />,
       label: (
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <span className="menu-label">Notification</span>
           {countUnread > 0 && <Badge count={countUnread} size="small" />}
         </div>
@@ -95,7 +112,7 @@ const Sidebar = () => {
 
   return (
     <>
- <Sider
+      <Sider
         className="home-sider"
         width={250}
         style={{
@@ -126,7 +143,7 @@ const Sidebar = () => {
             />
           </div>
           <div style={{ padding: "16px", borderTop: "1px solid #f0f0f0" }}>
-              <Popconfirm
+            <Popconfirm
               title="Đăng xuất"
               description="Bạn có chắc chắn muốn đăng xuất không?"
               onConfirm={logout} // Hàm logout chỉ chạy khi bấm "Đồng ý"
@@ -140,30 +157,31 @@ const Sidebar = () => {
                 size="middle"
                 icon={<LogoutOutlined />}
                 style={{
-                   backgroundColor: "#16aefaff", // Màu cam
-                   borderColor: "#16aefaff",
-                   color: "white"
+                  backgroundColor: "#16aefaff", // Màu cam
+                  borderColor: "#16aefaff",
+                  color: "white",
                 }}
               >
                 Logout
               </Button>
             </Popconfirm>
-        </div>
+          </div>
         </div>
       </Sider>
 
       {/* Modal Create Post */}
-      <CreatePostModal 
-        visible={showCreatePost} 
-        onClose={() => setShowCreatePost(false)} 
+      <CreatePostModal
+        visible={showCreatePost}
+        onClose={() => setShowCreatePost(false)}
       />
 
       {/* Modal Create Event */}
-      {<CreateEventModal 
-        visible={showCreateEvent}
-        onClose={() => setShowCreateEvent(false)}
-      />}
-
+      {
+        <CreateEventModal
+          visible={showCreateEvent}
+          onClose={() => setShowCreateEvent(false)}
+        />
+      }
     </>
   );
 };
