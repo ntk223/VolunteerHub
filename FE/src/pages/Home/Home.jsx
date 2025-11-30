@@ -6,7 +6,7 @@ import Sidebar from "../../components/layout/Sidebar";
 import SearchSidebar from "../../components/layout/SearchSidebar";
 
 // import "./Home.css"; // Nếu bạn đã có CSS trong App.css thì có thể bỏ dòng này
-
+import "./Side.css"
 const { Content } = Layout;
 const { useBreakpoint } = Grid;
 
