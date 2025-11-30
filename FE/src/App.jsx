@@ -5,6 +5,7 @@ import { AdminProvider } from "./hooks/useAdminData.jsx";
 import { SocketProvider } from "./hooks/useSocket.jsx";
 import { SearchProvider } from "./hooks/useSearch.jsx";
 
+import { ThemeProvider } from "./hooks/useTheme.jsx";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import DiscussPage from "./pages/Feed/DiscussPage";
@@ -113,12 +114,12 @@ function AppInitializer() {
 
 export default function App() {
     return (
-        <ConfigProvider>
+        <ThemeProvider> 
             <AuthProvider>
                 <SocketProvider>
                     <AppInitializer />
                 </SocketProvider>
             </AuthProvider>
-        </ConfigProvider>
+        </ThemeProvider>
     );
 }

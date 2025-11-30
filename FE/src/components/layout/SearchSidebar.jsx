@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { useSearch } from "../../hooks/useSearch";
-import { Layout, Input, Spin, Button } from "antd";
+import { Layout, Input, Spin, Button, Typography } from "antd";
 import { SearchOutlined, EyeOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom"; // 👈 THÊM HOOK NAVIGATE
-import "./SearchSidebar.css";
+import { Link, useNavigate } from "react-router-dom";
+import "./SearchSidebar.css"; 
 
 const { Sider } = Layout;
+const { Text } = Typography;
 
-const SearchSidebar = () => {
+// ✅ ĐÃ ĐÚNG: Nhận prop isMobile
+const SearchSidebar = ({ isMobile }) => {
+  const navigate = useNavigate();
   const {
     searchQuery,
     setSearchQuery,
@@ -21,41 +24,28 @@ const SearchSidebar = () => {
   } = useSearch();
 
   const [displayLimit, setDisplayLimit] = useState(10);
-
-  // Reset display limit when search query changes
   const resetDisplayLimit = () => setDisplayLimit(10);
 
-  // Hàm xử lý khi người dùng gõ
   const handleInputChange = (e) => {
     setSearchQuery(e.target.value);
-    resetDisplayLimit(); // Reset limit when search query changes
-    // Tự động tìm kiếm khi người dùng gõ (debounce có thể được thêm ở useSearch hook)
-    // if (e.target.value.trim() !== "") {
-    //   handleSearch();
-    // }
+    resetDisplayLimit();
   };
 
-  // Xử lý khi nhấn Enter (Ant Design sử dụng onPressEnter)
   const handlePressEnter = () => {
     handleSearch();
   };
 
   const highlightText = (text, query) => {
     if (!query) return text;
-
     const regex = new RegExp(`(${query})`, "gi");
     return text.replace(regex, `<span class="highlight">$1</span>`);
   };
 
-
-
-  // Hiển thị kết quả tìm kiếm
   const renderResults = () => {
     if (searchQuery.trim() === "" && !searchLoading) return null;
 
-    // 💡 Xây dựng danh sách kết quả kèm theo thông tin loại (type)
     const items = [
-      ...searchApprovedEvents.map(item => ({ ...item, resultType: 'Sự kiện', type: 'event' })),
+      ...searchApprovedEvents.map(item => ({ ...item, resultType: 'Sự kiện', type: 'manage-events' })),
       ...searchResults.users.map(item => ({ ...item, resultType: 'Người dùng', type: 'profile' })),
       ...searchResults.posts.map(item => ({ ...item, resultType: 'Bài viết', type: 'post' })),
     ];
@@ -68,8 +58,8 @@ const SearchSidebar = () => {
         <div className="search-results">
           <div className="no-results">
             <span>🔍</span>
-            <p>Không tìm thấy kết quả phù hợp</p>
-            <small>Thử tìm kiếm với từ khóa khác</small>
+            <p>Không tìm thấy kết quả</p>
+            <small>Thử từ khóa khác xem sao!</small>
           </div>
         </div>
       );
@@ -80,18 +70,15 @@ const SearchSidebar = () => {
         <div className="search-results">
           <div className="results-header">
             <h4>Kết quả tìm kiếm ({items.length})</h4>
-            <small>Hiển thị {displayedItems.length} / {items.length} kết quả</small>
+            <small>Đang hiển thị {displayedItems.length} kết quả</small>
           </div>
           <div className="results-list">
             {displayedItems.map((item) => (
               <Link
                 key={`${item.type}-${item.id}`}
                 className="result-item"
-                to={`/${item.type}/${item.id}`}
-                onClick={() => {
-                  setSearchQuery('');
-                  resetDisplayLimit();
-                }}
+                to={item.type === 'manage-events' ? `/event/${item.id}` : `/${item.type}/${item.id}`} 
+                onClick={() => {}}
               >
                 <span className="result-type-label">{item.resultType}</span>
                 <span
@@ -103,88 +90,92 @@ const SearchSidebar = () => {
                     ),
                   }}
                 ></span>
-
                 {item.approvalStatus === "approved" && (
                   <span className="approved-badge">✓</span>
                 )}
               </Link>
             ))}
           </div>
-          
           {hasMore && (
             <div className="show-more-container">
-              <Button 
-                type="primary"
-                icon={<EyeOutlined />}
+              <Button
                 className="show-more-btn"
-                onClick={() => setDisplayLimit(prev => prev + 10)}
-                size="small"
+                icon={<EyeOutlined />}
+                onClick={() => setDisplayLimit((prev) => prev + 10)}
+                size="middle"
+                block
               >
-                Hiển thị thêm ({items.length - displayLimit})
+                Xem thêm ({items.length - displayLimit})
               </Button>
             </div>
           )}
         </div>
       );
     }
-
     return null;
   };
 
   return (
     <Sider
-      width={300}
+      width={isMobile ? "100%" : 300}
+      className={isMobile ? "custom-sider-search mobile-sider" : "desktop-sidebar right custom-sider-search"}
+      theme="light"
       style={{
-        background: "#fff",
-        borderLeft: "1px solid #cfc6c6ff",
-        padding: "16px",
-        height: "calc(100vh - 64px)",
-        position: "sticky",
-        top: 64,
-        alignSelf: "flex-start",
+        position: isMobile ? "relative" : "sticky",
+        top: isMobile ? 0 : 64,
+        height: isMobile ? "100%" : "calc(100vh - 64px)",
+        borderLeft: isMobile ? "none" : "1px solid var(--border-color)",
+        backgroundColor: "var(--sidebar-bg)",
+        overflowY: "auto",
+        transition: "all 0.3s",
       }}
     >
-
-      <div className="search-input-container">
-        <Input
-          placeholder="Tìm kiếm sự kiện, người dùng, bài viết..."
-          prefix={<SearchOutlined />}
-          allowClear
-          style={{ borderRadius: 8 }}
-          value={searchQuery}
-          onChange={handleInputChange}
-          onPressEnter={handlePressEnter}
-          onClear={() => setSearchQuery('')}
-          className="search-input"
-        />
-      </div>
-
-      <div className="category-select">
-        <select
-          value={searchCategory}
-          onChange={(e) => setSearchCategory(e.target.value)}
-          className="w-full p-2 border rounded-md"
-        >
-          <option value="all">Tất cả</option>
-          <option value="events">Sự kiện</option>
-          <option value="users">Người dùng</option>
-          <option value="posts">Bài viết</option>
-        </select>
-      </div>
-
-      {/* Loading state */}
-      {searchLoading && (
-        <div className="loading-container">
-          <Spin size="small" />
-          <span style={{ marginLeft: 8, color: '#64748b' }}>Đang tìm kiếm...</span>
+      <div style={{ padding: "20px" }}>
+        <div style={{ marginBottom: 16 }}>
+           <Text strong style={{ color: "var(--text-color)", fontSize: 16 }}>
+             Tìm kiếm
+           </Text>
         </div>
-      )}
 
-      {/* Error state */}
-      {searchError && <div className="error">{searchError}</div>}
+        <div className="search-input-container">
+          <Input
+            placeholder="Tìm sự kiện, người dùng..."
+            prefix={<SearchOutlined style={{ color: "var(--text-secondary)" }} />}
+            allowClear
+            value={searchQuery}
+            onChange={handleInputChange}
+            onPressEnter={handlePressEnter}
+            onClear={() => setSearchQuery("")}
+            className="search-input"
+            size="large"
+          />
+        </div>
 
-      {/* Search results */}
-      {renderResults()}
+        <div className="category-select">
+          <select
+            value={searchCategory}
+            onChange={(e) => setSearchCategory(e.target.value)}
+          >
+            <option value="all">Tất cả danh mục</option>
+            <option value="events">Sự kiện</option>
+            <option value="users">Người dùng</option>
+            <option value="posts">Bài viết</option>
+          </select>
+        </div>
+
+        {searchLoading && (
+          <div className="loading-container">
+            <Spin size="small" />
+            <span style={{ marginLeft: 8, color: "var(--text-secondary)" }}>
+              Đang tìm dữ liệu...
+            </span>
+          </div>
+        )}
+
+        {searchError && <div className="error">{searchError}</div>}
+
+        {renderResults()}
+      </div>
     </Sider>
   );
 };

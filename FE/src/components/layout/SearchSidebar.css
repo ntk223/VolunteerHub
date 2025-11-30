@@ -1,279 +1,301 @@
+/* --- SEARCH SIDEBAR CONTAINER --- */
 .search-sidebar {
-    width: 100%;
-    max-width: 200px;
-    padding: 20px;
-    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 100%;
+  max-width: 250px; /* Tăng nhẹ độ rộng cho thoáng */
+  padding: 20px;
+  /* Sử dụng màu nền từ biến theme */
+  background: var(--sidebar-bg);
+  border-radius: 16px;
+  /* Shadow nhẹ nhàng hơn */
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Viền tinh tế, tự đổi màu */
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  height: fit-content; /* Để không bị kéo dài quá mức */
 }
 
+/* --- INPUT SEARCH --- */
 .search-input-container {
-    position: relative;
-    margin-bottom: 24px;
+  position: relative;
+  margin-bottom: 20px;
 }
 
 .search-input {
-    width: 100%;
-    padding: 14px 16px !important;
-    border-radius: 12px !important;
-    border: 2px solid #e2e8f0 !important;
-    box-sizing: border-box;
-    font-size: 15px !important;
-    background: rgba(255, 255, 255, 0.9) !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  width: 100%;
+  padding: 12px 16px !important;
+  border-radius: 12px !important;
+  font-size: 15px !important;
+  box-sizing: border-box;
+  
+  /* Màu sắc theo theme */
+  background: var(--bg-color) !important; 
+  color: var(--text-color) !important;
+  border: 1px solid var(--border-color) !important;
+  
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: none !important; 
+}
+
+/* Placeholder color adjustments (Optional) */
+.search-input::placeholder {
+  color: var(--text-secondary);
 }
 
 .search-input:focus {
-    border-color: #3b82f6 !important;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
-    background: #ffffff !important;
-    transform: translateY(-1px);
+  border-color: var(--primary-color) !important;
+  background: var(--sidebar-bg) !important; /* Khi focus thì nền sáng hơn chút (trong dark mode) */
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2) !important; /* Blue glow */
 }
 
 .search-input:hover {
-    border-color: #64748b !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  border-color: var(--primary-color) !important;
 }
 
+/* --- SELECT CATEGORY --- */
 .category-select {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .category-select select {
-    width: 100%;
-    padding: 12px 16px;
-    border: 2px solid #e2e8f0;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.9);
-    font-size: 14px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-    background-position: right 12px center;
-    background-repeat: no-repeat;
-    background-size: 16px;
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  appearance: none; /* Ẩn mũi tên mặc định */
+  
+  /* Màu sắc theo theme */
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  
+  /* Icon mũi tên tuỳ chỉnh (SVG) */
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23999' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  transition: all 0.3s ease;
 }
 
 .category-select select:focus {
-    border-color: #3b82f6;
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2);
 }
 
 .category-select select:hover {
-    border-color: #64748b;
+  border-color: var(--primary-color);
 }
 
-/* Search Results Section */
+/* --- SEARCH RESULTS SECTION --- */
 .search-results {
-    margin-top: 20px;
-    animation: fadeIn 0.3s ease-out;
+  margin-top: 10px;
+  animation: fadeIn 0.3s ease-out;
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .results-header {
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid #e2e8f0;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .results-header h4 {
-    margin: 0;
-    color: #1e293b;
-    font-size: 16px;
-    font-weight: 600;
+  margin: 0;
+  color: var(--text-color);
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .results-header small {
-    color: #64748b;
-    font-size: 12px;
-    margin-top: 4px;
-    display: block;
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
 }
 
+/* --- LIST ITEMS --- */
 .results-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    max-height: 400px;
-    overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 4px; /* Tránh thanh cuộn che nội dung */
 }
 
 .result-item {
-    padding: 12px 14px;
-    background: white;
-    border-radius: 10px;
-    border: 1px solid #e2e8f0;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-    color: #334155;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid transparent; /* Để border ẩn, hiện khi hover */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  
+  /* Màu nền */
+  background: var(--bg-color);
+  color: var(--text-color);
+  
+  transition: all 0.2s ease;
 }
 
 .result-item:hover {
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    border-color: #cbd5e1;
+  /* Hover tạo hiệu ứng nổi nhẹ */
+  background: var(--sidebar-bg);
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
 }
 
-.no-results {
-    text-align: center;
-    padding: 32px 16px;
-    color: #64748b;
-    background: #f8fafc;
-    border-radius: 12px;
-    border: 2px dashed #cbd5e1;
-}
-
-.no-results span {
-    font-size: 32px;
-    display: block;
-    margin-bottom: 12px;
-}
-
-.no-results p {
-    margin: 0 0 8px 0;
-    font-weight: 500;
-    color: #475569;
-}
-
-.no-results small {
-    color: #94a3b8;
-    font-size: 13px;
-}
-
-/* Show More Button */
-.show-more-container {
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid #e2e8f0;
-    text-align: center;
-}
-
-.show-more-btn {
-    border-radius: 8px !important;
-    font-weight: 500 !important;
-    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2) !important;
-    transition: all 0.2s ease !important;
-}
-
-.show-more-btn:hover {
-    transform: translateY(-1px) !important;
-    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3) !important;
-}
-
-.show-more-btn:active {
-    transform: translateY(0) !important;
-}
-
+/* --- BADGES & TAGS --- */
 .result-type-label {
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    flex-shrink: 0;
+  background: rgba(22, 119, 255, 0.1); /* Blue tint */
+  color: var(--primary-color);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  flex-shrink: 0;
 }
 
 .result-title {
-    flex: 1;
-    font-weight: 500;
-    color: #1e293b;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  flex: 1;
+  font-weight: 500;
+  color: var(--text-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
 }
 
 .approved-badge {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: white;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 10px;
-    margin-left: auto;
-    flex-shrink: 0;
+  background: rgba(82, 196, 26, 0.15); /* Green tint */
+  color: #52c41a; /* Green Antd */
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
+/* Điều chỉnh màu Badge trong Dark mode cho dễ đọc */
+[data-theme="dark"] .approved-badge {
+  background: rgba(82, 196, 26, 0.25);
+  color: #95de64;
+}
+
+/* --- EMPTY STATE (NO RESULTS) --- */
+.no-results {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--text-secondary);
+  background: var(--bg-color);
+  border-radius: 12px;
+  border: 1px dashed var(--border-color);
+}
+
+.no-results span {
+  font-size: 32px;
+  display: block;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+.no-results p {
+  margin: 0 0 4px 0;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.no-results small {
+  color: var(--text-secondary);
+}
+
+/* --- BUTTON SHOW MORE --- */
+.show-more-container {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.show-more-btn {
+  /* Dùng class của Ant Design hoặc custom */
+  background-color: var(--bg-color) !important;
+  color: var(--primary-color) !important;
+  border: 1px solid var(--primary-color) !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+}
+
+.show-more-btn:hover {
+  background-color: var(--primary-color) !important;
+  color: #fff !important;
+}
+
+/* --- LOADING & ERROR --- */
 .loading-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-    margin-top: 12px;
-    background: #f8fafc;
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--bg-color);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
 }
 
 .error {
-    color: #ef4444;
-    text-align: center;
-    padding: 16px;
-    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
-    border-radius: 12px;
-    border: 1px solid #fecaca;
-    margin-top: 12px;
-    font-weight: 500;
+  color: #ff4d4f; /* Ant Design Red */
+  text-align: center;
+  padding: 12px;
+  background: rgba(255, 77, 79, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 77, 79, 0.2);
+  margin-top: 12px;
+  font-size: 13px;
 }
 
-/* Scrollbar styling for results list */
+/* --- SCROLLBAR --- */
 .results-list::-webkit-scrollbar {
-    width: 6px;
+  width: 4px;
 }
-
 .results-list::-webkit-scrollbar-track {
-    background: #f1f5f9;
-    border-radius: 3px;
+  background: transparent;
 }
-
 .results-list::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 3px;
+  background: var(--text-secondary);
+  border-radius: 4px;
+  opacity: 0.5;
 }
 
-.results-list::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
-}
-
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-    .search-sidebar {
-        max-width: 100%;
-        margin: 0 16px;
-        padding: 16px;
-    }
-    
-    .dropdown {
-        max-height: 300px;
-    }
-}
-
+/* --- HIGHLIGHT TEXT --- */
 .highlight {
-  background-color: #c7f9cc;
-  color: inherit;
-  /* padding: 0 2px; */
-  border-radius: 3px;
+  background-color: rgba(255, 213, 145, 0.4); /* Màu cam nhạt */
+  color: var(--text-color);
+  padding: 0 2px;
+  border-radius: 2px;
+  font-weight: bold;
+}
+[data-theme="dark"] .highlight {
+  background-color: rgba(250, 173, 20, 0.3);
+  color: #fff;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  .search-sidebar {
+    max-width: 100%;
+    margin-bottom: 16px;
+    padding: 16px;
+  }
 }
