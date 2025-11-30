@@ -1,0 +1,44 @@
+/* --- VÙNG CẢM ỨNG (TRIGGER ZONE) --- */
+/* Mặc định ẩn trên Desktop, chỉ hiện bằng media query */
+.edge-trigger {
+  display: none; 
+  position: fixed;
+  top: 64px;       /* Bắt đầu từ dưới Header */
+  bottom: 0;       /* Kéo dài xuống đáy */
+  width: 20px;     /* Độ rộng vùng cảm ứng */
+  z-index: 999;    /* Nằm trên content */
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.edge-trigger.left {
+  left: 0;
+}
+
+.edge-trigger.right {
+  right: 0;
+}
+
+/* Hiệu ứng khi rê chuột vào mép: hiện màu xanh nhạt */
+.edge-trigger:hover {
+  background: rgba(22, 119, 255, 0.15); 
+  box-shadow: 0 0 10px rgba(22, 119, 255, 0.1);
+}
+
+@media (max-width: 992px) {
+  
+  /* 1. Ẩn Sidebar tĩnh (React đã xử lý, nhưng thêm CSS để chắc chắn không vỡ layout lúc load) */
+  .desktop-sidebar {
+    display: none !important;
+  }
+
+  /* 2. Hiện vùng cảm ứng */
+  .edge-trigger {
+    display: block;
+  }
+
+  /* 3. Giảm padding nội dung cho thoáng */
+  .main-content {
+    padding: 16px;
+  }
+}

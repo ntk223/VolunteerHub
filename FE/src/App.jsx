@@ -124,7 +124,15 @@ function AppInitializer() {
                     </Route>
 
                     <Route path="*" element={<Navigate to="/discuss" replace />} />
-                    <Route path="/landing" element={<LandingPage />} />
+                    <Route path="/landing" element={
+                        <ConfigProvider
+                            theme={{
+                                algorithm: theme.defaultAlgorithm
+                            }}
+                        >
+                            <LandingPage />
+                        </ConfigProvider>
+                    } />
                     <Route path="/server-error" element={<ServerErrorPage />} />
                 </Routes>
             </Router>
