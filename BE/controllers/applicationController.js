@@ -4,47 +4,15 @@ import { Application } from "../models/Model.js";
 class ApplicationController {
   async createApplication(req, res) {
     const { eventId, volunteerId } = req.body;
-
-    if (!eventId || !volunteerId) {
-      return res
-        .status(400)
-        .json({ message: "Thiếu eventId hoặc volunteerId" });
-    }
-
     try {
-      const existingCancelled = await Application.findOne({
-        where: {
-          eventId,
-          volunteerId,
-          isCancelled: true,
-        },
-      });
-
-      let application;
-
-      if (existingCancelled) { 
-         await existingCancelled.destroy();
-         application = await Application.create({ eventId, volunteerId });
-      } else {
-        const existingActive = await Application.findOne({
-          where: {
-            eventId,
-            volunteerId,
-            isCancelled: false,
-          },
-        });
-
-        if (existingActive) {
-          return res.status(400).json({
-            message: "Bạn đã ứng tuyển sự kiện này rồi",
-          });
-        }
-        
-        application = await Application.create({ eventId, volunteerId });
+      const application = await applicationService.createApplication(
+        eventId,
+        volunteerId
+      );
+      res.status(StatusCodes.CREATED).json(application);
       }
 
-      res.status(201).json(application);
-    } catch (error) {
+    catch (error) {
       console.error("Lỗi tạo đơn:", error);
       res.status(500).json({
         message: "Lỗi server",

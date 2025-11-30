@@ -22,6 +22,7 @@ import ManageEvent from "./pages/ManageEvent/ManageEvent.jsx";
 import LandingPage from "./pages/LandingPage/LandingPage.jsx";
 import ServerErrorPage from "./pages/ServerErrorPage/ServerErrorPage.jsx";
 import ManageApplications from "./pages/ManageApplications/ManageApplications";
+
 import 'antd/dist/reset.css';
 // 2. Import theme từ antd
 import { ConfigProvider, theme } from 'antd'; 
@@ -69,6 +70,11 @@ function AppInitializer() {
                             path="manage-events"
                             element={<ManageEvent />}
                         />
+                        <Route
+                        path="manage-applications"
+                        element={<ManageApplications />}
+                      />
+
                         <Route index element={<Navigate to="discuss" replace />} />
                         <Route
                             path="discuss"
@@ -79,76 +85,50 @@ function AppInitializer() {
                             }
                         />
 
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
-            }
-          >
-            {/* Manager events page */}
-            <Route
-              path="manage-events"
-              element={<ManageEvent />}
-            />
-            {/* Volunteer applications page */}
-            <Route
-               path="manage-applications"
-               element={<ManageApplications />}
-            />
-            <Route index element={<Navigate to="discuss" replace />} />
-            <Route
-              path="discuss"
-              element={
-                <PostsProvider postType="discuss">
-                  <DiscussPage />
-                </PostsProvider>
-              }
-            />
+                        <Route
+                            path="recruitment"
+                            element={
+                                <PostsProvider postType="recruitment">
+                                    <RecruitmentPage />
+                                </PostsProvider>
+                            }
+                        />
 
-            <Route
-              path="recruitment"
-              element={
-                <PostsProvider postType="recruitment">
-                  <RecruitmentPage />
-                </PostsProvider>
-              }
-            />
+                        <Route path="profile" element={<MyProfile />} />
+                        <Route path="profile/:id" element={<OtherProfile />} />
+                        <Route path="notification" element={<NotificationPage />} />
+                        <Route path="search" element={
+                            <SearchProvider>
+                                <SearchPage />
+                            </SearchProvider>
+                        } />
 
-            <Route path="profile" element={<MyProfile />} />
-            <Route path="profile/:id" element={<OtherProfile />} />
-            <Route path="notification" element={<NotificationPage />} />
-            <Route path="search" element={
-              <SearchProvider>
-                <SearchPage />
-              </SearchProvider>
-            } />
+                        <Route
+                            path="user/posts/:id"
+                            element={
+                                <PostsProvider postType={null}>
+                                    <UserPost />
+                                </PostsProvider>
+                            }
+                        />
+                        <Route
+                            path="post/:id"
+                            element={
+                                <PostsProvider postType={null}>
+                                    <OnePost />
+                                </PostsProvider>
+                            }
+                        />
+                        <Route
+                            path="admin/*"
+                            element={
+                                <AdminProvider>
+                                    <AdminPage />
+                                </AdminProvider>
+                            }
+                        />
 
-            <Route
-              path="user/posts/:id"
-              element={
-                <PostsProvider postType={null}>
-                  <UserPost />
-                </PostsProvider>
-              }
-            />
-            <Route
-              path="post/:id"
-              element={
-                <PostsProvider postType={null}>
-                  <OnePost />
-                </PostsProvider>
-              }
-            />
-            <Route
-              path="admin/*"
-              element={
-                <AdminProvider>
-                  <AdminPage />
-                </AdminProvider>
-              }
-            />
+                    </Route>
 
                     <Route path="*" element={<Navigate to="/discuss" replace />} />
                     <Route path="/landing" element={

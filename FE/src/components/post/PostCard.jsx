@@ -29,6 +29,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import CommentSection from "./CommentSection";
 import PostMedia from "./PostMedia";
+import EventModal from "./EventModal";
 import { usePosts } from "../../hooks/usePosts";
 import { useAuth } from "../../hooks/useAuth";
 import { useApplications } from "../../hooks/useApplications";
@@ -215,51 +216,41 @@ const PostCard = ({ post }) => {
         <PostMedia media={post.media} />
 
         {/* Stats */}
-        <div style={{ marginTop: 8, display: "flex", justifyContent: "space-between", cursor: "pointer" }}>
-          <Tooltip title="Xem ai đã thích">
-            <Text type="secondary" onClick={() => openLikes(postId)}>
-              {post.likeCount || post.likes || 0}
-            </Text>
-          </Tooltip>
-          <Tooltip title="Xem bình luận">
-            <Text type="secondary" onClick={() => toggleComments(postId)}>
-              {post.commentCount || 0}
-            </Text>
-          </Tooltip>
-        </div>
+        <div style={{ paddingTop: 8, borderTop: "1px solid #f0f0f0" }}>
+          {/* Hiển thị lượt thích và bình luận */}
+          <div style={{ display: "flex", gap: 16, marginBottom: 8, fontSize: 14, color: "#555" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 4, cursor: "pointer" }} onClick={() => openLikes(postId)}>
+              <LikeOutlined /> {post.likeCount || post.likes || 0}
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 4, cursor: "pointer" }} onClick={() => toggleComments(postId)}>
+              <MessageOutlined /> {post.commentCount || 0}
+            </div>
+          </div>
 
-        {/* Actions */}
-        <div style={{ display: "flex", gap: 10, marginTop: 8, paddingTop: 8, borderTop: "1px solid #f0f0f0" }}>
-          <Button
-            type="text"
-            danger={isLiked}
-            icon={isLiked ? <LikeFilled /> : <LikeOutlined />}
-            onClick={() => toggleLike(postId)}
-            style={{ flex: 1 }}
-          >
-            Thích
-          </Button>
-
-          <Button type="text" icon={<MessageOutlined />} onClick={() => toggleComments(postId)} style={{ flex: 1 }}>
-            Bình luận
-          </Button>
-
-          {/* Nút Ứng tuyển / Hủy đơn */}
-          {post.postType === "recruitment" &&
-            user &&
-            (user.role || "").toLowerCase() === "volunteer" && (
+          {/* Nút hành động */}
+          <div style={{ display: "flex", gap: 8 }}>
+            <Button type="text" danger={isLiked} icon={isLiked ? <LikeFilled /> : <LikeOutlined />} style={{ flex: 1 }} onClick={() => toggleLike(postId)}>
+              Thích
+            </Button>
+            <Button type="text" icon={<MessageOutlined />} style={{ flex: 1 }} onClick={() => toggleComments(postId)}>
+              Bình luận
+            </Button>
+            {post.postType === "recruitment" && user?.role?.toLowerCase() === "volunteer" && (
               <Button
                 type={hasApplied ? "default" : "primary"}
                 danger={hasApplied}
+                style={{ flex: 1 }}
                 onClick={() => (hasApplied ? handleCancel() : handleApply())}
                 loading={processing || appliedLoading}
                 disabled={processing || appliedLoading}
-                style={{ flex: 1 }}
               >
-                {hasApplied ? "Hủy đơn ứng tuyển" : "Ứng tuyển"}
+                {hasApplied ? "Hủy đơn" : "Ứng tuyển"}
               </Button>
             )}
+          </div>
         </div>
+
+
 
         {/* Comments */}
         {commentsVisible && (
@@ -278,42 +269,7 @@ const PostCard = ({ post }) => {
       </Card>
 
       {/* MODAL CHI TIẾT SỰ KIỆN */}
-      <Modal
-        title={<Title level={3}>{event?.title || "Chi tiết sự kiện"}</Title>}
-        open={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        footer={null}
-        width={800}
-      >
-        {event && (
-          <div>
-            {event.media && (
-              <Image src={event.media} alt={event.title} style={{ width: "100%", borderRadius: 8, marginBottom: 16 }} />
-            )}
-
-            <Descriptions bordered column={1}>
-              <Descriptions.Item label={<><CalendarOutlined /> Thời gian</>}>
-                {event.startTime && new Date(event.startTime).toLocaleString("vi-VN")}
-                {event.endTime && ` → ${new Date(event.endTime).toLocaleString("vi-VN")}`}
-              </Descriptions.Item>
-
-              <Descriptions.Item label={<><EnvironmentOutlined /> Địa điểm</>}>
-                {event.location || "Chưa cập nhật"}
-              </Descriptions.Item>
-
-              <Descriptions.Item label={<><TeamOutlined /> Số lượng cần tuyển</>}>
-                {event.capacity || event.slots || "Không giới hạn"}
-              </Descriptions.Item>
-
-              <Descriptions.Item label="Mô tả chi tiết">
-                <div style={{ whiteSpace: "pre-wrap" }}>
-                  {event.description || "Không có mô tả"}
-                </div>
-              </Descriptions.Item>
-            </Descriptions>
-          </div>
-        )}
-      </Modal>
+      <EventModal event={event} isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} />
     </>
   );
 };
