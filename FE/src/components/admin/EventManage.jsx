@@ -1,18 +1,26 @@
 import { Table, Tag, Button, message, Select, Space, Modal } from "antd";
-import { DownloadOutlined } from "@ant-design/icons";
+import { DownloadOutlined, EyeOutlined } from "@ant-design/icons";
 import { useState, useMemo } from "react";
 import { exportEventsToExcel } from "../../utils/excelExport";
+import EventModal from "../post/EventModal";
 
 const { Option } = Select;
 
 const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
   const [statusFilter, setStatusFilter] = useState('all');
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [isEventModalVisible, setIsEventModalVisible] = useState(false);
 
   const filteredEvents = useMemo(() => {
     return events.filter(event => {
       return statusFilter === 'all' || event.approvalStatus === statusFilter;
     });
   }, [events, statusFilter]);
+
+  const handleViewEvent = (event) => {
+    setSelectedEvent(event);
+    setIsEventModalVisible(true);
+  };
   const eventColumns = [
     { title: "Tên sự kiện", dataIndex: "title", key: "title" },
     {
@@ -137,10 +145,17 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
             </div>
           )}
 
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: 8 }}>
+          <Button
+            type="primary"
+            icon={<EyeOutlined />}
+            onClick={() => handleViewEvent(record)}
+          >
+            Xem
+          </Button>
           <Button
             danger
-            style={{ width: "70px", textAlign: "center" }} // tùy chỉnh thêm nếu muốn
+            style={{ width: "70px", textAlign: "center" }}
             onClick={async () => Modal.confirm({
               title: "Bạn có chắc muốn xóa sự kiện?",
               content: `Sự kiện: "${record.title}" sẽ bị xóa vĩnh viễn.`,
@@ -156,7 +171,6 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
                 }
               },
             })
-              
             }
           >
             Xóa
@@ -207,6 +221,12 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
         columns={eventColumns}
         rowKey={(r) => r.id || r._id}
         pagination={{ pageSize: 5 }}
+      />
+
+      <EventModal
+        event={selectedEvent}
+        isModalVisible={isEventModalVisible}
+        setIsModalVisible={setIsEventModalVisible}
       />
     </div>
   );

@@ -29,6 +29,38 @@ const DashboardStatistic = ({ users = [], posts = [], events = [] }) => {
   }, {});
   const postTypeData = Object.keys(postTypeCounts).map(key => ({ name: key, value: postTypeCounts[key] }));
 
+  // Thống kê sự kiện theo trạng thái duyệt
+  const eventStatusCounts = {
+    pending: events.filter(e => e.approvalStatus === "pending").length,
+    approved: events.filter(e => e.approvalStatus === "approved").length,
+    rejected: events.filter(e => e.approvalStatus === "rejected").length,
+  };
+  const eventStatusData = [
+    { name: "Chờ duyệt", value: eventStatusCounts.pending },
+    { name: "Đã duyệt", value: eventStatusCounts.approved },
+    { name: "Từ chối", value: eventStatusCounts.rejected },
+  ].filter(item => item.value > 0);
+
+  // Thống kê sự kiện theo tháng (12 tháng gần nhất)
+  const currentDate = new Date();
+  const monthlyEventData = [];
+  
+  for (let i = 11; i >= 0; i--) {
+    const monthDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+    const monthName = monthDate.toLocaleDateString('vi-VN', { month: '2-digit', year: 'numeric' });
+    
+    const eventsInMonth = events.filter(event => {
+      const eventDate = new Date(event.createdAt);
+      return eventDate.getMonth() === monthDate.getMonth() && 
+             eventDate.getFullYear() === monthDate.getFullYear();
+    }).length;
+    
+    monthlyEventData.push({
+      name: monthName,
+      events: eventsInMonth
+    });
+  }
+
   // Top 5 user đăng bài nhiều nhất
   const topUsers = users.map(user => {
     const count = posts.filter(p => p.author?.id === user.id).length;
@@ -82,13 +114,13 @@ const DashboardStatistic = ({ users = [], posts = [], events = [] }) => {
         </Col>
         <Col span={8}>
           <Card>
-            <Statistic title="Sự kiện từ chối" value={postStatusCounts.rejected} valueStyle={{ color: "#f5222d" }} />
+            <Statistic title="Sự kiện từ chối" value={events.filter(e => e.approvalStatus === "rejected").length} valueStyle={{ color: "#f5222d" }} />
           </Card>
         </Col>
       </Row>
 
-      {/* Row 3: Biểu đồ */}
-      <Row gutter={16}>
+      {/* Row 3: Biểu đồ bài viết */}
+      <Row gutter={16} style={{ marginBottom: 20 }}>
         <Col span={12}>
           <Card title="Bài viết theo loại">
             <ResponsiveContainer width="100%" height={250}>
@@ -113,6 +145,44 @@ const DashboardStatistic = ({ users = [], posts = [], events = [] }) => {
                 <Tooltip />
                 <Legend />
                 <Bar dataKey="posts" fill="#8884d8" />
+              </BarChart>
+            </ResponsiveContainer>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Row 4: Biểu đồ sự kiện */}
+      <Row gutter={16}>
+        <Col span={12}>
+          <Card title="Sự kiện theo trạng thái duyệt">
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie 
+                  data={eventStatusData} 
+                  dataKey="value" 
+                  nameKey="name" 
+                  outerRadius={80} 
+                  label={({ name, value, percent }) => `${name}: ${value} (${(percent * 100).toFixed(0)}%)`}
+                >
+                  {eventStatusData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </Card>
+        </Col>
+
+        <Col span={12}>
+          <Card title="Số sự kiện theo tháng (12 tháng gần nhất)">
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={monthlyEventData} margin={{ top: 20, right: 20, bottom: 20, left: 0 }}>
+                <XAxis dataKey="name" />
+                <YAxis allowDecimals={false} />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="events" fill="#1890ff" />
               </BarChart>
             </ResponsiveContainer>
           </Card>

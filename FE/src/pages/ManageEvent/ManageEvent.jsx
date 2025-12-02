@@ -224,6 +224,14 @@ export default function ManageEventPage() {
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
       render: (v) => (v ? new Date(v).toLocaleString() : "-"),
     },
+    {
+      title: "Số đơn ứng tuyển",
+      key: "currentApplied",
+      render: (_, record) => {
+        const state = appsMap[record.id] || { loading: false, list: [] };
+        return <Text>{state.list.length}</Text>;
+      },
+    }
   ];
 
   const fetchApplicationsForEvent = async (eventId) => {
