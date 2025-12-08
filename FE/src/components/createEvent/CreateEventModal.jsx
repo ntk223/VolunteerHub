@@ -1,8 +1,9 @@
 import React, { useState, useRef } from "react";
-import { Modal, Form, Input, DatePicker, Select, InputNumber, message, AutoComplete, Spin } from "antd";
-import { EnvironmentOutlined } from "@ant-design/icons";
+import { Modal, Form, Input, DatePicker, Select, InputNumber, message, AutoComplete, Spin, Image, Upload, Button } from "antd";
+import { EnvironmentOutlined, PictureOutlined, UploadOutlined, LoadingOutlined } from "@ant-design/icons";
 import api from "../../api";
 import { useAuth } from "../../hooks/useAuth";
+
 const { TextArea } = Input;
 
 export default function CreateEventModal({ visible, onClose }) {
@@ -12,12 +13,16 @@ export default function CreateEventModal({ visible, onClose }) {
   if (user.role !== "manager") {
     return null;
   }
-  const managerId = user.manager.id;
+  const managerId = user.manager ? user.manager.id : user.id; // Fallback nếu user structure khác
   
   const [loading, setLoading] = useState(false);
-  const [previewLocation, setPreviewLocation] = useState(""); // State lưu địa điểm (hoặc tọa độ) để hiển thị map
+  const [uploading, setUploading] = useState(false); // State loading cho việc upload ảnh
+  const [previewLocation, setPreviewLocation] = useState(""); 
   
-  // State cho tìm kiếm địa điểm (OpenStreetMap)
+  // 1. State lưu URL ảnh để preview
+  const [previewImage, setPreviewImage] = useState(""); 
+  
+  // State cho tìm kiếm địa điểm
   const [locationOptions, setLocationOptions] = useState([]);
   const [searchingLocation, setSearchingLocation] = useState(false);
   const searchTimeoutRef = useRef(null);
@@ -32,33 +37,25 @@ export default function CreateEventModal({ visible, onClose }) {
     { value: 5, label: "Văn hóa - Nghệ thuật" },
   ];
 
-  // --- HÀM TÌM KIẾM ĐỊA ĐIỂM DÙNG OPENSTREETMAP (MIỄN PHÍ) ---
+  // --- HÀM TÌM KIẾM ĐỊA ĐIỂM ---
   const handleLocationSearch = async (value) => {
     if (!value) {
       setLocationOptions([]);
       return;
     }
-
     setSearchingLocation(true);
-    
-    // Debounce: Chờ người dùng ngừng gõ 500ms mới gọi API
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
+    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
 
     searchTimeoutRef.current = setTimeout(async () => {
       try {
-        // Gọi API Nominatim của OpenStreetMap
         const response = await fetch(
           `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(value)}&addressdetails=1&limit=5&countrycodes=vn`
         );
         const data = await response.json();
-
-        // Map dữ liệu trả về thành Options cho AutoComplete
         const options = data.map((item) => ({
-          value: item.display_name, // Giá trị hiển thị trong ô input
-          lat: item.lat,            // Lấy vĩ độ từ API
-          lon: item.lon,            // Lấy kinh độ từ API
+          value: item.display_name,
+          lat: item.lat,
+          lon: item.lon,
           label: (
             <div style={{ display: 'flex', alignItems: 'center', padding: '4px 0' }}>
               <EnvironmentOutlined style={{ marginRight: 8, color: '#1677ff', flexShrink: 0 }} />
@@ -75,17 +72,48 @@ export default function CreateEventModal({ visible, onClose }) {
     }, 500);
   };
 
-  // Khi người dùng chọn 1 địa điểm từ danh sách gợi ý
   const handleLocationSelect = (value, option) => {
-    // Cập nhật giá trị vào form (Tên địa điểm để lưu vào DB)
     form.setFieldsValue({ location: value });
-
-    // QUAN TRỌNG: Nếu có tọa độ, dùng tọa độ để hiển thị map cho chính xác
     if (option.lat && option.lon) {
       setPreviewLocation(`${option.lat},${option.lon}`);
     } else {
-      // Nếu không (trường hợp hiếm), dùng tên địa điểm
       setPreviewLocation(value);
+    }
+  };
+
+  // 2. Xử lý khi người dùng nhập URL ảnh thủ công
+  const handleImageChange = (e) => {
+    setPreviewImage(e.target.value);
+  };
+
+  // 3. Xử lý Upload ảnh từ máy tính (SỬA LẠI userId)
+  const handleUpload = async (file) => {
+    try {
+        setUploading(true);
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        // SỬA: Dùng user.id (ID đăng nhập) thay vì managerId để tránh lỗi Backend tìm không thấy User
+        const userId = user.id || user._id; 
+        formData.append('userId', userId); 
+
+        const response = await api.post("/file/upload", formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+
+        if (response.data) {
+            const url = response.data.file?.url || response.data.url; 
+            if (url) {
+                form.setFieldsValue({ imageUrl: url });
+                setPreviewImage(url); 
+                message.success('Tải ảnh lên thành công');
+            }
+        }
+    } catch (error) {
+        console.error("Lỗi upload:", error);
+        message.error('Lỗi Server (500): Không thể tải ảnh. Vui lòng kiểm tra lại server.');
+    } finally {
+        setUploading(false);
     }
   };
 
@@ -99,23 +127,30 @@ export default function CreateEventModal({ visible, onClose }) {
       title: values.title,
       description: values.description,
       location: values.location,
-      startTime: values.timeRange[0].toISOString(),
-      endTime: values.timeRange[1].toISOString(),
-      categoryId: values.categoryId,
+      imageUrl: values.imageUrl,      // camelCase
+      startTime: values.timeRange[0].toISOString(), // camelCase
+      endTime: values.timeRange[1].toISOString(),   // camelCase
+      categoryId: values.categoryId,  // camelCase
       capacity: values.capacity,
-      managerId: managerId, 
+      managerId: managerId,           // camelCase
     };
+
+    console.log("Submitting Event Payload:", payload);
 
     try {
       setLoading(true);
       await api.post("/event", payload);
 
-      message.success("Tạo sự kiện thành công hãy chờ phê duyệt!");
+      message.success("Tạo sự kiện thành công! Hãy chờ phê duyệt.");
       form.resetFields();
       setPreviewLocation(""); 
+      setPreviewImage(""); 
       onClose();
     } catch (err) {
-      console.error(err);
+      console.error("Error creating event:", err);
+      if (err.response && err.response.data) {
+        console.error("Backend Error Details:", err.response.data);
+      }
       message.error(err?.response?.data?.message || "Không thể tạo sự kiện");
     } finally {
       setLoading(false);
@@ -130,29 +165,110 @@ export default function CreateEventModal({ visible, onClose }) {
       onOk={() => form.submit()}
       okText="Tạo sự kiện"
       confirmLoading={loading}
-      destroyOnHidden
-      style={{ top: 40 }}
-      width={600}
+      destroyOnClose={true} // Sửa destroyOnHidden thành destroyOnClose chuẩn Antd
+      style={{ top: 20 }}
+      width={700}
     >
       <Form form={form} layout="vertical" onFinish={handleSubmit}>
+        
+        <div style={{ display: 'flex', gap: '20px' }}>
+            {/* Cột trái: Thông tin cơ bản */}
+            <div style={{ flex: 1 }}>
+                <Form.Item
+                    label="Tên sự kiện"
+                    name="title"
+                    rules={[{ required: true, message: "Vui lòng nhập tên sự kiện" }]}
+                >
+                    <Input placeholder="VD: Ngày hội hiến máu tình nguyện" />
+                </Form.Item>
 
-        <Form.Item
-          label="Tên sự kiện"
-          name="title"
-          rules={[{ required: true, message: "Vui lòng nhập tên sự kiện" }]}
-        >
-          <Input placeholder="VD: Ngày hội hiến máu tình nguyện" />
-        </Form.Item>
+                <Form.Item
+                    label="Mô tả"
+                    name="description"
+                    rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
+                >
+                    <TextArea rows={4} placeholder="Mô tả chi tiết sự kiện..." />
+                </Form.Item>
+            </div>
 
-        <Form.Item
-          label="Mô tả"
-          name="description"
-          rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
-        >
-          <TextArea rows={4} placeholder="Mô tả chi tiết sự kiện..." />
-        </Form.Item>
+            {/* Cột phải: Ảnh preview & Upload */}
+            <div style={{ width: '200px' }}>
+                <Form.Item
+                    label="Ảnh bìa"
+                    name="imageUrl"
+                    rules={[
+                        { required: true, message: "Vui lòng tải hoặc nhập link ảnh" },
+                        { type: 'url', message: "Link ảnh không hợp lệ" }
+                    ]}
+                >
+                    <Input 
+                        placeholder="Link ảnh..." 
+                        prefix={<PictureOutlined />} 
+                        onChange={handleImageChange}
+                        disabled={uploading}
+                    />
+                </Form.Item>
 
-        {/* --- AUTOCOMPLETE OPENSTREETMAP --- */}
+                <div style={{ marginBottom: 12 }}>
+                    <Upload
+                        accept="image/*"
+                        showUploadList={false}
+                        beforeUpload={(file) => {
+                            if (file.size > 2 * 1024 * 1024) {
+                                message.error('Ảnh phải nhỏ hơn 2MB');
+                                return Upload.LIST_IGNORE;
+                            }
+                            handleUpload(file);
+                            return Upload.LIST_IGNORE;
+                        }}
+                    >
+                        <Button 
+                            icon={uploading ? <LoadingOutlined /> : <UploadOutlined />} 
+                            block 
+                            disabled={uploading}
+                        >
+                            {uploading ? "Đang tải..." : "Tải ảnh từ máy"}
+                        </Button>
+                    </Upload>
+                </div>
+                
+                {/* Khung hiển thị ảnh preview */}
+                <div style={{ 
+                    width: '100%', 
+                    height: '140px', 
+                    borderRadius: '8px', 
+                    border: '1px dashed #d9d9d9',
+                    background: '#fafafa',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    overflow: 'hidden',
+                    position: 'relative'
+                }}>
+                    {uploading && (
+                        <div style={{ position: 'absolute', zIndex: 1, background: 'rgba(255,255,255,0.8)', width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <Spin />
+                        </div>
+                    )}
+                    
+                    {previewImage ? (
+                        <Image 
+                            src={previewImage} 
+                            alt="Preview" 
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            fallback="https://via.placeholder.com/200x140?text=Lỗi+Ảnh"
+                        />
+                    ) : (
+                        <div style={{ textAlign: 'center', color: '#ccc' }}>
+                            <PictureOutlined style={{ fontSize: 24, marginBottom: 4 }} />
+                            <div style={{ fontSize: 12 }}>Xem trước ảnh</div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+
+        {/* --- MAP SECTION --- */}
         <Form.Item
           label="Địa điểm"
           name="location"
@@ -163,9 +279,7 @@ export default function CreateEventModal({ visible, onClose }) {
             options={locationOptions}
             onSearch={handleLocationSearch}
             onSelect={handleLocationSelect}
-            // Cho phép người dùng gõ xong rồi click ra ngoài vẫn nhận giá trị (nếu không chọn từ list)
             onBlur={(e) => {
-               // Chỉ cập nhật map nếu người dùng tự gõ và chưa chọn từ list (để tránh ghi đè tọa độ chính xác)
                if (!locationOptions.some(opt => opt.value === e.target.value)) {
                  setPreviewLocation(e.target.value);
                }
@@ -178,84 +292,48 @@ export default function CreateEventModal({ visible, onClose }) {
           </AutoComplete>
         </Form.Item>
 
-        {/* --- MAP PREVIEW (GOOGLE MAPS LEGACY - NO KEY) --- */}
         {previewLocation && (
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ 
-              height: 200, 
-              width: '100%', 
-              borderRadius: 8, 
-              overflow: 'hidden', 
-              border: '1px solid #d9d9d9',
-              marginTop: 8,
-              background: '#f0f0f0',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              position: 'relative'
-            }}>
-              {/* Sử dụng Google Maps Embed với query là Tọa độ hoặc Tên địa điểm */}
-              <iframe
-                title="Map Preview"
-                width="100%"
-                height="100%"
-                frameBorder="0"
-                style={{ border: 0 }}
-                // Nếu previewLocation là tọa độ (vd: 10.7,106.6), Google Maps sẽ hiển thị vị trí đó chính xác
-                src={`https://maps.google.com/maps?q=${encodeURIComponent(previewLocation)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
-                allowFullScreen
-              />
-              <div style={{
-                position: 'absolute',
-                bottom: 0,
-                right: 0,
-                background: 'rgba(255,255,255,0.8)',
-                padding: '2px 6px',
-                fontSize: '10px',
-                color: '#666'
-              }}>
-                Preview
-              </div>
-            </div>
+          <div style={{ marginBottom: 24, height: 180, width: '100%', borderRadius: 8, overflow: 'hidden', border: '1px solid #d9d9d9', background: '#f0f0f0' }}>
+            <iframe
+              title="Map Preview"
+              width="100%"
+              height="100%"
+              frameBorder="0"
+              style={{ border: 0 }}
+              src={`https://maps.google.com/maps?q=${encodeURIComponent(previewLocation)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+              allowFullScreen
+            />
           </div>
         )}
 
-        <Form.Item
-          label="Thời gian tổ chức"
-          name="timeRange"
-          rules={[{ required: true, message: "Vui lòng chọn thời gian" }]}
-        >
-          <DatePicker.RangePicker
-            showTime
-            style={{ width: "100%" }}
-            placeholder={["Bắt đầu", "Kết thúc"]}
-          />
-        </Form.Item>
+        <div style={{ display: 'flex', gap: '16px' }}>
+            <Form.Item
+            label="Thời gian tổ chức"
+            name="timeRange"
+            style={{ flex: 1 }}
+            rules={[{ required: true, message: "Vui lòng chọn thời gian" }]}
+            >
+            <DatePicker.RangePicker showTime style={{ width: "100%" }} placeholder={["Bắt đầu", "Kết thúc"]} />
+            </Form.Item>
 
-        <Form.Item
-          label="Danh mục"
-          name="categoryId"
-          rules={[{ required: true, message: "Vui lòng chọn danh mục" }]}
-        >
-          <Select placeholder="Chọn danh mục" options={categoryOptions} />
-        </Form.Item>
+            <Form.Item
+            label="Danh mục"
+            name="categoryId"
+            style={{ width: '150px' }}
+            rules={[{ required: true, message: "Chọn danh mục" }]}
+            >
+            <Select placeholder="Danh mục" options={categoryOptions} />
+            </Form.Item>
 
-        <Form.Item
-          label="Số lượng tối đa"
-          name="capacity"
-          rules={[
-            { required: true, message: "Vui lòng nhập số lượng" },
-            {
-              validator(_, value) {
-                if (!value || value < 1)
-                  return Promise.reject("Số lượng phải lớn hơn 0");
-                return Promise.resolve();
-              },
-            },
-          ]}
-        >
-          <InputNumber min={1} style={{ width: "100%" }} placeholder="VD: 50" />
-        </Form.Item>
+            <Form.Item
+            label="Số lượng"
+            name="capacity"
+            style={{ width: '100px' }}
+            rules={[{ required: true, message: "Nhập số" }]}
+            >
+            <InputNumber min={1} style={{ width: "100%" }} placeholder="50" />
+            </Form.Item>
+        </div>
 
       </Form>
     </Modal>

@@ -261,6 +261,7 @@ export default function ManageEventPage() {
           volunteerUser?.avatarUrl ||
           volunteerUser?.avatar ||
           volunteer?.avatar ||
+          volunteer?.avatar ||
           null;
 
         return {

@@ -4,9 +4,10 @@ import { PostsProvider } from "./hooks/usePosts.jsx";
 import { AdminProvider } from "./hooks/useAdminData.jsx";
 import { SocketProvider } from "./hooks/useSocket.jsx";
 import { SearchProvider } from "./hooks/useSearch.jsx";
+import { EventsProvider } from "./hooks/useEvents.jsx"; // 1. Import EventsProvider
 
-// 1. Import useTheme để lấy trạng thái theme hiện tại
-import { ThemeProvider, useTheme } from "./hooks/useTheme.jsx"; 
+// Import useTheme để lấy trạng thái theme hiện tại
+import { ThemeProvider, useTheme } from "./hooks/useTheme.jsx";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import DiscussPage from "./pages/Feed/DiscussPage";
@@ -19,13 +20,14 @@ import UserPost from "./pages/Profile/UserPost.jsx";
 import OnePost from "./pages/Feed/OnePost.jsx";
 import SearchPage from "./pages/Search/SearchPage.jsx";
 import ManageEvent from "./pages/ManageEvent/ManageEvent.jsx";
+import EventsPage from "./pages/Event/EventsPage.jsx"; // 2. Import EventsPage
 import LandingPage from "./pages/LandingPage/LandingPage.jsx";
 import ServerErrorPage from "./pages/ServerErrorPage/ServerErrorPage.jsx";
 import ManageApplications from "./pages/ManageApplications/ManageApplications";
 
 import 'antd/dist/reset.css';
-// 2. Import theme từ antd
-import { ConfigProvider, theme } from 'antd'; 
+// Import theme từ antd
+import { ConfigProvider, theme } from 'antd';
 
 import './App.css';
 
@@ -35,26 +37,37 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function AppInitializer() {
-    // 3. Lấy biến xác định dark mode từ hook (giả sử hook trả về { isDarkMode })
-    const { isDarkMode } = useTheme(); 
+    // Lấy biến xác định dark mode từ hook
+    const { isDarkMode } = useTheme();
 
     return (
-        // 4. Cấu hình ConfigProvider bao bọc toàn bộ ứng dụng
+        // Cấu hình ConfigProvider bao bọc toàn bộ ứng dụng
         <ConfigProvider
             theme={{
-                // Thuật toán tự động chuyển đổi giữa giao diện Sáng/Tối
                 algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
                 token: {
-                    // Bạn có thể tùy chỉnh màu chủ đạo toàn app tại đây nếu muốn
                     // colorPrimary: '#1677ff', 
                 },
             }}
         >
             <Router>
                 <Routes>
-                    {/* Public */}
+                    {/* Public Routes */}
                     <Route path="/auth/:mode" element={<Login />} />
+                    
+                    <Route path="/landing" element={
+                        <ConfigProvider
+                            theme={{
+                                algorithm: theme.defaultAlgorithm
+                            }}
+                        >
+                            <LandingPage />
+                        </ConfigProvider>
+                    } />
+                    
+                    <Route path="/server-error" element={<ServerErrorPage />} />
 
+                    {/* Protected Routes Wrapper */}
                     <Route
                         path="/"
                         element={
@@ -65,17 +78,29 @@ function AppInitializer() {
                             </ProtectedRoute>
                         }
                     >
-                        {/* Manager events page */}
+                        {/* Nested Routes (Children of Home) */}
+                        <Route index element={<Navigate to="discuss" replace />} />
+                        
+                        {/* 3. Thêm Route cho trang danh sách sự kiện */}
+                        <Route
+                            path="events"
+                            element={
+                                <EventsProvider>
+                                    <EventsPage />
+                                </EventsProvider>
+                            }
+                        />
+
                         <Route
                             path="manage-events"
                             element={<ManageEvent />}
                         />
+                        
                         <Route
-                        path="manage-applications"
-                        element={<ManageApplications />}
-                      />
+                            path="manage-applications"
+                            element={<ManageApplications />}
+                        />
 
-                        <Route index element={<Navigate to="discuss" replace />} />
                         <Route
                             path="discuss"
                             element={
@@ -97,6 +122,7 @@ function AppInitializer() {
                         <Route path="profile" element={<MyProfile />} />
                         <Route path="profile/:id" element={<OtherProfile />} />
                         <Route path="notification" element={<NotificationPage />} />
+                        
                         <Route path="search" element={
                             <SearchProvider>
                                 <SearchPage />
@@ -111,6 +137,7 @@ function AppInitializer() {
                                 </PostsProvider>
                             }
                         />
+                        
                         <Route
                             path="post/:id"
                             element={
@@ -119,6 +146,7 @@ function AppInitializer() {
                                 </PostsProvider>
                             }
                         />
+                        
                         <Route
                             path="admin/*"
                             element={
@@ -127,20 +155,11 @@ function AppInitializer() {
                                 </AdminProvider>
                             }
                         />
-
                     </Route>
+                    {/* End Protected Routes */}
 
+                    {/* Catch all - 404 */}
                     <Route path="*" element={<Navigate to="/discuss" replace />} />
-                    <Route path="/landing" element={
-                        <ConfigProvider
-                            theme={{
-                                algorithm: theme.defaultAlgorithm
-                            }}
-                        >
-                            <LandingPage />
-                        </ConfigProvider>
-                    } />
-                    <Route path="/server-error" element={<ServerErrorPage />} />
                 </Routes>
             </Router>
         </ConfigProvider>
@@ -149,7 +168,7 @@ function AppInitializer() {
 
 export default function App() {
     return (
-        <ThemeProvider> 
+        <ThemeProvider>
             <AuthProvider>
                 <SocketProvider>
                     <AppInitializer />
