@@ -1,4 +1,3 @@
-// Sidebar.jsx
 import { useState } from "react";
 import { useTheme } from "../../hooks/useTheme";
 import { Layout, Menu, Badge, Button, Popconfirm, Switch } from "antd";
@@ -11,7 +10,8 @@ import {
   LogoutOutlined,
   FileTextOutlined,
   MoonOutlined,
-  SunOutlined
+  SunOutlined,
+  UnorderedListOutlined // Import thêm icon cho Quản lý sự kiện
 } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
 import CreatePostModal from "../createPost/CreatePostModal";
@@ -35,6 +35,7 @@ const Sidebar = ({ isMobile, onClose }) => {
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [showCreateEvent, setShowCreateEvent] = useState(false);
 
+  // Lấy key từ pathname, nếu là /events thì selectedKey sẽ là 'events'
   const selectedKey = location.pathname === "/" ? "home" : location.pathname.slice(1);
 
   const handleMenuClick = (e) => {
@@ -42,6 +43,7 @@ const Sidebar = ({ isMobile, onClose }) => {
 
     switch (e.key) {
       case "home": navigate("/"); break;
+      case "events": navigate("/events"); break;
       case "notification":
         markNotificationsAsRead();
         navigate("/notification");
@@ -74,6 +76,11 @@ const Sidebar = ({ isMobile, onClose }) => {
       label: "Trang chủ",
     },
     {
+      key: "events",
+      icon: <CalendarOutlined style={{ fontSize: 20 }} />,
+      label: "Sự kiện",
+    },
+    {
       key: "create-post",
       icon: <PlusCircleOutlined style={{ fontSize: 20 }} />,
       label: "Tạo bài viết",
@@ -81,11 +88,18 @@ const Sidebar = ({ isMobile, onClose }) => {
   ];
 
   if (user?.role === "manager") {
-    menuItems.push({
-      key: "create-event",
-      icon: <CalendarOutlined style={{ fontSize: 20 }} />,
-      label: "Tạo sự kiện",
-    });
+    menuItems.push(
+      {
+        key: "create-event",
+        icon: <PlusCircleOutlined style={{ fontSize: 20 }} />, // Đổi icon thành Plus để phân biệt
+        label: "Tạo sự kiện",
+      },
+      {
+        key: "manage-events",
+        icon: <UnorderedListOutlined style={{ fontSize: 20 }} />, // Thêm mục Quản lý sự kiện
+        label: "Quản lý sự kiện",
+      }
+    );
   }
 
   if (user?.role === "volunteer") {
@@ -155,7 +169,6 @@ const Sidebar = ({ isMobile, onClose }) => {
               justifyContent: "space-between", 
               alignItems: "center", 
               marginBottom: 16,
-              // SỬA: Dùng var(--text-color) thay vì secondary để chữ sáng rõ trong Dark Mode
               color: "var(--text-color)", 
               fontWeight: 500 
             }}>
@@ -187,14 +200,12 @@ const Sidebar = ({ isMobile, onClose }) => {
                   alignItems: "center",
                   justifyContent: "center",
                   borderRadius: "8px",
-                  // SỬA: Style nút để tương thích Dark Mode
-                  border: "1px solid var(--border-color)", // Viền thay đổi theo theme
-                  color: "var(--text-color)",              // Chữ trắng khi dark, đen khi light
-                  backgroundColor: "transparent",          // Nền trong suốt để đỡ bị lệch tông
+                  border: "1px solid var(--border-color)", 
+                  color: "var(--text-color)",              
+                  backgroundColor: "transparent",          
                   fontWeight: 600,
                   transition: "all 0.3s"
                 }}
-                // Thêm class này để xử lý hover (đã viết trong CSS trước đó)
                 className="btn-logout"
               >
                 Đăng xuất
