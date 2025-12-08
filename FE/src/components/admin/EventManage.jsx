@@ -1,5 +1,5 @@
 import { Table, Tag, Button, message, Select, Space, Modal, Card, Tooltip } from "antd";
-import { DownloadOutlined, CheckOutlined, CloseOutlined, DeleteOutlined } from "@ant-design/icons";
+import { DownloadOutlined, CheckOutlined, CloseOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { useState, useMemo } from "react";
 import { exportEventsToExcel } from "../../utils/excelExport";
 import EventModal from "../post/EventModal";
@@ -16,6 +16,11 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
       return statusFilter === 'all' || event.approvalStatus === statusFilter;
     });
   }, [events, statusFilter]);
+
+  const handleViewEvent = (event) => {
+    setSelectedEvent(event);
+    setIsEventModalVisible(true);
+  };
 
   // Xử lý hành động
   const handleApprove = async (record) => {
@@ -159,6 +164,15 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
               </Tooltip>
             </>
           )}
+          <Tooltip title="Xem">
+            <Button 
+              type="default"
+              shape="circle" 
+              icon={<EyeOutlined />} 
+              size="small" 
+              onClick={() => handleViewEvent(record)} 
+            />
+          </Tooltip>
           <Tooltip title="Xóa">
             <Button 
               danger 
@@ -169,39 +183,6 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
             />
           </Tooltip>
         </Space>
-
-        <div style={{ display: "flex", justifyContent: "center", gap: 8 }}>
-          <Button
-            type="primary"
-            icon={<EyeOutlined />}
-            onClick={() => handleViewEvent(record)}
-          >
-            Xem
-          </Button>
-          <Button
-            danger
-            style={{ width: "70px", textAlign: "center" }}
-            onClick={async () => Modal.confirm({
-              title: "Bạn có chắc muốn xóa sự kiện?",
-              content: `Sự kiện: "${record.title}" sẽ bị xóa vĩnh viễn.`,
-              okText: "Xóa",
-              okType: "danger",
-              cancelText: "Hủy",
-              onOk: async () => {
-                try {
-                  await deleteEvent(record.id);
-                  message.success(`Đã xóa sự kiện "${record.title}"`);
-                } catch {
-                  message.error("Không thể xóa sự kiện.");
-                }
-              },
-            })
-            }
-          >
-            Xóa
-          </Button>
-        </div>
-        </div>
       ),
     }
   ];
@@ -252,6 +233,12 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
         rowKey={(r) => r.id || r._id}
         pagination={{ pageSize: 8 }}
         scroll={{ x: 1200 }} 
+      />
+
+      <EventModal
+        event={selectedEvent}
+        isModalVisible={isEventModalVisible}
+        setIsModalVisible={setIsEventModalVisible}
       />
     </Card>
   );
