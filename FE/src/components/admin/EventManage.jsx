@@ -215,7 +215,7 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
         columns={eventColumns}
         rowKey={(r) => r.id || r._id}
         pagination={{ pageSize: 8 }}
-        scroll={{ x: 1200 }} // QUAN TRỌNG: Ngăn bảng tràn ra ngoài container
+        scroll={{ x: 1200 }} 
       />
     </Card>
   );
