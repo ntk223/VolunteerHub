@@ -2,11 +2,14 @@ import { Table, Tag, Button, message, Select, Space, Modal, Card, Tooltip } from
 import { DownloadOutlined, CheckOutlined, CloseOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useState, useMemo } from "react";
 import { exportEventsToExcel } from "../../utils/excelExport";
+import EventModal from "../post/EventModal";
 
 const { Option } = Select;
 
 const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
   const [statusFilter, setStatusFilter] = useState('all');
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [isEventModalVisible, setIsEventModalVisible] = useState(false);
 
   const filteredEvents = useMemo(() => {
     return events.filter(event => {
@@ -166,6 +169,39 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
             />
           </Tooltip>
         </Space>
+
+        <div style={{ display: "flex", justifyContent: "center", gap: 8 }}>
+          <Button
+            type="primary"
+            icon={<EyeOutlined />}
+            onClick={() => handleViewEvent(record)}
+          >
+            Xem
+          </Button>
+          <Button
+            danger
+            style={{ width: "70px", textAlign: "center" }}
+            onClick={async () => Modal.confirm({
+              title: "Bạn có chắc muốn xóa sự kiện?",
+              content: `Sự kiện: "${record.title}" sẽ bị xóa vĩnh viễn.`,
+              okText: "Xóa",
+              okType: "danger",
+              cancelText: "Hủy",
+              onOk: async () => {
+                try {
+                  await deleteEvent(record.id);
+                  message.success(`Đã xóa sự kiện "${record.title}"`);
+                } catch {
+                  message.error("Không thể xóa sự kiện.");
+                }
+              },
+            })
+            }
+          >
+            Xóa
+          </Button>
+        </div>
+        </div>
       ),
     }
   ];

@@ -24,6 +24,7 @@ import EventsPage from "./pages/Event/EventsPage.jsx"; // 2. Import EventsPage
 import LandingPage from "./pages/LandingPage/LandingPage.jsx";
 import ServerErrorPage from "./pages/ServerErrorPage/ServerErrorPage.jsx";
 import ManageApplications from "./pages/ManageApplications/ManageApplications";
+
 import 'antd/dist/reset.css';
 // Import theme từ antd
 import { ConfigProvider, theme } from 'antd';

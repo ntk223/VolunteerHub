@@ -102,13 +102,7 @@ const Sidebar = ({ isMobile, onClose }) => {
     );
   }
 
-  if (user?.role === "volunteer") {
-    menuItems.push({
-      key: "manage-applications",
-      icon: <FileTextOutlined style={{ fontSize: 24 }} />,
-      label: <span className="menu-label">My Applications</span>,
-    });
-  }
+
 
   menuItems.push(
     {

@@ -15,6 +15,7 @@ import {
   ScheduleOutlined,
   CommentOutlined,
   AreaChartOutlined,
+  FileTextOutlined
 } from "@ant-design/icons";
 import { useAuth } from "../../hooks/useAuth.jsx"; // Đảm bảo đường dẫn này đúng
 import { useNavigate, useLocation } from "react-router-dom";
@@ -52,7 +53,13 @@ const AppHeader = () => {
       icon: <ScheduleOutlined />,
       label: "Quản lý sự kiện",
     });
-
+  if (user?.role === "volunteer") {
+    navItems.push({
+      key: "/manage-applications",
+      icon: <FileTextOutlined style={{ fontSize: 24 }} />,
+      label: <span className="menu-label">Đơn ứng tuyển</span>,
+    });
+  }
   return (
     <Header
       style={{
