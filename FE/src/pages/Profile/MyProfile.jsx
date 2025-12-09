@@ -7,6 +7,7 @@ import ChangePasswordForm from '../../components/auth/Profile/ChangePasswordForm
 import AvatarCard from '../../components/auth/Profile/AvatarCard';
 import Statistics from '../../components/auth/Profile/Statistics';
 import Activities from '../../components/auth/Profile/Activities';
+import EventCompleted from '../../components/auth/Profile/EventCompleted';
 import { useLocation } from 'react-router-dom';
 
 const MyProfile = () => {
@@ -101,9 +102,14 @@ const MyProfile = () => {
             </Card>
           </Col>
 
-          <Col xs={24} md={12}>
-            <Activities />
-          </Col>
+          {user.role !== 'admin' && 
+          (<Col xs={24} md={12}>
+            {user?.role === 'manager' ? (
+              <EventCompleted userId={user.id} />
+            ) : (
+              <Activities volunteerId={user.volunteer.id} />
+            )}
+          </Col>)}
         </Row>
 
         {/* Modal đổi mật khẩu */}

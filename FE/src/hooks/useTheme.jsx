@@ -34,7 +34,7 @@ export const ThemeProvider = ({ children }) => {
           algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
           token: {
              // Bạn có thể chỉnh màu chủ đạo ở đây nếu muốn
-             colorPrimary: '#1677ff', 
+             colorPrimary: '#FA541C', 
           }
         }}
       >

@@ -31,6 +31,7 @@ const Event = sequelize.define("Event", {
     },
     approvalStatus: {type: DataTypes.ENUM('pending', 'approved', 'rejected'), defaultValue: 'pending'},
     progressStatus: {type: DataTypes.ENUM('incomplete','cancelled', 'completed'), defaultValue: 'incomplete'},
+    imgUrl: {type: DataTypes.TEXT, allowNull: true},
     publishedAt: {type: DataTypes.DATE, allowNull: true},
     createdAt: {type: DataTypes.DATE, defaultValue: DataTypes.NOW},
     updatedAt: {type: DataTypes.DATE, defaultValue: DataTypes.NOW},

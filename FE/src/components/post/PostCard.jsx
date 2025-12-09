@@ -3,13 +3,8 @@ import {
   Avatar,
   Button,
   Typography,
-  Tooltip,
   Input,
   message,
-  Modal,
-  Descriptions,
-  Tag,
-  Image,
 } from "antd";
 import {
   LikeOutlined,
@@ -19,10 +14,6 @@ import {
   EditOutlined,
   SaveOutlined,
   CloseOutlined,
-  CalendarOutlined,
-  EnvironmentOutlined,
-  TeamOutlined,
-  ClockCircleOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -33,6 +24,7 @@ import EventModal from "./EventModal";
 import { usePosts } from "../../hooks/usePosts";
 import { useAuth } from "../../hooks/useAuth";
 import { useApplications } from "../../hooks/useApplications";
+import EventDetailModal from "../createEvent/EventDetailModal";
 import api from "../../api";
 
 const { Text, Title } = Typography;
@@ -138,7 +130,7 @@ const PostCard = ({ post }) => {
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <Avatar size={40} src={post.author?.avatarUrl} icon={<UserOutlined />} />
             <div>
-              <Link to={`/profile/${post.author?.id}`} style={{ fontWeight: 600, color: "#1677ff" }}>
+              <Link to={`/profile/${post.author?.id}`} style={{ fontWeight: 600, color: "#FA541C" }}>
                 {post.author?.name || "Ẩn danh"}
               </Link>
               <div>
@@ -193,7 +185,7 @@ const PostCard = ({ post }) => {
         {/* Event Title - CLICK ĐƯỢC */}
         {event && (
           <div style={{ marginTop: 12, cursor: "pointer" }} onClick={showEventDetail}>
-            <Title level={4} style={{ margin: 0, color: "#1890ff" }}>
+            <Title level={4} style={{ margin: 0, color: "#FA541C" }}>
               {event.title}
             </Title>
           </div>
@@ -269,7 +261,12 @@ const PostCard = ({ post }) => {
       </Card>
 
       {/* MODAL CHI TIẾT SỰ KIỆN */}
-      <EventModal event={event} isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} />
+      {/* <EventModal event={event} isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} /> */}
+      <EventDetailModal
+        visible={isModalVisible}
+        event={event}
+        onClose={() => setIsModalVisible(false)}
+      />
     </>
   );
 };

@@ -35,7 +35,7 @@ const UnauthorizePage = () => {
         
         {/* Hiển thị đếm ngược */}
         <p style={{ color: '#8c8c8c' }}>
-          Tự động quay về trang chủ sau <span style={{ fontWeight: 'bold', color: '#1677ff' }}>{count}</span> giây...
+          Tự động quay về trang chủ sau <span style={{ fontWeight: 'bold', color: '#FA541C' }}>{count}</span> giây...
         </p>
 
         {/* Nút bấm để về ngay lập tức */}

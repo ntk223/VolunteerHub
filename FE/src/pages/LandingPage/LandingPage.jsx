@@ -29,7 +29,7 @@ const LandingPage = () => {
   // Dữ liệu tính năng
   const features = [
     {
-      icon: <ScheduleOutlined style={{ fontSize: 40, color: "#1677ff" }} />,
+      icon: <ScheduleOutlined style={{ fontSize: 40, color: "#FA541C" }} />,
       title: "Quản lý Sự kiện",
       desc: "Tạo, duyệt và tham gia các hoạt động tình nguyện với lịch trình chi tiết và hệ thống điểm danh QR Code.",
     },
@@ -80,7 +80,7 @@ const LandingPage = () => {
               </div>
               <Title className="hero-title">
                 Kết nối Trái tim <br />
-                <span style={{ color: '#1677ff' }}>Lan tỏa Yêu thương</span>
+                <span style={{ color: '#FA541C' }}>Lan tỏa Yêu thương</span>
               </Title>
               <Paragraph className="hero-subtitle">
                 VolunteerHub không chỉ là nơi tìm kiếm sự kiện, mà là nơi bạn kiến tạo giá trị, 
@@ -122,7 +122,7 @@ const LandingPage = () => {
                    alignItems: 'center',
                    justifyContent: 'center'
                }}>
-                  <HeartOutlined style={{ fontSize: 150, color: 'rgba(255, 77, 79, 0.2)' }} />
+                  <HeartOutlined style={{ fontSize: 150, color: 'rgba(252, 10, 10, 0.2)' }} />
                   
                   {/* Floating Card 1 */}
                   <div className="floating-card" style={{ top: 40, left: 20 }}>
@@ -130,7 +130,7 @@ const LandingPage = () => {
                   </div>
                    {/* Floating Card 2 */}
                    <div className="floating-card" style={{ bottom: 60, right: 0, animationDelay: '1.5s' }}>
-                     <Space><TeamOutlined style={{color: '#1677ff'}} /> <Text strong>Kết nối 500+ bạn mới</Text></Space>
+                     <Space><TeamOutlined style={{color: '#FA541C'}} /> <Text strong>Kết nối 500+ bạn mới</Text></Space>
                   </div>
                </div>
             </Col>
@@ -241,19 +241,19 @@ const LandingPage = () => {
           <Col xs={24} md={6}>
             <div className="footer-title">Liên hệ Nhà phát triển</div>
             <div className="contact-item">
-               <UserOutlined style={{ color: '#1677ff' }} /> 
+               <UserOutlined style={{ color: '#FA541C' }} /> 
                <span style={{ fontWeight: 600 }}>Nguyễn Trung Kiên</span>
             </div>
                         <div className="contact-item">
-               <UserOutlined style={{ color: '#1677ff' }} /> 
+               <UserOutlined style={{ color: '#FA541C' }} /> 
                <span style={{ fontWeight: 600 }}>Nguyễn Khánh Tùng</span>
             </div>
                         <div className="contact-item">
-               <UserOutlined style={{ color: '#1677ff' }} /> 
+               <UserOutlined style={{ color: '#FA541C' }} /> 
                <span style={{ fontWeight: 600 }}>Trần Lê Cương</span>
             </div>
             <div className="contact-item">
-               <EnvironmentOutlined style={{ color: '#1677ff' }} /> 
+               <EnvironmentOutlined style={{ color: '#FA541C' }} /> 
                <a href="https://www.facebook.com/UET.VNUH" target="_blank" rel="noopener noreferrer">
                <span style={{ color: '#94a3b8', fontWeight: 600 }}>University of Engineering and Technology</span>
                </a>

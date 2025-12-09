@@ -1,8 +1,9 @@
-import { Card, Col, Row, Statistic, Button, message } from "antd";
-import { DownloadOutlined } from "@ant-design/icons";
+import { Card, Col, Row, Statistic, Button, message, Typography } from "antd";
+import { DownloadOutlined, UserOutlined, FileTextOutlined, CalendarOutlined } from "@ant-design/icons";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Legend } from "recharts";
 import { exportStatisticsToExcel } from "../../utils/excelExport";
 
+const { Title, Text } = Typography;
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 const DashboardStatistic = ({ users = [], posts = [], events = [] }) => {
@@ -68,13 +69,18 @@ const DashboardStatistic = ({ users = [], posts = [], events = [] }) => {
   }).sort((a, b) => b.posts - a.posts).slice(0, 5);
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div style={{ padding: 0 }}>
       {/* Header with Export Button */}
-      <div style={{ marginBottom: 20, textAlign: 'right' }}>
+      <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <Title level={4} style={{ margin: 0, marginBottom: 4 }}>📊 Thống kê tổng quan</Title>
+          <Text type="secondary">Xem tổng quan về người dùng, bài viết và sự kiện</Text>
+        </div>
         <Button 
           type="primary" 
           icon={<DownloadOutlined />}
           onClick={handleExportExcel}
+          size="large"
         >
           Xuất Excel
         </Button>
@@ -84,18 +90,32 @@ const DashboardStatistic = ({ users = [], posts = [], events = [] }) => {
       <Row gutter={16} style={{ marginBottom: 20 }}>
         <Col span={8}>
           <Card>
-            <Statistic title="Tổng người dùng" value={users.length} valueStyle={{ color: "#3f8600" }} />
+            <Statistic 
+              title="Tổng người dùng" 
+              value={users.length} 
+              prefix={<UserOutlined />}
+              valueStyle={{ color: "#3f8600" }} 
+            />
           </Card>
         </Col>
         <Col span={8}>
           <Card>
-            <Statistic title="Tổng bài viết" value={posts.length} valueStyle={{ color: "#1890ff" }} />
+            <Statistic 
+              title="Tổng bài viết" 
+              value={posts.length} 
+              prefix={<FileTextOutlined />}
+              valueStyle={{ color: "#FA541C" }} 
+            />
           </Card>
         </Col>
         <Col span={8}>
           <Card>
-            <Statistic title="Bài chờ duyệt" value={postStatusCounts.pending} valueStyle={{ color: "#faad14" }} />
-
+            <Statistic 
+              title="Bài chờ duyệt" 
+              value={postStatusCounts.pending} 
+              prefix={<FileTextOutlined />}
+              valueStyle={{ color: "#faad14" }} 
+            />
           </Card>
         </Col>
       </Row>
@@ -104,17 +124,32 @@ const DashboardStatistic = ({ users = [], posts = [], events = [] }) => {
       <Row gutter={16} style={{ marginBottom: 20 }}>
         <Col span={8}>
           <Card>
-            <Statistic title="Tổng sự kiện" value={events.length} valueStyle={{ color: "#cf1322" }} />
+            <Statistic 
+              title="Tổng sự kiện" 
+              value={events.length} 
+              prefix={<CalendarOutlined />}
+              valueStyle={{ color: "#cf1322" }} 
+            />
           </Card>
         </Col>
         <Col span={8}>
           <Card>
-            <Statistic title="Sự kiện chờ duyệt" value={events.filter((e) => e.approvalStatus == "pending").length} valueStyle={{ color: "#52c41a" }} />
+            <Statistic 
+              title="Sự kiện chờ duyệt" 
+              value={events.filter((e) => e.approvalStatus == "pending").length} 
+              prefix={<CalendarOutlined />}
+              valueStyle={{ color: "#52c41a" }} 
+            />
           </Card>
         </Col>
         <Col span={8}>
           <Card>
-            <Statistic title="Sự kiện từ chối" value={events.filter(e => e.approvalStatus === "rejected").length} valueStyle={{ color: "#f5222d" }} />
+            <Statistic 
+              title="Sự kiện từ chối" 
+              value={events.filter(e => e.approvalStatus === "rejected").length} 
+              prefix={<CalendarOutlined />}
+              valueStyle={{ color: "#f5222d" }} 
+            />
           </Card>
         </Col>
       </Row>
@@ -182,7 +217,7 @@ const DashboardStatistic = ({ users = [], posts = [], events = [] }) => {
                 <YAxis allowDecimals={false} />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="events" fill="#1890ff" />
+                <Bar dataKey="events" fill="#FA541C" />
               </BarChart>
             </ResponsiveContainer>
           </Card>

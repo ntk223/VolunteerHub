@@ -8,17 +8,18 @@
   transition: all 0.2s ease !important; /* Hiệu ứng chuyển mượt */
 }
 
-/* 2. Khi rê chuột vào (HOVER) */
+/* 2. Khi rê chuột vào (HOVER) - Coral accent */
 .custom-sider .ant-menu-item:hover {
-  color: var(--primary-color) !important;       /* Chữ chuyển xanh */
-  background-color: rgba(22, 119, 255, 0.1) !important; /* Nền xanh nhạt trong suốt */
+  color: var(--primary-color) !important;       /* Chữ chuyển coral */
+  background-color: rgba(250, 84, 28, 0.1) !important; /* Nền coral nhạt */
 }
 
-/* 3. Khi đang được chọn (ACTIVE) */
+/* 3. Khi đang được chọn (ACTIVE) - Coral + Navy gradient */
 .custom-sider .ant-menu-item-selected {
-  background-color: rgba(22, 119, 255, 0.15) !important; /* Nền xanh đậm hơn chút */
+  background: linear-gradient(135deg, rgba(250, 84, 28, 0.15), rgba(0, 58, 140, 0.05)) !important;
   color: var(--primary-color) !important;
   font-weight: 600;
+  border-left: 3px solid #003A8C !important; /* Navy accent border */
 }
 
 /* Xử lý icon bên trong menu */

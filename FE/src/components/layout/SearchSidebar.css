@@ -46,7 +46,7 @@
 .search-input:focus {
   border-color: var(--primary-color) !important;
   background: var(--sidebar-bg) !important; /* Khi focus thì nền sáng hơn chút (trong dark mode) */
-  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2) !important; /* Blue glow */
+  box-shadow: 0 0 0 2px rgba(250, 84, 28, 0.2) !important; /* Coral glow */
 }
 
 .search-input:hover {
@@ -82,7 +82,7 @@
 .category-select select:focus {
   border-color: var(--primary-color);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2);
+  box-shadow: 0 0 0 2px rgba(250, 84, 28, 0.2);
 }
 
 .category-select select:hover {
@@ -157,7 +157,7 @@
 
 /* --- BADGES & TAGS --- */
 .result-type-label {
-  background: rgba(22, 119, 255, 0.1); /* Blue tint */
+  background: rgba(250, 84, 28, 0.1); /* Coral tint */
   color: var(--primary-color);
   padding: 4px 8px;
   border-radius: 6px;

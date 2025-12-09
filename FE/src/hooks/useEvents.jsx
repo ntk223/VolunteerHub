@@ -27,12 +27,11 @@ export const EventsProvider = ({ children }) => {
     
     const fetchEvents = async () => {
       try {
-        // Gọi API lấy tất cả sự kiện (Backend nên filter chỉ trả về các sự kiện status='open' hoặc 'approved')
+        // API GET /event - lấy tất cả sự kiện
         const res = await api.get(`/event`);
         
-        // Nếu backend chưa filter, ta có thể filter phía client (tùy chọn)
-        // const approvedEvents = res.data.filter(e => e.status === 'open');
-        const approvedEvents = res.data;
+        // Filter chỉ lấy events đã được duyệt
+        const approvedEvents = res.data.filter(e => e.approvalStatus === 'approved');
 
         setOriginalEvents(approvedEvents);
         setEvents(approvedEvents);
@@ -44,29 +43,28 @@ export const EventsProvider = ({ children }) => {
     };
 
     fetchEvents();
-  }, [user?.id]); // Reload khi user đổi (để cập nhật trạng thái join nếu cần)
+  }, [user?.id]); // Reload khi user đổi
 
   // 🔹 Kiểm tra danh sách các sự kiện mà user hiện tại đã tham gia
-  // (Nếu API event trả về mảng participants chứa ID user thì không cần cái này, 
-  // nhưng nếu participants chỉ là con số count thì cần gọi API riêng này)
   useEffect(() => {
     const fetchUserJoinedStatus = async () => {
       if (!user?.id) return;
-      try  {
-        const res = await api.get(`/event/${user.id}/joined`);
-        const joinedEventIds = res.data; // Giả định API trả về mảng ID sự kiện đã tham gia
+      try {
+        // API GET /application/volunteer/:volunteerId - lấy danh sách đơn của volunteer
+        const res = await api.get(`/application/volunteer/${user.id}`);
+        const applications = res.data;
 
-        // Chuyển thành object map cho nhanh trong việc kiểm tra
+        // Tạo map các eventId đã apply với status accepted
         const joinedMap = {};
-        joinedEventIds.forEach(eventId => {
-          joinedMap[eventId] = true;
+        applications.forEach(app => {
+          if (app.status === 'accepted' && app.eventId) {
+            joinedMap[app.eventId] = true;
+          }
         });
         setUserJoinedEvents(joinedMap);
       } catch (error) {
         console.error("Lỗi tải trạng thái tham gia sự kiện của user:", error);
       }
-      // Logic này giả định dựa trên dữ liệu event có sẵn trường participants (array id)
-      // Nếu không, bạn cần gọi API: await api.get(`/event/user/${user.id}/joined`);
     };
     fetchUserJoinedStatus();
   }, [user?.id]);
@@ -78,14 +76,14 @@ export const EventsProvider = ({ children }) => {
     if (sortType === 'popularity') {
       return sorted.sort((a, b) => {
         // Sắp xếp theo số lượng người tham gia giảm dần
-        const countA = Array.isArray(a.participants) ? a.participants.length : (a.participantsCount || 0);
-        const countB = Array.isArray(b.participants) ? b.participants.length : (b.participantsCount || 0);
+        const countA = a.applicationsCount || 0;
+        const countB = b.applicationsCount || 0;
         return countB - countA;
       });
     } else {
-      // 'upcoming' hoặc mặc định: Sắp xếp theo ngày diễn ra (Mới nhất/Gần nhất lên đầu)
+      // 'upcoming' hoặc mặc định: Sắp xếp theo ngày bắt đầu (Gần nhất lên đầu)
       return sorted.sort((a, b) => {
-        return new Date(a.date) - new Date(b.date); // Ngày gần nhất lên trước
+        return new Date(a.startTime) - new Date(b.startTime);
       });
     }
   }, []);
@@ -103,57 +101,73 @@ export const EventsProvider = ({ children }) => {
     setSortBy(newSortBy);
   }, []);
 
-  // 🔹 Hành động: Tham gia sự kiện
+  // 🔹 Hành động: Tham gia sự kiện (tạo application)
   const joinEvent = useCallback(async (eventId) => {
-    if (!user?.id) return;
+    if (!user?.id) return false;
     
     try {
-      // Gọi API Join
-      // Giả định API trả về danh sách participants mới hoặc object event đã update
-      const res = await api.post(`/event/${eventId}/join`, { userId: user.id });
-      
-      // Cập nhật State Optimistic hoặc dựa trên Response
-      setEvents((prev) => {
-        const updatedEvents = prev.map((e) => {
-          if (e.id === eventId) {
-            // Nếu API trả về list participants mới
-            const newParticipants = res.data.participants || [...(e.participants || []), user.id];
-            return { ...e, participants: newParticipants };
-          }
-          return e;
-        });
-        // Đồng bộ originalEvents để khi sort không bị mất dữ liệu mới
-        setOriginalEvents(updatedEvents);
-        return updatedEvents;
+      // API POST /application - tạo đơn ứng tuyển
+      const res = await api.post(`/application`, { 
+        eventId: eventId,
+        volunteerId: user.volunteer.id 
       });
+      
+      // Cập nhật userJoinedEvents map
+      setUserJoinedEvents(prev => ({
+        ...prev,
+        [eventId]: true
+      }));
 
-      return true; // Trả về true để component biết là thành công
+      // Cập nhật count trong events (tùy chọn - nếu backend trả về)
+      if (res.data) {
+        setEvents((prev) => 
+          prev.map((e) => 
+            e.id === eventId 
+              ? { ...e, applicationsCount: (e.applicationsCount || 0) + 1 }
+              : e
+          )
+        );
+      }
+
+      return true;
     } catch (error) {
       console.error("Lỗi khi tham gia sự kiện:", error);
       return false;
     }
   }, [user?.id]);
 
-  // 🔹 Hành động: Rời sự kiện
+  // 🔹 Hành động: Rời sự kiện (hủy application)
   const leaveEvent = useCallback(async (eventId) => {
-    if (!user?.id) return;
+    if (!user?.id) return false;
 
     try {
-      // Gọi API Leave
-      await api.post(`/event/user/${user.id}/event/${eventId}/leave`, { userId: user.id }); // Hoặc dùng method DELETE
+      // Tìm application ID của user cho event này
+      const appRes = await api.get(`/application/volunteer/${user.id}`);
+      const application = appRes.data.find(app => app.eventId === eventId);
+      
+      if (!application) {
+        console.error("Không tìm thấy application");
+        return false;
+      }
 
-      setEvents((prev) => {
-        const updatedEvents = prev.map((e) => {
-          if (e.id === eventId) {
-            // Lọc bỏ user ID khỏi mảng participants
-            const newParticipants = (e.participants || []).filter(uid => uid !== user.id);
-            return { ...e, participants: newParticipants };
-          }
-          return e;
-        });
-        setOriginalEvents(updatedEvents);
-        return updatedEvents;
+      // API PATCH /application/:id/cancel - hủy đơn
+      await api.patch(`/application/${application.id}/cancel`);
+
+      // Cập nhật userJoinedEvents map
+      setUserJoinedEvents(prev => {
+        const updated = { ...prev };
+        delete updated[eventId];
+        return updated;
       });
+
+      // Giảm count trong events
+      setEvents((prev) => 
+        prev.map((e) => 
+          e.id === eventId 
+            ? { ...e, applicationsCount: Math.max((e.applicationsCount || 1) - 1, 0) }
+            : e
+        )
+      );
 
       return true;
     } catch (error) {

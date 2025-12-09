@@ -99,7 +99,7 @@ const ServerErrorPage = () => {
                         borderRadius: '50%', 
                         padding: 5 
                     }}>
-                        <ApiOutlined style={{ fontSize: 30, color: '#1677ff' }} />
+                        <ApiOutlined style={{ fontSize: 30, color: '#FA541C' }} />
                     </div>
                 </div>
             }
@@ -143,9 +143,9 @@ const ServerErrorPage = () => {
                     height: 45, 
                     paddingLeft: 30, 
                     paddingRight: 30,
-                    background: "linear-gradient(45deg, #1677ff, #4096ff)",
+                    background: "linear-gradient(135deg, #FA541C, #003A8C)",
                     border: "none",
-                    boxShadow: "0 4px 10px rgba(22, 119, 255, 0.3)"
+                    boxShadow: "0 4px 10px rgba(250, 84, 28, 0.3)"
                   }}
                 >
                   Thử lại ngay

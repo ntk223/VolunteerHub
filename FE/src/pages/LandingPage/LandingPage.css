@@ -1,41 +1,113 @@
 /* LandingPage.css */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
+/* === FORCE LIGHT MODE - KHÔNG BỊ ẢNH HƯỚNG BỚI THEME === */
+.landing-container,
+.landing-container *,
+.landing-container *::before,
+.landing-container *::after {
+  color-scheme: light !important;
+}
+
 .landing-container {
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
-  background: #fff;
+  background: #ffffff !important;
+  color: #1a1a1a !important;
 }
 
-/* --- HEADER --- */
+/* Override toàn bộ Ant Design components */
+.landing-container .ant-card {
+  background: #ffffff !important;
+  color: #1a1a1a !important;
+  border-color: #e8e8e8 !important;
+}
+
+.landing-container .ant-card-head {
+  background: #fafafa !important;
+  color: #1a1a1a !important;
+  border-bottom-color: #e8e8e8 !important;
+}
+
+.landing-container .ant-card-body {
+  color: #595959 !important;
+}
+
+/* Typography và text elements */
+.landing-container .ant-typography,
+.landing-container h1,
+.landing-container h2,
+.landing-container h3,
+.landing-container h4,
+.landing-container h5,
+.landing-container h6 {
+  color: #1a1a1a !important;
+}
+
+.landing-container p,
+.landing-container span:not([class*="anticon"]) {
+  color: #595959 !important;
+}
+
+/* Buttons */
+.landing-container .ant-btn {
+  border-color: currentColor !important;
+}
+
+.landing-container .ant-btn-text {
+  color: #1a1a1a !important;
+}
+
+.landing-container .ant-btn-primary {
+  background: #FA541C !important;
+  border-color: #FA541C !important;
+  color: #ffffff !important;
+}
+
+.landing-container .ant-btn-primary:hover {
+  background: #FF7A45 !important;
+  border-color: #FF7A45 !important;
+}
+
+/* Space và layout components */
+.landing-container .ant-space-item {
+  color: inherit !important;
+}
+
+/* === HEADER - Bright & Clean === */
 .landing-header {
   position: fixed;
   top: 0;
   width: 100%;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.95) !important;
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid #f0f0f0 !important;
   padding: 0 50px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 64px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
 }
 
 .header-logo {
   font-size: 24px;
   font-weight: 800;
-  background: -webkit-linear-gradient(45deg, #1677ff, #ffd54c);
+  background: linear-gradient(135deg, #FA541C, #003A8C);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* --- HERO SECTION --- */
+/* === HERO SECTION - Bright Gradient === */
 .hero-section {
-  padding: 140px 24px 80px; /* Padding top lớn để tránh header đè */
-  background: linear-gradient(180deg, #f0f7ff 0%, #ffffff 100%);
+  padding: 140px 24px 80px;
+  background: linear-gradient(135deg, #FFF5F0 0%, #FFFBF7 50%, #FFFFFF 100%) !important;
   min-height: 90vh;
   display: flex;
   align-items: center;
@@ -45,15 +117,19 @@
   font-size: 3.5rem !important;
   font-weight: 800 !important;
   line-height: 1.2 !important;
-  color: #1e293b;
+  background: linear-gradient(135deg, #FA541C, #003A8C);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin-bottom: 24px !important;
 }
 
 .hero-subtitle {
   font-size: 1.25rem !important;
-  color: #64748b !important;
+  color: #595959 !important;
   margin-bottom: 40px !important;
   max-width: 500px;
+  line-height: 1.8 !important;
 }
 
 .hero-image-container {
@@ -66,7 +142,7 @@
   background: white;
   padding: 15px;
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 30px rgba(250, 84, 28, 0.15);
   animation: float 3s ease-in-out infinite;
 }
 
@@ -86,17 +162,19 @@
 }
 
 .feature-card {
-  border: 1px solid #f1f5f9 !important;
-  background: #fff;
+  border: 1px solid #f0f0f0 !important;
+  background: #ffffff !important;
   border-radius: 16px !important;
   transition: all 0.3s ease;
   height: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
 }
 
 .feature-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-  border-color: #1677ff !important;
+  box-shadow: 0 12px 24px rgba(250, 84, 28, 0.12) !important;
+  border-color: #FFA940 !important;
+  background: linear-gradient(135deg, #FFFFFF, #FFF9F5) !important;
 }
 
 /* --- WORK FLOW (HOW IT WORKS) --- */
@@ -113,20 +191,20 @@
 .step-number {
   width: 50px;
   height: 50px;
-  background: #1677ff;
+  background: #FA541C;
   color: #fff;
   border-radius: 50%;
   font-size: 24px;
   font-weight: bold;
   line-height: 50px;
   margin: 0 auto 20px;
-  box-shadow: 0 8px 16px rgba(22, 119, 255, 0.3);
+  box-shadow: 0 8px 16px rgba(250, 84, 28, 0.3);
 }
 
 /* --- STATS --- */
 .stats-section {
   padding: 80px 24px;
-  background: #1677ff;
+  background: linear-gradient(135deg, #FA541C, #003A8C);
   background-image: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.1) 0%, transparent 20%);
   color: #fff;
 }
@@ -155,7 +233,7 @@
 }
 
 .footer-link:hover {
-  color: #1677ff;
+  color: #FA541C;
 }
 
 .social-icon {
@@ -167,7 +245,7 @@
 }
 
 .social-icon:hover {
-  color: #1677ff;
+  color: #FA541C;
 }
 
 .contact-item {

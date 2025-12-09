@@ -1,8 +1,10 @@
-import { Table, Tag, Button, message, Select, Space, Modal, Card, Tooltip } from "antd";
+import { Table, Tag, Button, message, Select, Space, Modal, Card, Tooltip, Typography } from "antd";
 import { DownloadOutlined, CheckOutlined, CloseOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { useState, useMemo } from "react";
 import { exportEventsToExcel } from "../../utils/excelExport";
 import EventModal from "../post/EventModal";
+import EventDetailModal from "../createEvent/EventDetailModal";
+const { Title, Text } = Typography;
 
 const { Option } = Select;
 
@@ -138,62 +140,80 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
       title: "Thao tác",
       key: "action",
       fixed: 'right', // Cố định cột này bên phải
-      width: 140,
+      width: 160,
       render: (_, record) => (
-        <Space size="small">
-          {record.approvalStatus === "pending" && (
+        <Space size="small" direction="vertical" style={{ width: '100%' }}>
+          {record.approvalStatus === "pending" ? (
             <>
-              <Tooltip title="Duyệt">
+              <div style={{ display: 'flex', gap: 4 }}>
                 <Button 
                   type="primary" 
-                  shape="circle" 
-                  icon={<CheckOutlined />} 
-                  size="small" 
+                  // icon={<CheckOutlined />} 
+                  size="small"
+                  style={{ flex: 1 }}
                   onClick={() => handleApprove(record)} 
-                />
-              </Tooltip>
-              <Tooltip title="Từ chối">
+                >
+                  Duyệt
+                </Button>
                 <Button 
-                  type="primary" 
-                  danger 
-                  shape="circle" 
-                  icon={<CloseOutlined />} 
-                  size="small" 
+                  danger
+                  // icon={<CloseOutlined />} 
+                  size="small"
+                  style={{ flex: 1 }}
                   onClick={() => handleReject(record)} 
-                />
-              </Tooltip>
+                >
+                  Từ chối
+                </Button>
+              </div>
+              <Button 
+                type="link"
+                icon={<EyeOutlined />} 
+                size="small"
+                block
+                onClick={() => handleViewEvent(record)} 
+              >
+                Xem chi tiết
+              </Button>
             </>
+          ) : (
+            <div style={{ display: 'flex', gap: 4 }}>
+              <Button 
+                type="link"
+                icon={<EyeOutlined />} 
+                size="small"
+                style={{ flex: 1 }}
+                onClick={() => handleViewEvent(record)} 
+              >
+                Xem
+              </Button>
+              <Button 
+                danger
+                type="link"
+                icon={<DeleteOutlined />} 
+                size="small"
+                style={{ flex: 1 }}
+                onClick={() => handleDelete(record)} 
+              >
+                Xóa
+              </Button>
+            </div>
           )}
-          <Tooltip title="Xem">
-            <Button 
-              type="default"
-              shape="circle" 
-              icon={<EyeOutlined />} 
-              size="small" 
-              onClick={() => handleViewEvent(record)} 
-            />
-          </Tooltip>
-          <Tooltip title="Xóa">
-            <Button 
-              danger 
-              shape="circle" 
-              icon={<DeleteOutlined />} 
-              size="small" 
-              onClick={() => handleDelete(record)} 
-            />
-          </Tooltip>
         </Space>
       ),
     }
   ];
 
   return (
-    <Card 
-      title="Quản lý Sự kiện" 
-      extra={
+    <div style={{ padding: 0 }}>
+      <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <Title level={4} style={{ margin: 0, marginBottom: 4 }}>📅 Danh sách sự kiện</Title>
+          <Text type="secondary">Quản lý và kiểm duyệt sự kiện tình nguyện</Text>
+        </div>
         <Button 
           type="primary" 
           icon={<DownloadOutlined />}
+          size="large"
           onClick={() => {
             try {
               exportEventsToExcel(filteredEvents);
@@ -205,14 +225,12 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
         >
           Xuất Excel
         </Button>
-      }
-      bodyStyle={{ padding: 0 }} // Để bảng sát viền Card
-      style={{ borderRadius: 8, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
-    >
+      </div>
+      
       {/* Thanh lọc trạng thái */}
-      <div style={{ padding: '16px 24px', borderBottom: '1px solid #f0f0f0', background: '#fafafa' }}>
+      <div style={{ marginBottom: 16 }}>
         <Space>
-          <span style={{ fontWeight: 500 }}>Lọc trạng thái:</span>
+          <Text strong>Lọc trạng thái:</Text>
           <Select
             value={statusFilter}
             onChange={setStatusFilter}
@@ -231,16 +249,26 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
         dataSource={filteredEvents}
         columns={eventColumns}
         rowKey={(r) => r.id || r._id}
-        pagination={{ pageSize: 8 }}
+        pagination={{ 
+          pageSize: 10,
+          showSizeChanger: true,
+          showTotal: (total) => `Tổng ${total} sự kiện`,
+        }}
         scroll={{ x: 1200 }} 
       />
 
-      <EventModal
+      {/* <EventModal
         event={selectedEvent}
         isModalVisible={isEventModalVisible}
         setIsModalVisible={setIsEventModalVisible}
+      /> */}
+      <EventDetailModal 
+        visible={isEventModalVisible} 
+        event={selectedEvent} 
+        onClose={() => setIsEventModalVisible(false)} 
+        isAdmin={true}
       />
-    </Card>
+    </div>
   );
 };
 

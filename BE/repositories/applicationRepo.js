@@ -91,7 +91,7 @@ class ApplicationRepository {
                 {
                     model: Event,
                     as: 'event',
-                    attributes: ['id', 'title']
+                    attributes: ['id', 'title', 'startTime', 'endTime', 'progressStatus']
                 }
             ],
             where: { volunteerId }

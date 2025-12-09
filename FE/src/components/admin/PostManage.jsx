@@ -1,9 +1,11 @@
-import { Table, Tag, Button, message, Space, Avatar, Modal, Select } from "antd";
+import { Table, Tag, Button, message, Space, Avatar, Modal, Select, Card, Typography } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import { useState, useMemo } from "react";
 import PostPreview from "./PostPreview";
 import { useAuth } from "../../hooks/useAuth";
 import { exportPostsToExcel } from "../../utils/excelExport";
+
+const { Title, Text } = Typography;
 
 const { Option } = Select;
 const postTypeMap = {
@@ -178,10 +180,15 @@ const handlePreview = (record) => {
   };
 
   return (
-    <>
+    <div style={{ padding: 0 }}>
+      <div style={{ marginBottom: 24 }}>
+        <Title level={4} style={{ margin: 0, marginBottom: 4 }}>📝 Danh sách bài viết</Title>
+        <Text type="secondary">Quản lý và kiểm duyệt bài viết của người dùng</Text>
+      </div>
+      
       <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Space>
-          <span>Lọc theo loại:</span>
+          <Text strong>Lọc theo loại:</Text>
           <Select
             value={typeFilter}
             onChange={setTypeFilter}
@@ -192,7 +199,7 @@ const handlePreview = (record) => {
             <Option value="recruitment">Tuyển tình nguyện viên</Option>
           </Select>
           
-          <span>Lọc theo trạng thái:</span>
+          <Text strong>Lọc theo trạng thái:</Text>
           <Select
             value={statusFilter}
             onChange={setStatusFilter}
@@ -208,6 +215,7 @@ const handlePreview = (record) => {
         <Button 
           type="primary" 
           icon={<DownloadOutlined />}
+          size="large"
           onClick={() => {
             try {
               exportPostsToExcel(filteredPosts);
@@ -227,7 +235,11 @@ const handlePreview = (record) => {
         dataSource={filteredPosts}
         rowKey="id"
         loading={loading}
-        pagination={{ pageSize: 8 }}
+        pagination={{ 
+          pageSize: 10,
+          showSizeChanger: true,
+          showTotal: (total) => `Tổng ${total} bài viết`,
+        }}
       />
 
       {/* Modal Preview */}
@@ -236,7 +248,7 @@ const handlePreview = (record) => {
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
       />
-    </>
+    </div>
   );
 };
 

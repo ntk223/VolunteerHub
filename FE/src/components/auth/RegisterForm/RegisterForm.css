@@ -2,18 +2,29 @@
 /* Nếu bạn định nghĩa các biến này trong một file CSS riêng biệt cho form, 
    hãy đảm bảo chúng được import hoặc copy vào đây: */
 :root {
-  --primary-color: #007bff;
-  --primary-hover-color: #0056b3;
-  --background-color: #f0f3fa;
+  --primary-color: #FA541C;
+  --primary-hover-color: #D4380D;
+  --background-color: #FFF7F0;
   --form-background-color: #ffffff;
   --text-color: #333;
   --label-color: #555;
-  --border-color: #ddd;
+  --border-color: #FFD8BF;
   --border-focus-color: var(--primary-color);
   --error-color: #e74c3c;
-  --font-family: 'Montserrat', sans-serif; /* Sử dụng Montserrat như code React trước */
-  --border-radius: 8px; /* Giữ nhỏ hơn để phù hợp với input */
-  --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35); /* Sử dụng shadow từ Login.css ban đầu */
+  --font-family: 'Montserrat', sans-serif;
+  --border-radius: 8px;
+  --box-shadow: 0 5px 15px rgba(250, 84, 28, 0.15);
+}
+
+[data-theme="dark"] {
+  --primary-color: #FF7A45;
+  --primary-hover-color: #FFA940;
+  --background-color: #18191A;
+  --form-background-color: #242526;
+  --text-color: #E4E6EB;
+  --label-color: #B0B3B8;
+  --border-color: #3A3B3C;
+  --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 }
 
 
@@ -86,7 +97,7 @@
 .form-group input:focus,
 .form-group select:focus {
     border-color: var(--border-focus-color);
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    box-shadow: 0 0 0 3px rgba(250, 84, 28, 0.1);
 }
 
 /* Input khi có lỗi */
@@ -136,7 +147,7 @@
 
 /* --- Nút Đăng ký (Tái sử dụng style nút chung) --- */
 .register-button {
-    background-color: #4E56C0 !important;
+    background-color: #FA541C !important;
     height: 42px !important;
     color: white;
     font-size: 12px;
@@ -153,9 +164,9 @@
 }
 
 .register-button:hover:not(:disabled) {
-    background-color: #4E56C0 !important;
+    background-color: #D4380D !important;
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(116, 75, 220, 0.4);
+    box-shadow: 0 4px 10px rgba(250, 84, 28, 0.4);
 }
 
 .register-button:disabled {
