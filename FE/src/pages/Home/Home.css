@@ -1,44 +1,46 @@
 /* --- 1. CẬP NHẬT LẠI :ROOT (Thêm màu chữ mặc định) --- */
 :root {
-  /* Màu Layout */
-  --primary-color: #1677ff;
-  --bg-color: #f0f2f5;       /* Xám nhạt */
+  /* Màu Layout - Coral + Navy Theme */
+  --primary-color: #FA541C;  /* Cam san hô - Nhiệt huyết */
+  --secondary-color: #003A8C; /* Xanh than - Nghiêm túc */
+  --bg-color: #FFF7F0;       /* Nền ấm áp */
   --sidebar-bg: #ffffff;     /* Trắng */
-  --content-bg: #ffffff;     /* Nền nội dung (nếu có card) */
+  --content-bg: #ffffff;     /* Nền nội dung */
   
   /* Màu Text & Border */
   --text-color: rgba(0, 0, 0, 0.88);
   --text-secondary: rgba(0, 0, 0, 0.45);
-  --border-color: rgba(5, 5, 5, 0.06);
+  --border-color: #FFD8BF;
   
-  /* Scrollbar */
-  --scroll-thumb: #ccc;
+  /* Scrollbar - Coral */
+  --scroll-thumb: #FA541C;
   --scroll-track: transparent;
 
-  /* Kích thước & Shadow giữ nguyên như cũ */
+  /* Kích thước & Shadow */
   --header-height: 64px;
   --trigger-width: 24px;
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  --shadow-sm: 0 2px 8px rgba(250, 84, 28, 0.1);
 }
 
-/* --- 2. ĐỊNH NGHĨA DARK MODE --- */
+/* --- 2. ĐỊNH NGHĨA DARK MODE - Facebook Style --- */
 [data-theme="dark"] {
-  /* Màu Layout - Tông màu tối dịu mắt (giống Ant Design Dark) */
-  --primary-color: #1668dc;  /* Xanh đậm hơn chút để đỡ chói */
-  --bg-color: #000000;       /* Nền đen sâu */
-  --sidebar-bg: #141414;     /* Xám đen cho Sidebar */
-  --content-bg: #1f1f1f;     /* Xám nhẹ hơn cho các Card nội dung */
+  /* Màu Layout - Dark mode như Facebook */
+  --primary-color: #FF7A45;  /* Cam nhạt hơn cho dark mode */
+  --secondary-color: #177DDC; /* Xanh sáng hơn */
+  --bg-color: #18191A;       /* Main background - đen nhạt như Facebook */
+  --sidebar-bg: #242526;     /* Sidebar - xám đen như Facebook */
+  --content-bg: #242526;     /* Post card - xám đen như Facebook */
 
-  /* Màu Text & Border - Đảo ngược lại */
-  --text-color: rgba(255, 255, 255, 0.85); /* Trắng đục dễ đọc */
-  --text-secondary: rgba(255, 255, 255, 0.45);
-  --border-color: #303030;   /* Viền xám tối */
+  /* Màu Text & Border */
+  --text-color: #E4E6EB;     /* Trắng nhạt như Facebook */
+  --text-secondary: #B0B3B8; /* Xám sáng như Facebook */
+  --border-color: #3A3B3C;   /* Border như Facebook */
 
-  /* Shadow - Giảm độ gắt hoặc đổi sang shadow âm bản */
+  /* Shadow */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
 
-  /* Scrollbar tối */
-  --scroll-thumb: #444;
+  /* Scrollbar */
+  --scroll-thumb: #FF7A45;
 }
 
 /* --- 3. ÁP DỤNG MÀU VÀO ELEMENT (Quan trọng) --- */

@@ -13,7 +13,8 @@
   /* Giới hạn chiều rộng để nội dung không bị trải quá rộng */
   margin: 0 auto;
   /* Căn giữa container */
-  background-color: #f9f9f9;
+  background-color: var(--color-bg-layout, #f9f9f9);
+  color: var(--color-text-primary);
   /* Màu nền nhẹ cho toàn bộ trang */
   min-height: 80vh;
   /* Đảm bảo trang có chiều cao tối thiểu */
@@ -21,32 +22,28 @@
 
 /* --- Tiêu đề và Tóm tắt Kết quả (renderSummary) --- */
 .search-page h2 {
-  color: #1890ff;
-  /* Màu xanh của Ant Design primary */
   font-size: 24px;
   font-weight: 600;
   margin-top: 30px;
-  /* Thêm khoảng cách phía trên */
   margin-bottom: 30px;
-  /* Thêm khoảng cách phía dưới */
-  color: #333;
+  color: var(--color-text-primary, #333);
 }
 
 .search-page p {
-  color: #555;
+  color: var(--color-text-secondary, #555);
   font-size: 16px;
   line-height: 1.5;
   margin-bottom: 20px;
 }
 
 .search-page p b {
-  color: #333;
+  color: var(--color-text-primary, #333);
   /* Làm nổi bật từ khóa */
 }
 
 .search-page .ant-divider {
   margin: 15px 0;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid var(--color-border, #ddd);
 }
 
 /* --- Trạng thái (Đang tải/Chưa nhập từ khóa/Không tìm thấy) --- */
@@ -58,21 +55,21 @@
 .search-empty-state {
   padding: 30px;
   text-align: center;
-  border: 1px solid #e8e8e8;
+  border: 1px solid var(--color-border-light, #e8e8e8);
   border-radius: 8px;
-  background-color: #fff;
+  background-color: var(--color-bg-container, #fff);
   margin-top: 20px;
 }
 
 /* --- Các Phần Kết Quả Cụ Thể --- */
 .search-page h3 {
-  color: #333;
+  color: var(--color-text-primary, #333);
   font-size: 20px;
   font-weight: 500;
   margin-top: 25px;
   margin-bottom: 15px;
-  border-left: 4px solid #1890ff;
-  /* Dùng đường viền nổi bật */
+  border-left: 4px solid #FA541C;
+  /* Dùng đường viền nổi bật coral */
   padding-left: 10px;
 }
 
@@ -87,21 +84,21 @@
 .search-results-list li {
   padding: 12px 15px;
   margin-bottom: 8px;
-  background-color: #fff;
-  border: 1px solid #e8e8e8;
+  background-color: var(--color-bg-container, #fff);
+  border: 1px solid var(--color-border-light, #e8e8e8);
   border-radius: 4px;
   transition: background-color 0.2s, box-shadow 0.2s;
   cursor: pointer;
 }
 
 .search-results-list li:hover {
-  background-color: #f0f8ff;
+  background-color: var(--color-bg-hover, #f0f8ff);
   /* Hiệu ứng hover nhẹ */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .search-results-list li b {
-  color: #1890ff;
+  color: #FA541C;
   margin-right: 5px;
   font-weight: 700;
 }

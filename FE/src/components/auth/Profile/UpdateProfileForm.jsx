@@ -55,7 +55,7 @@ const UpdateProfileForm = ({ profileForm, user, updateUser, setIsEditing, isEdit
                 <strong>Số điện thoại:</strong>
                 <p>{user?.phone || 'Chưa cập nhật'}</p>
               </div>
-
+{/* 
               {user.role === 'volunteer' && (
                 <div style={{ marginBottom: '16px' }}>
                   <strong>Đóng góp</strong>
@@ -71,7 +71,7 @@ const UpdateProfileForm = ({ profileForm, user, updateUser, setIsEditing, isEdit
                   <strong>Đơn vị quản lý:</strong>
                   <p>{user.manager.organization || 'Chưa cập nhật'}</p>
                 </div>
-              )}
+              )} */}
             </Form>
     )
     

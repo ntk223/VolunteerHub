@@ -58,7 +58,7 @@ export default function CreateEventModal({ visible, onClose }) {
           lon: item.lon,
           label: (
             <div style={{ display: 'flex', alignItems: 'center', padding: '4px 0' }}>
-              <EnvironmentOutlined style={{ marginRight: 8, color: '#1677ff', flexShrink: 0 }} />
+              <EnvironmentOutlined style={{ marginRight: 8, color: '#FA541C', flexShrink: 0 }} />
               <span style={{ whiteSpace: 'normal', fontSize: '13px' }}>{item.display_name}</span>
             </div>
           ),
@@ -104,7 +104,7 @@ export default function CreateEventModal({ visible, onClose }) {
         if (response.data) {
             const url = response.data.file?.url || response.data.url; 
             if (url) {
-                form.setFieldsValue({ imageUrl: url });
+                form.setFieldsValue({ imgUrl: url });
                 setPreviewImage(url); 
                 message.success('Tải ảnh lên thành công');
             }
@@ -127,7 +127,7 @@ export default function CreateEventModal({ visible, onClose }) {
       title: values.title,
       description: values.description,
       location: values.location,
-      imageUrl: values.imageUrl,      // camelCase
+      imgUrl: values.imgUrl,      // camelCase
       startTime: values.timeRange[0].toISOString(), // camelCase
       endTime: values.timeRange[1].toISOString(),   // camelCase
       categoryId: values.categoryId,  // camelCase
@@ -195,7 +195,7 @@ export default function CreateEventModal({ visible, onClose }) {
             <div style={{ width: '200px' }}>
                 <Form.Item
                     label="Ảnh bìa"
-                    name="imageUrl"
+                    name="imgUrl"
                     rules={[
                         { required: true, message: "Vui lòng tải hoặc nhập link ảnh" },
                         { type: 'url', message: "Link ảnh không hợp lệ" }

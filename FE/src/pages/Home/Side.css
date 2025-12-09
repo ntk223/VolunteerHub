@@ -19,10 +19,10 @@
   right: 0;
 }
 
-/* Hiệu ứng khi rê chuột vào mép: hiện màu xanh nhạt */
+/* Hiệu ứng khi rê chuột vào mép: hiện màu coral nhạt */
 .edge-trigger:hover {
-  background: rgba(22, 119, 255, 0.15); 
-  box-shadow: 0 0 10px rgba(22, 119, 255, 0.1);
+  background: rgba(250, 84, 28, 0.15); 
+  box-shadow: 0 0 10px rgba(250, 84, 28, 0.1);
 }
 
 @media (max-width: 992px) {

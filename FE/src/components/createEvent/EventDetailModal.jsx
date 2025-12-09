@@ -1,29 +1,80 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Button, Typography, Tag, Space, Divider, message } from "antd";
 import { 
   CalendarOutlined, 
   EnvironmentOutlined, 
   TeamOutlined, 
-  CheckCircleOutlined 
+  CheckCircleOutlined,
+  CloseCircleOutlined 
 } from "@ant-design/icons";
 import { useAuth } from "../../hooks/useAuth";
-// SỬA: Import useEvents thay vì useEventActions
 import { useEvents } from "../../hooks/useEvents"; 
+import api from "../../api";
 
 const { Title, Text, Paragraph } = Typography;
 const GOOGLE_MAPS_API_KEY = ""; 
 
-const EventDetailModal = ({ visible, onClose, event }) => {
+const EventDetailModal = ({ visible, onClose, event, isAdmin = false }) => {
   const { user } = useAuth();
-  
-  // SỬA: Lấy hàm join/leave từ useEvents
   const { joinEvent, leaveEvent } = useEvents(); 
   
   const [loading, setLoading] = useState(false);
+  const [hasApplied, setHasApplied] = useState(false);
+  const [applicationId, setApplicationId] = useState(null);
+  const [checkingApplication, setCheckingApplication] = useState(false);
+
+  // Kiểm tra xem user đã ứng tuyển chưa
+  useEffect(() => {
+    const checkApplication = async () => {
+      if (!user || !event || isAdmin || user.role !== 'volunteer') {
+        setHasApplied(false);
+        setApplicationId(null);
+        return;
+      }
+
+      setCheckingApplication(true);
+      try {
+        const volunteerId = user.volunteerId ?? user.volunteer?.id;
+        if (!volunteerId) {
+          setHasApplied(false);
+          return;
+        }
+
+        const res = await api.get(`/application/volunteer/${volunteerId}`);
+        const applications = Array.isArray(res.data) ? res.data : res.data.applications || [];
+        
+        // Tìm đơn ứng tuyển cho sự kiện này (chưa bị hủy)
+        const existingApplication = applications.find(app => 
+          app.eventId === event.id && 
+          app.isCancelled !== true && 
+          app.isCancelled !== 1 &&
+          (app.status ?? "").toLowerCase() !== "cancelled"
+        );
+
+        if (existingApplication) {
+          setHasApplied(true);
+          setApplicationId(existingApplication.id);
+        } else {
+          setHasApplied(false);
+          setApplicationId(null);
+        }
+      } catch (error) {
+        console.error("Error checking application:", error);
+        setHasApplied(false);
+        setApplicationId(null);
+      } finally {
+        setCheckingApplication(false);
+      }
+    };
+
+    if (visible) {
+      checkApplication();
+    }
+  }, [user, event, visible, isAdmin]);
 
   if (!event) return null;
 
-  // Kiểm tra user đã tham gia chưa dựa trên mảng participants
+  // Kiểm tra user đã tham gia chưa dựa trên mảng participants (giữ logic cũ)
   const isJoined = event.participants?.includes(user?.id ?? user?._id);
 
   const handleJoinClick = async () => {
@@ -46,6 +97,26 @@ const EventDetailModal = ({ visible, onClose, event }) => {
         message.error("Có lỗi xảy ra, vui lòng thử lại.");
     } finally {
         setLoading(false);
+    }
+  };
+
+  const handleCancelApplication = async () => {
+    if (!applicationId) {
+      message.error("Không tìm thấy đơn ứng tuyển");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await api.patch(`/application/${applicationId}/cancel`);
+      message.success("Đã hủy đơn ứng tuyển thành công");
+      setHasApplied(false);
+      setApplicationId(null);
+    } catch (error) {
+      console.error("Cancel application error:", error);
+      message.error("Hủy đơn ứng tuyển thất bại");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,7 +146,7 @@ const EventDetailModal = ({ visible, onClose, event }) => {
       {/* 1. Header: Ảnh bìa */}
       <div style={{ position: 'relative', height: 250 }}>
         <img 
-            src={event.imageUrl} 
+            src={event.imgUrl} 
             alt="Cover" 
             style={{ width: '100%', height: '100%', objectFit: 'cover', borderTopLeftRadius: 8, borderTopRightRadius: 8 }} 
             onError={(e) => { e.target.src = 'https://via.placeholder.com/800x250?text=Event+Image'; }}
@@ -84,19 +155,18 @@ const EventDetailModal = ({ visible, onClose, event }) => {
             <Tag color="blue" style={{ fontSize: 14, padding: '4px 10px' }}>
                 {renderCategory(event.category)}
             </Tag>
-            <Tag color={event.status === 'open' ? 'green' : 'red'} style={{ fontSize: 14, padding: '4px 10px' }}>
-                {event.status === 'open' ? 'Đang mở đăng ký' : 'Đã kết thúc'}
+            <Tag color={event.progressStatus === 'incomplete' ? 'yellow' : event.progressStatus === 'completed' ? 'green' : 'red'} style={{ fontSize: 14, padding: '4px 10px' }}>
+                {event.progressStatus === 'incomplete' ? 'Đang mở đăng ký' : event.progressStatus === 'completed' ? 'Đã hoàn thành' : 'Đã hủy'}
             </Tag>
         </div>
       </div>
-
       <div style={{ padding: 24 }}>
         <Title level={3} style={{ marginTop: 0 }}>{event.title}</Title>
 
         {/* 2. Thông tin chi tiết */}
         <Space direction="vertical" size="middle" style={{ width: '100%' }}>
           <div style={{ display: 'flex', gap: 12 }}>
-            <CalendarOutlined style={{ fontSize: 20, color: '#1677ff' }} />
+            <CalendarOutlined style={{ fontSize: 20, color: '#FA541C' }} />
             <div>
               <Text strong>Thời gian:</Text>
               <div style={{ color: 'gray' }}>
@@ -126,7 +196,7 @@ const EventDetailModal = ({ visible, onClose, event }) => {
             <TeamOutlined style={{ fontSize: 20, color: '#52c41a' }} />
             <div>
               <Text strong>Đã tham gia:</Text>
-              <div>{event.participants?.length || 0} / {event.maxMembers || '∞'} người</div>
+              <div>{event.currentApplied || 0} / {event.capacity || '∞'} người</div>
             </div>
           </div>
         </Space>
@@ -145,21 +215,36 @@ const EventDetailModal = ({ visible, onClose, event }) => {
             Đóng
           </Button>
           
-          <Button 
-            type="primary" 
-            size="large"
-            loading={loading}
-            onClick={handleJoinClick}
-            disabled={event.status !== 'open' && !isJoined}
-            icon={isJoined ? <CheckCircleOutlined /> : null}
-            style={{
-              backgroundColor: isJoined ? '#52c41a' : '#1677ff',
-              borderColor: isJoined ? '#52c41a' : '#1677ff',
-              minWidth: 150
-            }}
-          >
-            {isJoined ? "Đã tham gia" : "Tham gia ngay"}
-          </Button>
+          {(!isAdmin && user?.role === 'volunteer') && (
+            hasApplied ? (
+              <Button 
+                danger
+                size="large"
+                loading={loading || checkingApplication}
+                onClick={handleCancelApplication}
+                icon={<CloseCircleOutlined />}
+                style={{ minWidth: 180 }}
+              >
+                Hủy đơn ứng tuyển
+              </Button>
+            ) : (
+              <Button 
+                type="primary" 
+                size="large"
+                loading={loading || checkingApplication}
+                onClick={handleJoinClick}
+                disabled={event.progressStatus !== 'incomplete' && !isJoined}
+                icon={isJoined ? <CheckCircleOutlined /> : null}
+                style={{
+                  backgroundColor: isJoined ? '#52c41a' : '#FA541C',
+                  borderColor: isJoined ? '#52c41a' : '#FA541C',
+                  minWidth: 150
+                }}
+              >
+                {isJoined ? "Đã tham gia" : "Tham gia ngay"}
+              </Button>
+            )
+          )}
         </div>
       </div>
     </Modal>

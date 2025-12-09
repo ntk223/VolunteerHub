@@ -4,6 +4,7 @@ import UpdateProfileForm from '../../components/auth/Profile/UpdateProfileForm';
 import AvatarCard from '../../components/auth/Profile/AvatarCard';
 import Statistics from '../../components/auth/Profile/Statistics';
 import Activities from '../../components/auth/Profile/Activities';
+import EventCompleted from '../../components/auth/Profile/EventCompleted';
 import api from '../../api';
 import { useParams, useNavigate} from "react-router-dom";
 import { useAuth } from '../../hooks/useAuth';
@@ -76,9 +77,14 @@ const OtherProfile = () => {
           </Card>
         </Col>
 
-        <Col xs={24} md={12}>
-            <Activities />
-        </Col>
+        {user.role !== 'admin' && 
+        (<Col xs={24} md={12}>
+          {user?.role === 'manager' ? (
+            <EventCompleted userId={id} />
+          ) : (
+            <Activities volunteerId={user.volunteer.id} />
+          )}
+        </Col>)}
       </Row>
       </div>
     </div>

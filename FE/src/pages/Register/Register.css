@@ -1,5 +1,38 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 
+/* Override dark mode - Register page luôn ở light mode */
+.register-page,
+.register-page * {
+  color-scheme: light !important;
+}
+
+.register-page {
+    background-color: #c9d6ff;
+    background: linear-gradient(to right, #e2e2e2, #c9d6ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    color: #333 !important;
+}
+
+.register-page h1,
+.register-page h2,
+.register-page h3,
+.register-page p,
+.register-page span,
+.register-page label,
+.register-page a {
+    color: #333 !important;
+}
+
+.register-page input,
+.register-page select {
+    color: #333 !important;
+    background-color: #eee !important;
+}
 
 * {
     margin: 0;
@@ -29,7 +62,7 @@
 
 
 .register-page .register-form-container {
-    background-color: #fff;
+    background-color: #fff !important;
     border-radius: 30px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
     padding: 40px 0; 
@@ -45,12 +78,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    color: #333 !important;
 }
 
 
 .register-page form {
     
-    background-color: #fff;
+    background-color: #fff !important;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -58,6 +92,7 @@
     padding: 0 40px; /* Padding ngang như Login */
     height: 100%;
     width: 100%;
+    color: #333 !important;
 }
 
 
@@ -74,7 +109,7 @@
 }
 
 .register-page button {
-    background-color: #4E56C0;
+    background-color: #FA541C;
     color: #fff;
     font-size: 12px;
     padding: 10px 45px;
@@ -89,5 +124,5 @@
 }
 
 .register-page button:hover {
-    background-color: #3f479e; 
+    background-color: #D4380D; 
 }

@@ -9,6 +9,7 @@ const createEventSchema = Joi.object({
   capacity: Joi.number().min(1).required(),
   categoryId: Joi.number().integer().required(),
   managerId: Joi.number().integer().required(),
+  imgUrl : Joi.string().uri().allow(null, ''),
 });
 
 const createEventUpdateSchema = Joi.object({

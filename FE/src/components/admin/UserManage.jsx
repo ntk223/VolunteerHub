@@ -1,7 +1,9 @@
-import { Table, Tag, Button, message, Select, Space } from "antd";
+import { Table, Tag, Button, message, Select, Space, Card, Typography } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import { useState, useMemo } from "react";
 import { exportUsersToExcel } from "../../utils/excelExport";
+
+const { Title, Text } = Typography;
 
 const { Option } = Select;
 const roleMap = {
@@ -90,10 +92,15 @@ const UserManage = ({ users, toggleUserStatus }) => {
   ];
 
   return (
-    <div>
+    <div style={{ padding: 0 }}>
+      <div style={{ marginBottom: 24 }}>
+        <Title level={4} style={{ margin: 0, marginBottom: 4 }}>👥 Danh sách người dùng</Title>
+        <Text type="secondary">Quản lý trạng thái và thông tin người dùng</Text>
+      </div>
+      
       <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Space>
-          <span>Lọc theo trạng thái:</span>
+          <Text strong>Lọc theo trạng thái:</Text>
           <Select
             value={statusFilter}
             onChange={setStatusFilter}
@@ -104,7 +111,7 @@ const UserManage = ({ users, toggleUserStatus }) => {
             <Option value="blocked">Bị khóa</Option>
           </Select>
           
-          <span>Lọc theo vai trò:</span>
+          <Text strong>Lọc theo vai trò:</Text>
           <Select
             value={roleFilter}
             onChange={setRoleFilter}
@@ -120,6 +127,7 @@ const UserManage = ({ users, toggleUserStatus }) => {
         <Button 
           type="primary" 
           icon={<DownloadOutlined />}
+          size="large"
           onClick={() => {
             try {
               exportUsersToExcel(filteredUsers);
@@ -138,7 +146,11 @@ const UserManage = ({ users, toggleUserStatus }) => {
         dataSource={filteredUsers}
         columns={userColumns}
         rowKey={(r) => r.id || r._id}
-        pagination={{ pageSize: 5 }}
+        pagination={{ 
+          pageSize: 10,
+          showSizeChanger: true,
+          showTotal: (total) => `Tổng ${total} người dùng`,
+        }}
       />
     </div>
   );

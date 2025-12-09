@@ -12,6 +12,7 @@ import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import DiscussPage from "./pages/Feed/DiscussPage";
 import RecruitmentPage from "./pages/Feed/RecruitmentPage";
+import EventPost from "./pages/Feed/EventPost";
 import AdminPage from "./pages/Admin/AdminPage";
 import MyProfile from "./pages/Profile/MyProfile.jsx";
 import OtherProfile from "./pages/Profile/OtherProfile.jsx";
@@ -46,19 +47,65 @@ function AppInitializer() {
             theme={{
                 algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
                 token: {
-                    // colorPrimary: '#1677ff', 
+                    // Concept "Nhiệt Huyết Tuổi Trẻ" (Coral + Navy Blue)
+                    colorPrimary: isDarkMode ? '#FF7A45' : '#FA541C', // Dark: Cam sáng hơn, Light: Cam san hô
+                    colorInfo: isDarkMode ? '#177DDC' : '#003A8C', // Dark: Xanh sáng, Light: Navy
+                    colorSuccess: '#52C41A', // Xanh lá - Thành công
+                    colorWarning: '#FF7A45', // Cam nhạt - Cảnh báo
+                    colorBgLayout: isDarkMode ? '#18191A' : '#FFF7F0', // Dark: Đen nhạt Facebook, Light: Ấm áp
+                    colorBgContainer: isDarkMode ? '#242526' : '#FFFFFF', // Dark: Xám đen Facebook, Light: Trắng
+                    colorText: isDarkMode ? '#E4E6EB' : 'rgba(0, 0, 0, 0.88)', // Text như Facebook
+                    colorTextSecondary: isDarkMode ? '#B0B3B8' : 'rgba(0, 0, 0, 0.45)',
+                    colorBorder: isDarkMode ? '#3A3B3C' : '#FFD8BF',
+                    colorLink: isDarkMode ? '#FF7A45' : '#FA541C', // Link theo theme
+                    colorLinkHover: isDarkMode ? '#FFA940' : '#FF7A45', // Hover sáng hơn
+                    borderRadius: 8,
+                    fontSize: 14,
+                },
+                components: {
+                    Button: {
+                        borderRadius: 6,
+                        controlHeight: 36,
+                    },
+                    Card: {
+                        borderRadiusLG: 12,
+                    },
                 },
             }}
         >
             <Router>
                 <Routes>
                     {/* Public Routes */}
-                    <Route path="/auth/:mode" element={<Login />} />
+                    <Route path="/auth/:mode" element={
+                        <ConfigProvider
+                            theme={{
+                                algorithm: theme.defaultAlgorithm,
+                                token: {
+                                    colorBgBase: '#ffffff',
+                                    colorTextBase: '#000000',
+                                    colorBgContainer: '#ffffff',
+                                    colorBgLayout: '#ffffff',
+                                    colorText: 'rgba(0, 0, 0, 0.88)',
+                                    colorTextSecondary: 'rgba(0, 0, 0, 0.65)',
+                                }
+                            }}
+                        >
+                            <Login />
+                        </ConfigProvider>
+                    } />
                     
                     <Route path="/landing" element={
                         <ConfigProvider
                             theme={{
-                                algorithm: theme.defaultAlgorithm
+                                algorithm: theme.defaultAlgorithm,
+                                token: {
+                                    colorBgBase: '#ffffff',
+                                    colorTextBase: '#000000',
+                                    colorBgContainer: '#ffffff',
+                                    colorBgLayout: '#ffffff',
+                                    colorText: 'rgba(0, 0, 0, 0.88)',
+                                    colorTextSecondary: 'rgba(0, 0, 0, 0.65)',
+                                }
                             }}
                         >
                             <LandingPage />
@@ -119,6 +166,15 @@ function AppInitializer() {
                             }
                         />
 
+                        <Route
+                            path="event-posts/:eventId"
+                            element={
+                                <PostsProvider postType={null}>
+                                    <EventPost />
+                                </PostsProvider>
+                            }
+                        />
+
                         <Route path="profile" element={<MyProfile />} />
                         <Route path="profile/:id" element={<OtherProfile />} />
                         <Route path="notification" element={<NotificationPage />} />
@@ -150,9 +206,11 @@ function AppInitializer() {
                         <Route
                             path="admin/*"
                             element={
-                                <AdminProvider>
-                                    <AdminPage />
-                                </AdminProvider>
+                                <EventsProvider>
+                                    <AdminProvider>
+                                        <AdminPage />
+                                    </AdminProvider>
+                                </EventsProvider>
                             }
                         />
                     </Route>
@@ -171,7 +229,9 @@ export default function App() {
         <ThemeProvider>
             <AuthProvider>
                 <SocketProvider>
+                    <EventsProvider>
                     <AppInitializer />
+                    </EventsProvider>
                 </SocketProvider>
             </AuthProvider>
         </ThemeProvider>

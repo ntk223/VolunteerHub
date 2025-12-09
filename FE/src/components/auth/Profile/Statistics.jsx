@@ -51,7 +51,7 @@ const Statistics = ({ userId }) => {
             <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />
-            <Bar dataKey="value" fill="#1677ff" radius={[6, 6, 0, 0]} />
+            <Bar dataKey="value" fill="#FA541C" radius={[6, 6, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>

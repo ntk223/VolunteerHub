@@ -1,4 +1,4 @@
-import {Event, Manager, User, Application} from "../models/Model.js";
+import {Event, Manager, User, Application, Post} from "../models/Model.js";
 import ApiError from "../utils/ApiError.js";
 import { StatusCodes } from "http-status-codes";
 import { fn, col } from "sequelize";
@@ -37,9 +37,27 @@ class EventRepository {
                     {
                         model: User, 
                         as: 'user'
-                    }
+                    },
                 ]
-            }]
+            },                     
+            {
+                model: Application,
+                as: 'applications',
+                attributes: []  // không lấy cột nào của Application, chỉ để COUNT
+            },
+            {
+                model: Post,
+                as: 'posts',
+                attributes: []
+            }
+                ],
+            attributes: {
+                include: [
+                [fn('COUNT', col('applications.volunteer_id')), 'currentApplied'],
+                [fn('COUNT', col('posts.id')), 'postsCount']
+                ]
+            },
+            group: ['Event.id']
         });
         return events;
     }

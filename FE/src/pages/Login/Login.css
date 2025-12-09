@@ -1,5 +1,43 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 
+/* Override dark mode - Login page luôn ở light mode */
+.login-page-wrapper,
+.login-page-wrapper * {
+  color-scheme: light !important;
+}
+
+.login-page-wrapper {
+    background-color: #c9d6ff;
+    background: linear-gradient(to right, #e2e2e2, #c9d6ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100vh;
+    width: 100%;
+    color: #333 !important;
+}
+
+.login-page-wrapper h1,
+.login-page-wrapper h2,
+.login-page-wrapper h3,
+.login-page-wrapper p,
+.login-page-wrapper span,
+.login-page-wrapper label,
+.login-page-wrapper a {
+    color: #333 !important;
+}
+
+.login-page-wrapper input {
+    color: #333 !important;
+    background-color: #eee !important;
+}
+
+.login-page-wrapper .toggle-panel h1,
+.login-page-wrapper .toggle-panel p {
+    color: #fff !important;
+}
+
 /* Reset */
 * {
     margin: 0;
@@ -40,7 +78,7 @@
 
 /* Container chính điều khiển hiệu ứng */
 .container {
-    background-color: #fff;
+    background-color: #fff !important;
     border-radius: 30px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
     position: relative;
@@ -48,7 +86,8 @@
     
     width: 900px;         
     max-width: 100%;
-    min-height: 750px;    
+    min-height: 750px;
+    color: #333 !important;
 }
 
 /* Lưu ý: Các form con (.sign-in và .sign-up) có height: 100% 
@@ -67,14 +106,14 @@
 }
 
 .container a {
-    color: #333;
+    color: var(--color-text-primary, #333);
     font-size: 13px;
     text-decoration: none;
     margin: 15px 0 10px;
 }
 
 .container button {
-    background-color: #4E56C0;
+    background-color: #FA541C;
     color: #fff;
     font-size: 12px;
     padding: 10px 45px;
@@ -90,7 +129,7 @@
 
 .container button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(116, 75, 220, 0.4);
+    box-shadow: 0 4px 10px rgba(250, 84, 28, 0.4);
 }
 
 /* Nút ẩn trên panel lật */
@@ -200,9 +239,9 @@
 }
 
 .toggle {
-    background-color: #4E56C0;
+    background-color: #FA541C;
     height: 100%;
-    background: linear-gradient(to right, #5c6bc0, #4E56C0);
+    background: linear-gradient(135deg, #FA541C, #003A8C);
     color: #fff;
     position: relative;
     left: -100%;

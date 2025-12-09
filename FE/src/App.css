@@ -1,3 +1,173 @@
+/* Concept "Nhiệt Huyết Tuổi Trẻ" (Coral/Orange + Navy Blue) Theme */
+:root {
+  /* Primary Colors - Cam san hô (Passion & Energy) */
+  --color-primary: #FA541C;
+  --color-primary-hover: #FF7A45;
+  --color-primary-active: #D4380D;
+  
+  /* Secondary Colors - Xanh than (Stability & Trust) */
+  --color-secondary: #003A8C;
+  --color-success: #52C41A;
+  
+  /* Background Colors - Warm & Welcoming */
+  --color-bg-layout: #FFF7F0;
+  --color-bg-container: #FFFFFF;
+  --color-bg-hover: #FFF2E8;
+  
+  /* Text Colors */
+  --color-text-primary: #262626;
+  --color-text-secondary: #8C8C8C;
+  --color-text-disabled: #BFBFBF;
+  
+  /* Border & Shadow */
+  --color-border: #FFD8BF;
+  --color-border-light: #FFF2E8;
+  --box-shadow-sm: 0 2px 8px rgba(250, 84, 28, 0.1);
+  --box-shadow-md: 0 4px 12px rgba(250, 84, 28, 0.15);
+}
+
+/* Dark Mode - Coral/Orange theme với nền tối như Facebook */
+[data-theme="dark"] {
+  /* Primary Colors - Sáng hơn cho dark mode */
+  --color-primary: #FF7A45;
+  --color-primary-hover: #FFA940;
+  --color-primary-active: #FA541C;
+  
+  /* Secondary Colors */
+  --color-secondary: #177DDC;
+  --color-success: #73D13D;
+  
+  /* Background Colors - Facebook Dark Mode Style */
+  --color-bg-layout: #18191A;     /* Main background - đen nhạt như Facebook */
+  --color-bg-container: #242526;  /* Post card - xám đen như Facebook */
+  --color-bg-hover: #3A3B3C;      /* Hover state */
+  
+  /* Text Colors - Light */
+  --color-text-primary: #E4E6EB;  /* Trắng nhạt như Facebook */
+  --color-text-secondary: #B0B3B8; /* Xám sáng */
+  --color-text-disabled: rgba(255, 255, 255, 0.25);
+  
+  /* Border & Shadow - Facebook Style */
+  --color-border: #3A3B3C;
+  --color-border-light: #3A3B3C;  /* Đổi thành màu border tối */
+  --box-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.45);
+  --box-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
 html {
   scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-bg-layout);
+  color: var(--color-text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Scrollbar - Coral theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-layout);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-hover);
+}
+
+/* Link Styling */
+a {
+  color: var(--color-primary);
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+}
+
+/* Ant Design List - Override background để trong suốt */
+.ant-list {
+  background: transparent !important;
+}
+
+.ant-list-item {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* Ant Design Card - Đảm bảo hiển thị đúng trong dark mode */
+.ant-card {
+  background: var(--color-bg-container) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.ant-card-head {
+  color: var(--color-text-primary) !important;
+  border-bottom-color: var(--color-border) !important;
+}
+
+/* Typography */
+.ant-typography {
+  color: var(--color-text-primary) !important;
+}
+
+/* Table */
+.ant-table {
+  background: var(--color-bg-container) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.ant-table-thead > tr > th {
+  background: var(--color-bg-hover) !important;
+  color: var(--color-text-primary) !important;
+  border-bottom-color: var(--color-border) !important;
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom-color: var(--color-border) !important;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: var(--color-bg-hover) !important;
+}
+
+/* Input */
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-select-selector {
+  background: var(--color-bg-container) !important;
+  color: var(--color-text-primary) !important;
+  border-color: var(--color-border) !important;
+}
+
+.ant-input::placeholder,
+.ant-select-selection-placeholder {
+  color: var(--color-text-secondary) !important;
+}
+
+/* Tabs */
+.ant-tabs-nav {
+  color: var(--color-text-primary) !important;
+}
+
+.ant-tabs-tab {
+  color: var(--color-text-secondary) !important;
+}
+
+.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--color-primary) !important;
+}
+
+/* Empty state */
+.ant-empty-description {
+  color: var(--color-text-secondary) !important;
 }
