@@ -1,24 +1,17 @@
 import React, { useEffect, useState, useMemo } from "react";
-import {
-  Table,
-  Tag,
-  Space,
-  Button,
-  Avatar,
-  Spin,
-  message,
-  Typography,
-  Input,
-  Select,
-} from "antd";
-import { UserOutlined, SearchOutlined } from "@ant-design/icons";
+import { message, Card, Typography, Modal } from "antd";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 import api from "../../api";
 import { useAuth } from "../../hooks/useAuth";
 import UnauthorizePage from "../UnauthorizePage/UnauthorizePage";
+import EventTable from "../../components/manageEvent/EventTable";
+import ApplicantTable from "../../components/manageEvent/ApplicantTable";
+import EventSearchBar from "../../components/manageEvent/EventSearchBar";
+import EditEventModal from "../../components/manageEvent/EditEventModal";
+import EventDetailModal from "../../components/createEvent/EventDetailModal";
 
-const { Text } = Typography;
-const { Search } = Input;
-const { Option } = Select;
+const { Title, Text } = Typography;
+const { confirm } = Modal;
 
 export default function ManageEventPage() {
   const { user } = useAuth();
@@ -29,6 +22,10 @@ export default function ManageEventPage() {
   const [loadingEvents, setLoadingEvents] = useState(false);
   const [appsMap, setAppsMap] = useState({});
   const [searchText, setSearchText] = useState("");
+  const [editingEvent, setEditingEvent] = useState(null);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [viewingEvent, setViewingEvent] = useState(null);
+  const [isViewModalVisible, setIsViewModalVisible] = useState(false);
 
   // Hàm cập nhật trạng thái tiến trình
   const updateProgressStatus = async (eventId, newStatus) => {
@@ -50,6 +47,78 @@ export default function ManageEventPage() {
     }
   };
 
+  // Hàm mở modal xem event
+  const handleViewEvent = (event) => {
+    setViewingEvent(event.raw);
+    setIsViewModalVisible(true);
+  };
+
+  // Hàm mở modal sửa event
+  const handleEditEvent = (event) => {
+    setEditingEvent(event);
+    setIsEditModalVisible(true);
+  };
+
+  // Hàm xóa event
+  const handleDeleteEvent = async (eventId) => {
+    try {
+      await api.delete(`/event/user/${user.id}/event/${eventId}`);
+      message.success("Xóa sự kiện thành công!");
+      
+      // Refresh danh sách events
+      setEvents((prev) => prev.filter((ev) => ev.id !== eventId));
+    } catch (err) {
+      console.error("Delete event error:", err);
+      message.error(err?.response?.data?.message || "Không thể xóa sự kiện");
+    }
+  };
+
+  // Callback sau khi sửa thành công
+  const handleEditSuccess = () => {
+    // Refresh lại danh sách events
+    const fetchEvents = async () => {
+      setLoadingEvents(true);
+      try {
+        let res = null;
+        if (managerUserId) {
+          try {
+            res = await api.get(`/event/manager/${managerUserId}`);
+          } catch (err) {
+            console.warn("Lỗi lấy sự kiện manager, thử lấy tất cả");
+          }
+        }
+        if (!res) res = await api.get("/event");
+
+        let list = Array.isArray(res.data) ? res.data : [];
+
+        list = list.map((ev) => ({
+          id: ev.eventId ?? ev.id,
+          title: ev.title ?? "Không có tiêu đề",
+          startTime: ev.startTime,
+          endTime: ev.endTime,
+          location: ev.location ?? "Chưa xác định",
+          approvalStatus: ev.approvalStatus,
+          progressStatus: ev.progressStatus ?? "in incomplete",
+          createdAt: ev.createdAt,
+          raw: ev,
+        }));
+
+        setEvents(list);
+
+        // Fetch applications cho tất cả events
+        list.forEach((event) => {
+          fetchApplicationsForEvent(event.id);
+        });
+      } catch (err) {
+        message.error("Không thể tải danh sách sự kiện");
+      } finally {
+        setLoadingEvents(false);
+      }
+    };
+
+    fetchEvents();
+  };
+
   useEffect(() => {
     const fetchEvents = async () => {
       setLoadingEvents(true);
@@ -67,18 +136,23 @@ export default function ManageEventPage() {
         let list = Array.isArray(res.data) ? res.data : [];
 
         list = list.map((ev) => ({
-          id: ev.eventId ?? ev.id ?? ev._id,
-          title: ev.title ?? ev.name ?? "Không có tiêu đề",
-          startTime: ev.startTime ?? ev.start_time,
-          endTime: ev.endTime ?? ev.end_time,
+          id: ev.eventId ?? ev.id,
+          title: ev.title ?? "Không có tiêu đề",
+          startTime: ev.startTime,
+          endTime: ev.endTime,
           location: ev.location ?? "Chưa xác định",
-          approvalStatus: ev.approvalStatus ?? ev.status ?? "pending",
+          approvalStatus: ev.approvalStatus,
           progressStatus: ev.progressStatus ?? "in incomplete",
-          createdAt: ev.createdAt ?? ev.created_at,
+          createdAt: ev.createdAt,
           raw: ev,
         }));
 
         setEvents(list);
+
+        // Fetch applications cho tất cả events ngay từ đầu
+        list.forEach((event) => {
+          fetchApplicationsForEvent(event.id);
+        });
       } catch (err) {
         message.error("Không thể tải danh sách sự kiện");
       } finally {
@@ -110,7 +184,7 @@ export default function ManageEventPage() {
               .toLocaleString()
               .toLowerCase()
               .includes(lowerSearch)) ||
-          (event.createdAt擋 &&
+          (event.createdAt &&
             new Date(event.createdAt)
               .toLocaleString()
               .toLowerCase()
@@ -120,119 +194,6 @@ export default function ManageEventPage() {
     }
     return filtered;
   }, [events, searchText]);
-
-  const eventColumns = [
-    {
-      title: "Tên sự kiện",
-      dataIndex: "title",
-      key: "title",
-      sorter: (a, b) => a.title.localeCompare(b.title),
-      render: (t) => <Text strong>{t}</Text>,
-    },
-    {
-      title: "Thời gian",
-      key: "time",
-      render: (_, row) => {
-        const s = row.startTime
-          ? new Date(row.startTime).toLocaleString()
-          : "-";
-        const e = row.endTime ? new Date(row.endTime).toLocaleString() : "-";
-        return (
-          <div>
-            {s} — {e}
-          </div>
-        );
-      },
-    },
-    { title: "Địa điểm", dataIndex: "location", key: "location" },
-    {
-      title: "Trạng thái duyệt",
-      key: "approval",
-      dataIndex: "approvalStatus",
-      sorter: (a, b) => a.approvalStatus.localeCompare(b.approvalStatus),
-      render: (_, row) => (
-        <Tag
-          color={
-            row.approvalStatus === "approved"
-              ? "green"
-              : row.approvalStatus === "pending"
-              ? "orange"
-              : "red"
-          }
-        >
-          {row.approvalStatus}
-        </Tag>
-      ),
-    },
-    {
-      title: "Tiến trình",
-      dataIndex: "progressStatus",
-      key: "progressStatus",
-      width: 160,
-      sorter: (a, b) => a.progressStatus.localeCompare(b.progressStatus),
-      render: (text, record) => {
-        const statusConfig = {
-          incomplete: { color: "gold", label: "Chưa hoàn thành" },
-          completed: { color: "green", label: "Hoàn thành" },
-          cancelled: { color: "red", label: "Đã hủy" },
-        };
-
-        const current =
-          statusConfig[record.progressStatus] || statusConfig.incomplete;
-
-        return (
-          <Select
-            value={record.progressStatus}
-            onChange={(value) => updateProgressStatus(record.id, value)}
-            dropdownMatchSelectWidth={false} 
-            style={{ width: "100%" }}
-            dropdownRender={(menu) => <>{menu}</>}
-          >
-            <Option value="incomplete">
-              <Tag
-                color="gold"
-                style={{ width: "100%", textAlign: "center", margin: 0 }}
-              >
-                Chưa hoàn thành
-              </Tag>
-            </Option>
-            <Option value="completed">
-              <Tag
-                color="green"
-                style={{ width: "100%", textAlign: "center", margin: 0 }}
-              >
-                Hoàn thành
-              </Tag>
-            </Option>
-            <Option value="cancelled">
-              <Tag
-                color="red"
-                style={{ width: "100%", textAlign: "center", margin: 0 }}
-              >
-                Đã hủy
-              </Tag>
-            </Option>
-          </Select>
-        );
-      },
-    },
-    {
-      title: "Tạo lúc",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      defaultSortOrder: "descend",
-      sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-      render: (v) => (v ? new Date(v).toLocaleString() : "-"),
-    },
-    {
-      title: "Số đơn ứng tuyển",
-      key: "currentApplied",
-      render: (_, record) => {
-        const state = appsMap[record.id] || { loading: false, list: [] };
-        return <Text>{state.list.length}</Text>;
-      },
-    }
-  ];
 
   const fetchApplicationsForEvent = async (eventId) => {
     setAppsMap((m) => ({ ...m, [eventId]: { loading: true, list: [] } }));
@@ -258,10 +219,7 @@ export default function ManageEventPage() {
 
         const email = volunteerUser?.email || volunteer?.email || null;
         const avatar =
-          volunteerUser?.avatarUrl ||
-          volunteerUser?.avatar ||
-          volunteer?.avatar ||
-          volunteer?.avatar ||
+          volunteerUser.avatarUrl ||
           null;
 
         return {
@@ -269,7 +227,7 @@ export default function ManageEventPage() {
           eventId: app.eventId,
           volunteerId: app.volunteerId,
           status: app.status,
-          appliedAt: app.appliedAt ?? app.applied_at,
+          appliedAt: app.appliedAt,
           user: { name, email, avatarUrl: avatar },
           raw: app,
         };
@@ -295,125 +253,82 @@ export default function ManageEventPage() {
     }
   };
 
-  const applicantColumns = (eventId) => [
-    {
-      title: "Ứng viên",
-      key: "applicant",
-      render: (_, r) => {
-        const u = r.user;
-        return (
-          <Space>
-            <Avatar size="small" src={u?.avatarUrl} icon={<UserOutlined />} />
-            <div>
-              <div>{u?.name}</div>
-              <div style={{ fontSize: 12, color: "#666" }}>{u?.email}</div>
-            </div>
-          </Space>
-        );
-      },
-    },
-    {
-      title: "Thời gian ứng tuyển",
-      dataIndex: "appliedAt",
-      key: "appliedAt",
-      render: (v) => (v ? new Date(v).toLocaleString() : "-"),
-    },
-    {
-      title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
-      render: (s) => <Tag color="blue">{s}</Tag>,
-    },
-    {
-      title: "Hành động",
-      key: "actions",
-      render: (_, r) => {
-        if (r.status !== "pending") {
-          return <Text type="secondary">Đã xử lý</Text>;
-        }
-        return (
-          <Space>
-            <Button
-              size="small"
-              type="primary"
-              onClick={() => changeApplicationStatus(r.id, "approved", eventId)}
-            >
-              Duyệt
-            </Button>
-            <Button
-              size="small"
-              danger
-              onClick={() => changeApplicationStatus(r.id, "rejected", eventId)}
-            >
-              Từ chối
-            </Button>
-          </Space>
-        );
-      },
-    },
-  ];
+  const handleExpandEvent = (expanded, record) => {
+    if (expanded && !appsMap[record.id]) {
+      fetchApplicationsForEvent(record.id);
+    }
+  };
+
+  const renderExpandedRow = (record) => {
+    const eventId = record.id;
+    const state = appsMap[eventId] ?? { loading: false, list: [] };
+
+    return (
+      <ApplicantTable
+        eventId={eventId}
+        applicants={state.list}
+        loading={state.loading}
+        onChangeStatus={changeApplicationStatus}
+        onReload={() => fetchApplicationsForEvent(eventId)}
+      />
+    );
+  };
 
   return (
-    <div style={{ padding: 24 }}>
-      <h2>Quản lý sự kiện</h2>
+    <div style={{ padding: "24px", maxWidth: 1600, margin: "0 auto" }}>
+      <Card
+        bordered={false}
+        style={{
+          borderRadius: 12,
+          boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+        }}
+      >
+        <div style={{ marginBottom: 24 }}>
+          <Title level={2} style={{ margin: 0, marginBottom: 8 }}>
+            Quản lý sự kiện
+          </Title>
+          <Text type="secondary">
+            Quản lý sự kiện và duyệt đơn ứng tuyển của tình nguyện viên
+          </Text>
+        </div>
 
-      <div style={{ marginBottom: 16, maxWidth: 500 }}>
-        <Search
-          placeholder="Tìm kiếm sự kiện theo tên, địa điểm, trạng thái..."
-          allowClear
-          enterButton={<SearchOutlined />}
-          size="large"
-          onSearch={(value) => setSearchText(value)}
-          onChange={(e) => setSearchText(e.target.value)}
+        <EventSearchBar
+          value={searchText}
+          onChange={setSearchText}
+          onSearch={setSearchText}
         />
-      </div>
 
-      <Table
-        rowKey="id"
-        dataSource={filteredAndSearchedEvents}
-        columns={eventColumns}
-        loading={loadingEvents}
-        pagination={{
-          pageSize: 10,
-          showSizeChanger: true,
-          showQuickJumper: true,
-          showTotal: (total, range) =>
-            `${range[0]}-${range[1]} của ${total} sự kiện`,
+        <EventTable
+          events={filteredAndSearchedEvents}
+          loading={loadingEvents}
+          appsMap={appsMap}
+          onUpdateProgressStatus={updateProgressStatus}
+          onViewEvent={handleViewEvent}
+          onEditEvent={handleEditEvent}
+          onDeleteEvent={handleDeleteEvent}
+          expandedRowRender={renderExpandedRow}
+          onExpand={handleExpandEvent}
+        />
+      </Card>
+
+      <EditEventModal
+        visible={isEditModalVisible}
+        onClose={() => {
+          setIsEditModalVisible(false);
+          setEditingEvent(null);
         }}
-        expandable={{
-          expandedRowRender: (record) => {
-            const eventId = record.id;
-            const state = appsMap[eventId] ?? { loading: false, list: [] };
+        event={editingEvent}
+        onSuccess={handleEditSuccess}
+      />
 
-            return (
-              <div style={{ padding: 12 }}>
-                <Button
-                  onClick={() => fetchApplicationsForEvent(eventId)}
-                  style={{ marginBottom: 12 }}
-                >
-                  Tải lại danh sách ứng viên
-                </Button>
-
-                {state.loading ? (
-                  <Spin />
-                ) : state.list.length === 0 ? (
-                  <Text type="secondary"> Chưa có ứng viên nào đăng ký</Text>
-                ) : (
-                  <Table
-                    rowKey="id"
-                    pagination={false}
-                    dataSource={state.list}
-                    columns={applicantColumns(eventId)}
-                  />
-                )}
-              </div>
-            );
-          },
-          onExpand: (expanded, record) =>
-            expanded &&
-            !appsMap[record.id] &&
-            fetchApplicationsForEvent(record.id),
+      <EventDetailModal
+        visible={isViewModalVisible}
+        event={viewingEvent}
+        onClose={() => {
+          setIsViewModalVisible(false);
+          setViewingEvent(null);
         }}
+        onJoinUpdate={() => {}}
       />
     </div>
   );

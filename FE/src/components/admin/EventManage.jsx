@@ -1,27 +1,44 @@
-import { Table, Tag, Button, message, Select, Space, Modal, Card, Tooltip, Typography } from "antd";
-import { DownloadOutlined, CheckOutlined, CloseOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
+import { Table, Tag, Button, message, Select, Space, Modal, Tooltip, Typography } from "antd";
+import { DownloadOutlined, DeleteOutlined, EyeOutlined, TeamOutlined } from "@ant-design/icons";
 import { useState, useMemo } from "react";
 import { exportEventsToExcel } from "../../utils/excelExport";
-import EventModal from "../post/EventModal";
 import EventDetailModal from "../createEvent/EventDetailModal";
+import VolunteerListModal from "./VolunteerListModal";
 const { Title, Text } = Typography;
 
 const { Option } = Select;
+const categoryOptions = [
+  { value: 1, label: "Môi trường" },
+  { value: 2, label: "Giáo dục" },
+  { value: 3, label: "Cộng đồng" },
+  { value: 4, label: "Y tế" },
+  { value: 5, label: "Văn hóa - Nghệ thuật" },
+];
 
 const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
   const [statusFilter, setStatusFilter] = useState('all');
+  const [categoryFilter, setCategoryFilter] = useState('all');
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isEventModalVisible, setIsEventModalVisible] = useState(false);
+  const [isVolunteerModalVisible, setIsVolunteerModalVisible] = useState(false);
 
   const filteredEvents = useMemo(() => {
     return events.filter(event => {
-      return statusFilter === 'all' || event.approvalStatus === statusFilter;
+      const matchStatus = statusFilter === 'all' || event.approvalStatus === statusFilter;
+      const eventCategoryId = event.categoryId || event.category?.categoryId || event.category?.id;
+      const matchCategory = categoryFilter === 'all' || eventCategoryId == categoryFilter;
+      return matchStatus && matchCategory;
     });
-  }, [events, statusFilter]);
+  }, [events, statusFilter, categoryFilter]);
 
   const handleViewEvent = (event) => {
     setSelectedEvent(event);
     setIsEventModalVisible(true);
+  };
+
+  const handleViewVolunteers = (event) => {
+    setSelectedEvent(event);
+    setIsVolunteerModalVisible(true);
   };
 
   // Xử lý hành động
@@ -66,8 +83,9 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
       title: "Tên sự kiện", 
       dataIndex: "title", 
       key: "title", 
-      fixed: 'left', // Cố định cột này bên trái
-      width: 200,    // Đặt chiều rộng cố định
+      fixed: 'left',
+      width: 200,
+      sorter: (a, b) => a.title.localeCompare(b.title),
       render: (text) => <span style={{ fontWeight: 600 }}>{text}</span>
     },
     {
@@ -75,6 +93,11 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
       dataIndex: ["manager", "user", "name"],
       key: "manager",
       width: 150,
+      sorter: (a, b) => {
+        const nameA = a.manager?.user?.name || "";
+        const nameB = b.manager?.user?.name || "";
+        return nameA.localeCompare(nameB);
+      },
       render: (name) => <span style={{ color: '#555' }}>{name || "—"}</span>,
     },
     {
@@ -82,12 +105,18 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
       dataIndex: ["category", "name"], 
       key: "category",
       width: 130,
+      sorter: (a, b) => {
+        const catA = a.category?.name || "";
+        const catB = b.category?.name || "";
+        return catA.localeCompare(catB);
+      },
       render: (name) => name ? <Tag color="geekblue">{name}</Tag> : "—",
     },
     {
       title: "Thời gian",
       key: "time",
       width: 220,
+      sorter: (a, b) => new Date(a.startTime) - new Date(b.startTime),
       render: (_, record) => {
         const { startTime, endTime } = record;
         if (!startTime || !endTime) return "—";
@@ -116,7 +145,8 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
       dataIndex: "location",
       key: "location",
       width: 200,
-      ellipsis: { showTitle: false }, // Cắt bớt nếu quá dài
+      sorter: (a, b) => (a.location || "").localeCompare(b.location || ""),
+      ellipsis: { showTitle: false },
       render: (loc) => <Tooltip placement="topLeft" title={loc}>{loc || "—"}</Tooltip>,
     },
     {
@@ -124,6 +154,7 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
       dataIndex: "approvalStatus",
       key: "approvalStatus",
       width: 120,
+      sorter: (a, b) => a.approvalStatus.localeCompare(b.approvalStatus),
       render: (s) => {
         let color = "default";
         let text = "N/A";
@@ -139,8 +170,8 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
     {
       title: "Thao tác",
       key: "action",
-      fixed: 'right', // Cố định cột này bên phải
-      width: 160,
+      fixed: 'right',
+      width: 200,
       render: (_, record) => (
         <Space size="small" direction="vertical" style={{ width: '100%' }}>
           {record.approvalStatus === "pending" ? (
@@ -148,7 +179,6 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
               <div style={{ display: 'flex', gap: 4 }}>
                 <Button 
                   type="primary" 
-                  // icon={<CheckOutlined />} 
                   size="small"
                   style={{ flex: 1 }}
                   onClick={() => handleApprove(record)} 
@@ -157,7 +187,6 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
                 </Button>
                 <Button 
                   danger
-                  // icon={<CloseOutlined />} 
                   size="small"
                   style={{ flex: 1 }}
                   onClick={() => handleReject(record)} 
@@ -176,27 +205,39 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
               </Button>
             </>
           ) : (
-            <div style={{ display: 'flex', gap: 4 }}>
+            <>
+              <div style={{ display: 'flex', gap: 4 }}>
+                <Button 
+                  type="link"
+                  icon={<EyeOutlined />} 
+                  size="small"
+                  style={{ flex: 1 }}
+                  onClick={() => handleViewEvent(record)} 
+                >
+                  Xem
+                </Button>
+                <Button 
+                  danger
+                  type="link"
+                  icon={<DeleteOutlined />} 
+                  size="small"
+                  style={{ flex: 1 }}
+                  onClick={() => handleDelete(record)} 
+                >
+                  Xóa
+                </Button>
+              </div>
               <Button 
-                type="link"
-                icon={<EyeOutlined />} 
+                type="primary"
+                icon={<TeamOutlined />} 
                 size="small"
-                style={{ flex: 1 }}
-                onClick={() => handleViewEvent(record)} 
+                block
+                ghost
+                onClick={() => handleViewVolunteers(record)} 
               >
-                Xem
+                Danh sách TNV
               </Button>
-              <Button 
-                danger
-                type="link"
-                icon={<DeleteOutlined />} 
-                size="small"
-                style={{ flex: 1 }}
-                onClick={() => handleDelete(record)} 
-              >
-                Xóa
-              </Button>
-            </div>
+            </>
           )}
         </Space>
       ),
@@ -227,20 +268,35 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
         </Button>
       </div>
       
-      {/* Thanh lọc trạng thái */}
+      {/* Thanh lọc trạng thái và danh mục */}
       <div style={{ marginBottom: 16 }}>
-        <Space>
-          <Text strong>Lọc trạng thái:</Text>
-          <Select
-            value={statusFilter}
-            onChange={setStatusFilter}
-            style={{ width: 160 }}
-          >
-            <Option value="all">Tất cả</Option>
-            <Option value="pending">Chờ duyệt</Option>
-            <Option value="approved">Đã duyệt</Option>
-            <Option value="rejected">Từ chối</Option>
-          </Select>
+        <Space size="large">
+          <Space>
+            <Text strong>Lọc trạng thái:</Text>
+            <Select
+              value={statusFilter}
+              onChange={setStatusFilter}
+              style={{ width: 160 }}
+            >
+              <Option value="all">Tất cả</Option>
+              <Option value="pending">Chờ duyệt</Option>
+              <Option value="approved">Đã duyệt</Option>
+              <Option value="rejected">Từ chối</Option>
+            </Select>
+          </Space>
+          <Space>
+            <Text strong>Lọc danh mục:</Text>
+            <Select
+              value={categoryFilter}
+              onChange={setCategoryFilter}
+              style={{ width: 180 }}
+            >
+              <Option value="all">Tất cả danh mục</Option>
+              {categoryOptions.map(cat => (
+                <Option key={cat.value} value={cat.value}>{cat.label}</Option>
+              ))}
+            </Select>
+          </Space>
         </Space>
       </div>
 
@@ -256,17 +312,16 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
         }}
         scroll={{ x: 1200 }} 
       />
-
-      {/* <EventModal
-        event={selectedEvent}
-        isModalVisible={isEventModalVisible}
-        setIsModalVisible={setIsEventModalVisible}
-      /> */}
       <EventDetailModal 
         visible={isEventModalVisible} 
         event={selectedEvent} 
         onClose={() => setIsEventModalVisible(false)} 
         isAdmin={true}
+      />
+      <VolunteerListModal
+        visible={isVolunteerModalVisible}
+        event={selectedEvent}
+        onClose={() => setIsVolunteerModalVisible(false)}
       />
     </div>
   );

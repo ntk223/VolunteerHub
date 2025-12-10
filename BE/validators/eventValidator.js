@@ -19,8 +19,7 @@ const createEventUpdateSchema = Joi.object({
   startTime: Joi.date(),
   endTime: Joi.date().greater(Joi.ref('startTime')),
   capacity: Joi.number().min(1),
-  // categoryId: Joi.number().integer(),
-  // managerId: Joi.number().integer(),
+  imgUrl : Joi.string().uri().allow(null, ''),
 });
 
 

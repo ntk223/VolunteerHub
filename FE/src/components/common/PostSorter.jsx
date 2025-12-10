@@ -1,15 +1,11 @@
 import React from 'react';
-import { Select, Space, Typography } from 'antd';
-import { SortAscendingOutlined } from '@ant-design/icons';
+import { Select, Space } from 'antd';
 
-const { Text } = Typography;
 const { Option } = Select;
 
-const PostSorter = ({ sortBy, onSortChange }) => {
+const PostSorter = ({ sortBy, onSortChange }) => {  
   return (
     <Space align="center" style={{ marginBottom: 16, marginTop: 30 }}>
-      <SortAscendingOutlined style={{ color: '#666' }} />
-      <Text style={{ color: '#666' }}>Sắp xếp theo:</Text>
       <Select
         value={sortBy}
         onChange={onSortChange}

@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -13,6 +13,7 @@
     "@ant-design/icons": "^6.1.0",
     "antd": "^5.27.5",
     "axios": "^1.12.2",
+    "date-fns": "^4.1.0",
     "file-saver": "^2.0.5",
     "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",

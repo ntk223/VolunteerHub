@@ -176,3 +176,23 @@
     transform: none;
     box-shadow: none;
 }
+
+/* Style cho Ant Design Select trong form đăng ký */
+:global(.role-select-dropdown) {
+    border-radius: 8px !important;
+}
+
+:global(.role-select-dropdown .ant-select-item) {
+    padding: 10px 16px !important;
+    font-size: 14px !important;
+    transition: all 0.3s ease !important;
+}
+
+:global(.role-select-dropdown .ant-select-item-option-selected) {
+    background-color: #fff7f0 !important;
+    font-weight: 500 !important;
+}
+
+:global(.role-select-dropdown .ant-select-item:hover) {
+    background-color: #fff7f0 !important;
+}

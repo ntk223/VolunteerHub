@@ -11,7 +11,8 @@ import {
   FileTextOutlined,
   MoonOutlined,
   SunOutlined,
-  UnorderedListOutlined // Import thêm icon cho Quản lý sự kiện
+  UnorderedListOutlined,
+  AreaChartOutlined // Thêm icon cho Admin
 } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
 import CreatePostModal from "../createPost/CreatePostModal";
@@ -35,15 +36,14 @@ const Sidebar = ({ isMobile, onClose }) => {
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [showCreateEvent, setShowCreateEvent] = useState(false);
 
-  // Lấy key từ pathname, nếu là /events thì selectedKey sẽ là 'events'
-  const selectedKey = location.pathname === "/" ? "home" : location.pathname.slice(1);
+  // Lấy key từ pathname, nếu là / hoặc /events thì selectedKey sẽ là 'home'
+  const selectedKey = (location.pathname === "/" || location.pathname === "/events") ? "home" : location.pathname.slice(1);
 
   const handleMenuClick = (e) => {
     if (isMobile && onClose) onClose();
 
     switch (e.key) {
-      case "home": navigate("/"); break;
-      case "events": navigate("/events"); break;
+      case "home": navigate("/events"); break;
       case "notification":
         markNotificationsAsRead();
         navigate("/notification");
@@ -67,6 +67,10 @@ const Sidebar = ({ isMobile, onClose }) => {
       if (!user) return navigate("/login");
       navigate("/manage-applications");
     }
+    if (e.key === "admin") {
+      if (!user) return navigate("/login");
+      navigate("/admin");
+    }
   };
 
   const menuItems = [
@@ -74,11 +78,6 @@ const Sidebar = ({ isMobile, onClose }) => {
       key: "home",
       icon: <HomeOutlined style={{ fontSize: 20 }} />,
       label: "Trang chủ",
-    },
-    {
-      key: "events",
-      icon: <CalendarOutlined style={{ fontSize: 20 }} />,
-      label: "Sự kiện",
     },
     {
       key: "create-post",
@@ -91,15 +90,31 @@ const Sidebar = ({ isMobile, onClose }) => {
     menuItems.push(
       {
         key: "create-event",
-        icon: <PlusCircleOutlined style={{ fontSize: 20 }} />, // Đổi icon thành Plus để phân biệt
+        icon: <PlusCircleOutlined style={{ fontSize: 20 }} />,
         label: "Tạo sự kiện",
       },
       {
         key: "manage-events",
-        icon: <UnorderedListOutlined style={{ fontSize: 20 }} />, // Thêm mục Quản lý sự kiện
+        icon: <UnorderedListOutlined style={{ fontSize: 20 }} />,
         label: "Quản lý sự kiện",
       }
     );
+  }
+
+  if (user?.role === "volunteer") {
+    menuItems.push({
+      key: "manage-applications",
+      icon: <FileTextOutlined style={{ fontSize: 20 }} />,
+      label: "Đơn ứng tuyển",
+    });
+  }
+
+  if (user?.role === "admin") {
+    menuItems.push({
+      key: "admin",
+      icon: <AreaChartOutlined style={{ fontSize: 20 }} />,
+      label: "Quản trị hệ thống",
+    });
   }
 
 

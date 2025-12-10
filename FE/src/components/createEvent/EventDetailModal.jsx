@@ -215,7 +215,7 @@ const EventDetailModal = ({ visible, onClose, event, isAdmin = false }) => {
             Đóng
           </Button>
           
-          {(!isAdmin && user?.role === 'volunteer') && (
+          {(!isAdmin && user?.role === 'volunteer' && event.progressStatus === 'incomplete') && (
             hasApplied ? (
               <Button 
                 danger

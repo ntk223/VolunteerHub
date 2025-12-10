@@ -8,6 +8,7 @@ import AvatarCard from '../../components/auth/Profile/AvatarCard';
 import Statistics from '../../components/auth/Profile/Statistics';
 import Activities from '../../components/auth/Profile/Activities';
 import EventCompleted from '../../components/auth/Profile/EventCompleted';
+import PushNotificationToggle from '../../components/notification/PushNotificationToggle';
 import { useLocation } from 'react-router-dom';
 
 const MyProfile = () => {
@@ -110,6 +111,11 @@ const MyProfile = () => {
               <Activities volunteerId={user.volunteer.id} />
             )}
           </Col>)}
+
+          {/* Push Notification Settings */}
+          <Col xs={24}>
+            <PushNotificationToggle />
+          </Col>
         </Row>
 
         {/* Modal đổi mật khẩu */}

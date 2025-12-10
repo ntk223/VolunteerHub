@@ -52,7 +52,7 @@ const SearchPage = () => {
           Tìm thấy **{totalResults}** mục.
           {searchCategory === 'all' && (
             <span style={{ marginLeft: 10 }}> 
-              (Sự kiện: {events.length}, Người dùng: {users.length}, Bài đăng: {posts.length})
+              (Sự kiện: {events.length}, Người dùng: {users.length}, Bài viết: {posts.length})
             </span>
           )}
         </p>

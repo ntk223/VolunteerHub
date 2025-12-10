@@ -22,7 +22,7 @@ class ApplicationRepository {
                     { 
                         model: User, 
                         as: 'user', 
-                        attributes: ['id', 'name', 'email']
+                        attributes: ['id', 'name', 'email', 'phone']
                     }
                 ] 
                 }
@@ -97,6 +97,17 @@ class ApplicationRepository {
             where: { volunteerId }
         });
     }
+
+    async comfirmApplication(applicationId) {
+        const application = await Application.findByPk(applicationId);
+        if (application) {
+            application.status = 'attended';
+            await application.save();
+            return application;
+        }
+        throw new ApiError(StatusCodes.NOT_FOUND, "Application not found");
+    }
+
 }
 
 export const applicationRepo = new ApplicationRepository();
