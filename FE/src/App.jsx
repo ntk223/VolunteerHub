@@ -179,11 +179,7 @@ function AppInitializer() {
                         <Route path="profile/:id" element={<OtherProfile />} />
                         <Route path="notification" element={<NotificationPage />} />
                         
-                        <Route path="search" element={
-                            <SearchProvider>
-                                <SearchPage />
-                            </SearchProvider>
-                        } />
+                        <Route path="search" element={<SearchPage />} />
 
                         <Route
                             path="user/posts/:id"

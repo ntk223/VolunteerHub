@@ -4,7 +4,6 @@ import {
   Button,
   Typography,
   Input,
-  message,
 } from "antd";
 import {
   LikeOutlined,
@@ -16,16 +15,13 @@ import {
   CloseOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import CommentSection from "./CommentSection";
 import PostMedia from "./PostMedia";
-import EventModal from "./EventModal";
 import { usePosts } from "../../hooks/usePosts";
 import { useAuth } from "../../hooks/useAuth";
-import { useApplications } from "../../hooks/useApplications";
 import EventDetailModal from "../createEvent/EventDetailModal";
-import api from "../../api";
 
 const { Text, Title } = Typography;
 
@@ -46,14 +42,6 @@ const PostCard = ({ post }) => {
   } = usePosts();
 
   const { user } = useAuth();
-  const navigate = useNavigate();
-
-  const {
-    isApplied,
-    loading: appliedLoading,
-    refetch: refetchApplied,
-    cancelApplication,
-  } = useApplications(user);
 
   const postId = post.id;
   const postComments = commentsMap[postId] || [];
@@ -62,56 +50,9 @@ const PostCard = ({ post }) => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [editingContent, setEditingContent] = useState(post.content || "");
-  const [processing, setProcessing] = useState(false);
 
   // Modal state
   const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const getEventId = () => {
-    if (!post?.event) return null;
-    if (typeof post.event === "object") {
-      return post.event.id || post.event.eventId || post.event._id || null;
-    }
-    return null;
-  };
-
-  const eventId = getEventId();
-  const hasApplied = eventId ? isApplied(eventId) : false;
-
-  const getVolunteerId = () => {
-    if (!user) return null;
-    return user.volunteerId || user.volunteer?._id || user.volunteer?.id || null;
-  };
-
-  const volunteerId = getVolunteerId();
-
-  // === ỨNG TUYỂN ===
-  const handleApply = async () => {
-    if (!user) {
-      message.info("Vui lòng đăng nhập để ứng tuyển");
-      return navigate("/login");
-    }
-    if (!eventId || !volunteerId) return message.error("Thiếu thông tin");
-
-    setProcessing(true);
-    try {
-      await api.post("/application", { eventId, volunteerId });
-      message.success("Ứng tuyển thành công!");
-      refetchApplied();
-    } catch (err) {
-      message.error(err?.response?.data?.message || "Ứng tuyển thất bại");
-    } finally {
-      setProcessing(false);
-    }
-  };
-
-  const handleCancel = async () => {
-    if (!eventId || !volunteerId) return;
-    setProcessing(true);
-    const success = await cancelApplication(eventId);
-    if (success) refetchApplied();
-    setProcessing(false);
-  };
 
   const showEventDetail = () => {
     if (post.event) {
@@ -227,18 +168,6 @@ const PostCard = ({ post }) => {
             <Button type="text" icon={<MessageOutlined />} style={{ flex: 1 }} onClick={() => toggleComments(postId)}>
               Bình luận
             </Button>
-            {post.postType === "recruitment" && user?.role?.toLowerCase() === "volunteer" && (
-              <Button
-                type={hasApplied ? "default" : "primary"}
-                danger={hasApplied}
-                style={{ flex: 1 }}
-                onClick={() => (hasApplied ? handleCancel() : handleApply())}
-                loading={processing || appliedLoading}
-                disabled={processing || appliedLoading}
-              >
-                {hasApplied ? "Hủy đơn" : "Ứng tuyển"}
-              </Button>
-            )}
           </div>
         </div>
 
@@ -261,7 +190,6 @@ const PostCard = ({ post }) => {
       </Card>
 
       {/* MODAL CHI TIẾT SỰ KIỆN */}
-      {/* <EventModal event={event} isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} /> */}
       <EventDetailModal
         visible={isModalVisible}
         event={event}

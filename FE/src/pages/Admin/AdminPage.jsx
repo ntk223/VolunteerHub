@@ -1,4 +1,4 @@
-import { Tabs, Spin, Card, Typography } from "antd";
+import { Tabs, Spin, Card, Typography, Badge } from "antd";
 import { 
   DashboardOutlined, 
   UserOutlined, 
@@ -51,7 +51,9 @@ const AdminPage = () => {
       </div>
     );
 
-
+  // Đếm số lượng chưa duyệt
+  const pendingPostsCount = posts.filter(post => post.status === 'pending').length;
+  const pendingEventsCount = events.filter(event => event.approvalStatus === 'pending').length;
 
   return (
     <div className="admin-page">
@@ -110,6 +112,13 @@ const AdminPage = () => {
               label: (
                 <span>
                   <FileTextOutlined /> Quản lý bài viết
+                  {pendingPostsCount > 0 && (
+                    <Badge 
+                      count={pendingPostsCount} 
+                      style={{ marginLeft: 8 }}
+                      showZero={false}
+                    />
+                  )}
                 </span>
               ),
               children: <PostManage posts={posts} changePostStatus={changePostStatus} deletePost={deletePost} />,
@@ -119,6 +128,13 @@ const AdminPage = () => {
               label: (
                 <span>
                   <CalendarOutlined /> Quản lý sự kiện
+                  {pendingEventsCount > 0 && (
+                    <Badge 
+                      count={pendingEventsCount} 
+                      style={{ marginLeft: 8 }}
+                      showZero={false}
+                    />
+                  )}
                 </span>
               ),
               children: (

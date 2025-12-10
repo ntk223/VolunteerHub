@@ -11,6 +11,7 @@ import { commentRoute } from "./commentRoute.js";
 import { likeRoute } from "./likeRoute.js";
 import { fileRoute } from "./fileRoute.js";
 import { notificationRoute } from "./notificationRoute.js";
+import pushNotificationRoute from "./pushNotificationRoute.js";
 
 const router = express.Router();
 
@@ -28,6 +29,7 @@ router.use('/application', applicationRoute)
 router.use('/comment', commentRoute)
 router.use('/like', likeRoute)
 router.use('/notification', notificationRoute)
+router.use('/push', pushNotificationRoute)
 
 // 4. Admin
 // router.use('/admin', adminRoute)

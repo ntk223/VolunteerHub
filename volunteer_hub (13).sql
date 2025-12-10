@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Generation Time: Dec 09, 2025 at 02:09 PM
+-- Generation Time: Dec 10, 2025 at 09:25 AM
 -- Server version: 8.4.6
 -- PHP Version: 8.2.27
 
@@ -45,7 +45,9 @@ INSERT INTO `applications` (`id`, `event_id`, `volunteer_id`, `status`, `applied
 (1, 10, 2, 'approved', '2025-10-21 08:41:40', NULL, 0),
 (3, 2, 8, 'pending', '2025-11-30 23:51:13', NULL, 0),
 (7, 50, 8, 'approved', '2025-12-01 00:02:31', NULL, 0),
-(17, 54, 8, 'approved', '2025-12-09 17:14:36', NULL, 0);
+(17, 54, 8, 'attended', '2025-12-09 17:14:36', NULL, 0),
+(18, 55, 8, 'attended', '2025-12-09 21:51:13', NULL, 0),
+(19, 53, 8, 'pending', '2025-12-09 22:06:10', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -165,7 +167,7 @@ CREATE TABLE `events` (
 INSERT INTO `events` (`id`, `title`, `description`, `category_id`, `location`, `start_time`, `end_time`, `capacity`, `manager_id`, `created_at`, `published_at`, `deleted_at`, `updated_at`, `approval_status`, `progress_status`, `img_url`) VALUES
 (1, 'Dọn rác bãi biển Đà Nẵng', 'Chiến dịch làm sạch bãi biển và nâng cao ý thức bảo vệ môi trường cho người dân địa phương.', 1, 'Bãi biển Mỹ Khê, Đà Nẵng', '2025-11-10 07:30:00', '2025-11-10 11:30:00', 100, 2, '2025-10-11 10:51:19', '2025-11-10 23:14:07', NULL, '2025-11-10 23:14:07', 'approved', 'incomplete', NULL),
 (2, 'Lớp học miễn phí cho trẻ em nghèo', 'Tổ chức lớp học Toán và Tiếng Việt cho học sinh tiểu học vùng khó khăn.', 2, 'Xã Tân Lập, Huyện Mộc Châu, Sơn La', '2025-12-01 08:00:00', '2025-12-15 17:00:00', 50, 2, '2025-10-11 10:51:19', NULL, NULL, '2025-12-09 09:46:01', 'approved', 'completed', NULL),
-(3, 'Hiến máu nhân đạo mùa xuân', 'Sự kiện hiến máu cứu người do Hội Chữ thập đỏ tổ chức.', 4, 'Trung tâm Hội nghị Quốc gia, Hà Nội', '2025-03-05 08:00:00', '2025-03-05 12:00:00', 300, 2, '2025-10-11 10:51:19', '2025-10-11 10:51:19', NULL, NULL, 'pending', 'incomplete', NULL),
+(3, 'Hiến máu nhân đạo mùa xuân', 'Sự kiện hiến máu cứu người do Hội Chữ thập đỏ tổ chức.', 4, 'Trung tâm Hội nghị Quốc gia, Hà Nội', '2025-03-05 08:00:00', '2025-03-05 12:00:00', 300, 2, '2025-10-11 10:51:19', '2025-12-10 15:08:50', NULL, '2025-12-10 15:08:50', 'approved', 'incomplete', NULL),
 (4, 'Chương trình giao lưu văn nghệ', 'Buổi biểu diễn âm nhạc và múa dân gian gây quỹ từ thiện.', 5, 'Nhà văn hóa Thanh Xuân, Hà Nội', '2025-10-25 18:00:00', '2025-10-25 21:00:00', 200, 2, '2025-10-11 10:51:19', '2025-10-11 10:51:19', NULL, NULL, 'pending', 'incomplete', NULL),
 (5, 'Tặng quà cho người già neo đơn', 'Hoạt động trao quà, thăm hỏi người già có hoàn cảnh khó khăn.', 3, 'Trung tâm bảo trợ xã hội Quận 9, TP.HCM', '2025-12-20 09:00:00', '2025-12-20 11:00:00', 80, 2, '2025-10-11 10:51:19', '2025-10-11 10:51:19', NULL, NULL, 'pending', 'incomplete', NULL),
 (6, 'Test', 'Chiến dịch làm sạch bãi biển và nâng cao ý thức bảo vệ môi trường cho người dân địa phương.', 2, 'Bãi biển Mỹ Khê, Đà Nẵng', '2025-11-10 07:30:00', '2025-11-10 11:30:00', 10, 2, '2025-10-11 15:46:33', NULL, NULL, '2025-10-12 23:55:23', 'approved', 'incomplete', NULL),
@@ -212,10 +214,13 @@ INSERT INTO `events` (`id`, `title`, `description`, `category_id`, `location`, `
 (48, 'aaaaa', 'ádasd', 3, 'Hà Nội', '2025-10-19 08:09:09', '2025-10-23 15:09:10', 100, 2, '2025-10-19 08:10:35', NULL, '2025-11-09 21:34:58', '2025-11-09 21:34:58', 'approved', 'incomplete', NULL),
 (49, 'hoat dong tu thien', 'hoat dong tu thien', 3, 'cau giay, ha noi', '2025-11-12 09:27:37', '2025-11-12 20:27:38', 10, 3, '2025-11-12 09:28:44', '2025-11-12 16:29:38', NULL, '2025-11-12 16:29:38', 'approved', 'incomplete', NULL),
 (50, 'tesst', 'asfkjhasdjkfhasjkfdhaskjlh', 1, 'dai hoc quoc gia ha noi', '2025-11-15 04:04:05', '2025-11-15 08:08:08', 20, 5, '2025-11-15 16:18:49', NULL, NULL, '2025-11-15 09:33:08', 'approved', 'incomplete', NULL),
-(51, 'adfgsdg', 'sgdfgdsfg', 1, 'Tầng 3, Tòa nhà A, Quận Ba Đình', '2025-11-21 00:00:00', '2025-11-21 00:04:00', 12, 5, '2025-11-20 16:52:17', NULL, NULL, '2025-11-20 16:52:17', 'pending', 'incomplete', NULL),
-(52, 'adfasfasdf', 'adfadsfa', 2, 'Tầng 3, Tòa nhà A, Quận Ba Đình', '2025-10-04 00:00:00', '2025-10-04 00:00:04', 123, 5, '2025-11-22 15:56:25', NULL, NULL, '2025-11-22 15:56:25', 'pending', 'incomplete', NULL),
-(53, '123123', '123123123', 1, 'Đường Lai Xá, Hoai Duc Commune, Hà Nội, Vietnam', '2025-11-27 00:00:00', '2025-11-27 06:00:00', 12, 5, '2025-11-30 21:33:27', '2025-11-30 21:34:39', NULL, '2025-11-30 21:34:39', 'approved', 'incomplete', NULL),
-(54, '12213312', '12123123', 5, 'đại học quốc gia hà nội', '2025-12-16 00:00:00', '2025-12-26 00:00:00', 9, 5, '2025-12-09 16:36:38', '2025-12-09 16:37:47', NULL, '2025-12-09 10:38:37', 'approved', 'completed', 'https://res.cloudinary.com/dpcrzajx2/image/upload/v1765272993/volunteerhub/image/r3vsr8b2qixsfj3woumr.png');
+(51, 'adfgsdg', 'sgdfgdsfg', 1, 'Tầng 3, Tòa nhà A, Quận Ba Đình', '2025-11-21 00:00:00', '2025-11-21 00:04:00', 12, 5, '2025-11-20 16:52:17', NULL, '2025-12-09 23:17:41', '2025-12-09 23:17:41', 'pending', 'incomplete', NULL),
+(52, 'adfasfasdf', 'adfadsfa', 2, 'Tầng 3, Tòa nhà A, Quận Ba Đình', '2025-10-04 00:00:00', '2025-10-04 00:00:04', 123, 5, '2025-11-22 15:56:25', NULL, NULL, '2025-12-09 23:22:01', 'pending', 'incomplete', 'https://res.cloudinary.com/dpcrzajx2/image/upload/v1765291797/volunteerhub/image/nkxobxi8tozzjqzgadyr.png'),
+(53, '123123', '123123123', 1, 'Đường Lai Xá, Hoai Duc Commune, Hà Nội, Vietnam', '2025-11-27 00:00:00', '2025-11-27 06:00:00', 12, 5, '2025-11-30 21:33:27', '2025-11-30 21:34:39', NULL, '2025-12-09 23:33:20', 'approved', 'cancelled', NULL),
+(54, '12213312', '12123123', 5, 'đại học quốc gia hà nội', '2025-12-16 00:00:00', '2025-12-26 00:00:00', 9, 5, '2025-12-09 16:36:38', '2025-12-09 16:37:47', NULL, '2025-12-09 22:05:08', 'approved', 'completed', 'https://res.cloudinary.com/dpcrzajx2/image/upload/v1765272993/volunteerhub/image/r3vsr8b2qixsfj3woumr.png'),
+(55, 'sinh vien tinh nguyen', 'sinh vien tinh nguyen', 5, 'Đại học Quốc gia Hà Nội, 144, Đường Xuân Thủy, Phường Cầu Giấy, Hà Nội, 11314, Việt Nam', '2025-12-09 04:04:05', '2025-12-09 23:00:00', 12, 5, '2025-12-09 21:50:29', '2025-12-09 21:50:55', NULL, '2025-12-09 21:52:03', 'approved', 'completed', 'https://res.cloudinary.com/dpcrzajx2/image/upload/v1765291797/volunteerhub/image/nkxobxi8tozzjqzgadyr.png'),
+(56, '123123', '123123123', 1, 'Trường Tiểu học Kim Chung B, Đường Tây Lai Xá, Xã Hoài Đức, Hà Nội, Việt Nam', '2025-12-10 00:02:00', '2025-12-10 04:03:00', 10, 5, '2025-12-10 00:37:43', '2025-12-10 00:38:31', NULL, '2025-12-10 00:38:31', 'approved', 'incomplete', 'https://res.cloudinary.com/dpcrzajx2/image/upload/v1765291797/volunteerhub/image/nkxobxi8tozzjqzgadyr.png'),
+(57, 'qwe', 'qweqwe', 4, 'Vietnam National University, Hanoi, 144, Xuan Thuy Road, Cau Giay Ward, Hà Nội, 11314, Vietnam', '2025-12-15 00:04:07', '2025-12-15 16:00:00', 12, 5, '2025-12-10 15:00:12', NULL, NULL, '2025-12-10 15:00:12', 'pending', 'incomplete', 'https://res.cloudinary.com/dpcrzajx2/image/upload/v1765353580/volunteerhub/image/vs7njvcolk5rh7l0nwsh.png');
 
 -- --------------------------------------------------------
 
@@ -269,7 +274,14 @@ INSERT INTO `files` (`id`, `file_name`, `url`, `file_type`, `uploaded_by`, `crea
 (31, 'Screenshot from 2025-12-08 13-58-21.png', 'https://res.cloudinary.com/dpcrzajx2/image/upload/v1765178278/volunteerhub/image/ekrqiatkutrwhqcyfiwd.png', 'image', 59, '2025-12-08 14:17:59'),
 (32, 'Screenshot from 2025-12-09 01-10-32.png', 'https://res.cloudinary.com/dpcrzajx2/image/upload/v1765272625/volunteerhub/image/brp59s2sklu88kz4ijdf.png', 'image', 59, '2025-12-09 16:30:26'),
 (33, 'Screenshot from 2025-12-09 01-10-32.png', 'https://res.cloudinary.com/dpcrzajx2/image/upload/v1765272744/volunteerhub/image/c1sst64xlrlti43c8lsh.png', 'image', 59, '2025-12-09 16:32:25'),
-(34, 'Screenshot from 2025-12-09 15-25-15.png', 'https://res.cloudinary.com/dpcrzajx2/image/upload/v1765272993/volunteerhub/image/r3vsr8b2qixsfj3woumr.png', 'image', 59, '2025-12-09 16:36:33');
+(34, 'Screenshot from 2025-12-09 15-25-15.png', 'https://res.cloudinary.com/dpcrzajx2/image/upload/v1765272993/volunteerhub/image/r3vsr8b2qixsfj3woumr.png', 'image', 59, '2025-12-09 16:36:33'),
+(35, 'UETCustom-fotor-20251123171013 (1).png', 'https://res.cloudinary.com/dpcrzajx2/image/upload/v1765291797/volunteerhub/image/nkxobxi8tozzjqzgadyr.png', 'image', 59, '2025-12-09 21:49:57'),
+(36, 'Screenshot from 2025-12-09 19-23-10.png', 'https://res.cloudinary.com/dpcrzajx2/image/upload/v1765297121/volunteerhub/image/to8glyreivnqs6tjfk5p.png', 'image', 59, '2025-12-09 23:18:42'),
+(37, 'Screenshot from 2025-12-09 19-34-00.png', 'https://res.cloudinary.com/dpcrzajx2/image/upload/v1765297725/volunteerhub/image/z5vnmbn6vxpjpnscy9ly.png', 'image', 58, '2025-12-09 23:28:45'),
+(38, 'Screenshot from 2025-12-09 20-23-04.png', 'https://res.cloudinary.com/dpcrzajx2/image/upload/v1765297725/volunteerhub/image/r4exmyukj0net8rok744.png', 'image', 58, '2025-12-09 23:28:47'),
+(39, 'Screenshot from 2025-12-09 20-23-04.png', 'https://res.cloudinary.com/dpcrzajx2/image/upload/v1765297785/volunteerhub/image/qe6zj8lcznotkltcptfw.png', 'image', 58, '2025-12-09 23:29:45'),
+(40, 'Screenshot from 2025-12-09 20-23-04.png', 'https://res.cloudinary.com/dpcrzajx2/image/upload/v1765297847/volunteerhub/image/ykhdaz3ennnxhnz9aw3x.png', 'image', 58, '2025-12-09 23:30:48'),
+(41, 'Screenshot from 2025-12-09 20-13-55.png', 'https://res.cloudinary.com/dpcrzajx2/image/upload/v1765353580/volunteerhub/image/vs7njvcolk5rh7l0nwsh.png', 'image', 59, '2025-12-10 14:59:41');
 
 -- --------------------------------------------------------
 
@@ -322,7 +334,8 @@ INSERT INTO `likes` (`id`, `post_id`, `user_id`, `created_at`, `deleted_at`) VAL
 (47, 20, 58, '2025-12-01 00:29:42', '2025-12-01 00:29:43'),
 (48, 21, 58, '2025-12-01 00:29:51', NULL),
 (49, 21, 59, '2025-12-02 13:44:38', '2025-12-02 13:44:39'),
-(50, 2, 59, '2025-12-02 13:56:40', '2025-12-02 13:56:41');
+(50, 2, 59, '2025-12-02 13:56:40', '2025-12-02 13:56:41'),
+(51, 24, 58, '2025-12-10 15:21:23', NULL);
 
 -- --------------------------------------------------------
 
@@ -548,7 +561,13 @@ INSERT INTO `notifications` (`id`, `user_id`, `message`, `is_read`, `created_at`
 (180, 59, 'Sự kiện của bạn (ID: 54, Tên: 12213312) đã được phê duyệt.', 1, '2025-12-09 16:37:47', NULL),
 (181, 58, 'Đơn ứng tuyển của bạn (ID: 17) đã được chấp nhận.', 1, '2025-12-09 17:14:59', NULL),
 (182, 59, 'Nguyen Trung Kien đã thích bài viết của bạn (ID: 21)', 1, '2025-12-09 18:32:59', NULL),
-(183, 59, 'Nguyen Trung Kien đã bình luận về bài viết của bạn (ID: 21)', 1, '2025-12-09 18:33:07', NULL);
+(183, 59, 'Nguyen Trung Kien đã bình luận về bài viết của bạn (ID: 21)', 1, '2025-12-09 18:33:07', NULL),
+(184, 59, 'Sự kiện của bạn (ID: 55, Tên: sinh vien tinh nguyen) đã được phê duyệt.', 1, '2025-12-09 21:50:55', NULL),
+(185, 58, 'Đơn ứng tuyển của bạn (ID: 18) đã được chấp nhận.', 1, '2025-12-09 21:51:42', NULL),
+(186, 58, 'Bài viết của bạn (ID: 24) đã được phê duyệt.', 1, '2025-12-09 23:31:32', NULL),
+(187, 59, 'Sự kiện của bạn (ID: 56, Tên: 123123) đã được phê duyệt.', 1, '2025-12-10 00:38:31', NULL),
+(188, 59, 'Sự kiện mới đã được tạo: qwe. Vui lòng phê duyệt.', 1, '2025-12-10 15:00:12', NULL),
+(189, 49, 'Sự kiện của bạn (ID: 3, Tên: Hiến máu nhân đạo mùa xuân) đã được phê duyệt.', 0, '2025-12-10 15:08:50', NULL);
 
 -- --------------------------------------------------------
 
@@ -596,7 +615,30 @@ INSERT INTO `posts` (`id`, `event_id`, `author_id`, `post_type`, `content`, `sta
 (20, 50, 59, 'recruitment', 'tuyển tính nguyện viên', 'approved', '2025-11-15 16:33:33', '2025-11-15 09:33:48', NULL, NULL),
 (21, 1, 59, 'discuss', 'Xin chao', 'approved', '2025-11-22 16:58:17', '2025-11-22 10:01:31', NULL, '[\"https://res.cloudinary.com/dpcrzajx2/image/upload/v1763805496/volunteerhub/image/hctfwnrmokp0whiu2gyo.png\"]'),
 (22, 2, 59, 'discuss', '14234242', 'approved', '2025-11-22 17:10:20', '2025-11-27 23:57:03', '2025-11-27 23:57:03', '[\"https://res.cloudinary.com/dpcrzajx2/video/upload/v1763806219/volunteerhub/video/mdwrwafmbxum92uhttmm.mp4\"]'),
-(23, 1, 59, 'discuss', '1231231', 'approved', '2025-11-22 17:11:44', '2025-11-27 23:56:53', '2025-11-27 23:56:53', '[\"https://res.cloudinary.com/dpcrzajx2/video/upload/v1763806303/volunteerhub/video/pfkj0eixpi1j3holiuxn.mp4\", \"https://res.cloudinary.com/dpcrzajx2/image/upload/v1763806302/volunteerhub/image/t370ilhzskojklnyyemu.png\", \"https://res.cloudinary.com/dpcrzajx2/image/upload/v1763806302/volunteerhub/image/vkmvvb84s7tr8o7kb26u.png\"]');
+(23, 1, 59, 'discuss', '1231231', 'approved', '2025-11-22 17:11:44', '2025-11-27 23:56:53', '2025-11-27 23:56:53', '[\"https://res.cloudinary.com/dpcrzajx2/video/upload/v1763806303/volunteerhub/video/pfkj0eixpi1j3holiuxn.mp4\", \"https://res.cloudinary.com/dpcrzajx2/image/upload/v1763806302/volunteerhub/image/t370ilhzskojklnyyemu.png\", \"https://res.cloudinary.com/dpcrzajx2/image/upload/v1763806302/volunteerhub/image/vkmvvb84s7tr8o7kb26u.png\"]'),
+(24, NULL, 58, 'discuss', 'qưerwerwer', 'approved', '2025-12-09 23:30:48', '2025-12-09 23:31:32', NULL, '[\"https://res.cloudinary.com/dpcrzajx2/image/upload/v1765297847/volunteerhub/image/ykhdaz3ennnxhnz9aw3x.png\"]');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `push_subscriptions`
+--
+
+CREATE TABLE `push_subscriptions` (
+  `id` bigint NOT NULL,
+  `user_id` bigint NOT NULL,
+  `endpoint` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `p256dh` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `auth` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `push_subscriptions`
+--
+
+INSERT INTO `push_subscriptions` (`id`, `user_id`, `endpoint`, `p256dh`, `auth`, `created_at`) VALUES
+(2, 59, 'https://fcm.googleapis.com/fcm/send/elQAjzV713c:APA91bE0TpPCFUPdQ2UgZaBwDiMXZbgjqznPIDz71LZlvaa_5e_SuSjacpkE3QGivIvkPipVqlA7TGNLnyH3Ce-OxVlnB9mOgfJQpZHs5fmR7RRYb0O9SC5a9IxaKsaOOcctcnA2Vgqg', 'BMsg0Ci3jMcJ-H_8DxR_ep3SlR5I8Ep4Ko68W3UYJ8zuHw0W5_1OjDXxjhkB0w6bM69VCBMe4L8O0IkI0JbInrE', 'MqQV5C0W8e6QjOVozfTLcg', '2025-12-10 07:35:24');
 
 -- --------------------------------------------------------
 
@@ -662,7 +704,7 @@ INSERT INTO `users` (`id`, `name`, `phone`, `email`, `password`, `introduce`, `r
 (55, 'ntkien', '0969334765', 'kk@gmail.com', '$2b$10$L1ZstAPMbcpk1B6yQIaKseVqwDScCXkUEz//twHdz3PN9UTaQ.Yse', '', 'admin', 'active', '2025-11-09 14:46:41', '2025-11-15 22:31:13', NULL, 'https://res.cloudinary.com/dpcrzajx2/image/upload/v1763220672/volunteerhub/image/nabjvtna3plytkjuyyqp.png'),
 (56, 'Kien', '0998877654', 'kkk@gmail.com', '$2b$10$1FBJfhJC58WvyRtSimeQDedi2Wt1mmxSwu85/TIQ0z08QZsPwOe0.', '', 'manager', 'active', '2025-11-09 15:10:27', '2025-11-09 15:10:27', NULL, NULL),
 (57, 'Nguyen Trung Kien', '0987654321', 'kkkk@gmail.com', '$2b$10$.00ULu2e6whPb9pHRRzaCOUxDd7RWqfn1UH.0.WQZ65wpvYste/4y', '', 'manager', 'active', '2025-11-09 15:17:46', '2025-11-09 15:17:46', NULL, NULL),
-(58, 'Nguyen Trung Kien', '0969334765', 'kk@gmail.com', '$2b$10$PPuL8rK4335q0eQMfbAS5eujHa4vCHQnZGnThNcakDBGkkPWu6tba', '', 'volunteer', 'active', '2025-11-12 17:55:43', '2025-11-27 23:56:14', NULL, 'https://res.cloudinary.com/dpcrzajx2/image/upload/v1763203578/volunteerhub/image/vzh0u9uffpfyvswyasxg.png'),
+(58, 'Nguyen Trung Kien', '0969334765', 'kk@gmail.com', '$2b$10$pFntufwoAOIyeSd6xi/9XuyFa84mlxQPUHidBcF3hQlzV6Z8iNB7m', '', 'volunteer', 'active', '2025-11-12 17:55:43', '2025-12-10 16:24:27', NULL, 'https://res.cloudinary.com/dpcrzajx2/image/upload/v1763203578/volunteerhub/image/vzh0u9uffpfyvswyasxg.png'),
 (59, 'Nguyen Trung Kien', '0969334765', 'kk@gmail.com', '$2b$10$WplO3LlReOfb8JYhx.8OAOAw3tBtzSc3Bp4Ii5qdT3YYXqQtA9S1W', '', 'manager', 'active', '2025-11-14 14:22:33', '2025-11-28 16:05:37', NULL, 'https://res.cloudinary.com/dpcrzajx2/image/upload/v1764320700/volunteerhub/image/jfycuz4kr3orgi0irhgk.png');
 
 --
@@ -778,6 +820,13 @@ ALTER TABLE `posts`
   ADD KEY `fk_post_user` (`author_id`);
 
 --
+-- Indexes for table `push_subscriptions`
+--
+ALTER TABLE `push_subscriptions`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_user_id` (`user_id`);
+
+--
 -- Indexes for table `root_admin`
 --
 ALTER TABLE `root_admin`
@@ -804,7 +853,7 @@ ALTER TABLE `volunteers`
 -- AUTO_INCREMENT for table `applications`
 --
 ALTER TABLE `applications`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -822,19 +871,19 @@ ALTER TABLE `comments`
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT for table `files`
 --
 ALTER TABLE `files`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT for table `likes`
 --
 ALTER TABLE `likes`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT for table `managers`
@@ -846,13 +895,19 @@ ALTER TABLE `managers`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=184;
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=190;
 
 --
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+--
+-- AUTO_INCREMENT for table `push_subscriptions`
+--
+ALTER TABLE `push_subscriptions`
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `root_admin`
@@ -928,6 +983,12 @@ ALTER TABLE `notifications`
 ALTER TABLE `posts`
   ADD CONSTRAINT `fk_post_event` FOREIGN KEY (`event_id`) REFERENCES `events` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_post_user` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `push_subscriptions`
+--
+ALTER TABLE `push_subscriptions`
+  ADD CONSTRAINT `push_subscriptions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `volunteers`

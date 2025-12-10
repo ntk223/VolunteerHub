@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useAuth } from '../../../hooks/useAuth.jsx';
 import api from '../../../api/index.js';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { message } from "antd";
+import { message, Select, theme } from "antd";
+import { UserOutlined } from '@ant-design/icons';
 
 import './LoginForm.css';
 
@@ -15,6 +16,7 @@ const LoginForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const { token } = theme.useToken();
 
   const { login } = useAuth();
 
@@ -108,27 +110,23 @@ const LoginForm = () => {
       </div>
 
 
-      <select
-        name="role"
+      <Select
         value={formData.role}
-        onChange={handleChange}
+        onChange={(value) => handleChange({ target: { name: 'role', value } })}
         disabled={loading}
-
+        suffixIcon={<UserOutlined />}
         style={{
-          backgroundColor: '#eee',
-          border: 'none',
-          margin: '4px 0',
-          padding: '10px 15px',
-          fontSize: '13px',
-          borderRadius: '8px',
           width: '100%',
-          outline: 'none',
+          margin: '4px 0',
         }}
-      >
-        <option value="volunteer">Tình nguyện viên</option>
-        <option value="manager">Quản lý</option>
-        <option value="admin">Quản trị viên</option>
-      </select>
+        size="large"
+        options={[
+          { value: 'volunteer', label: 'Tình nguyện viên' },
+          { value: 'manager', label: 'Quản lý' },
+          { value: 'admin', label: 'Quản trị viên' },
+        ]}
+        popupClassName="role-select-dropdown"
+      />
 
       <a href="#">Quên mật khẩu?</a>
 

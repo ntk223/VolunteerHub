@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { useSearch } from "../../hooks/useSearch";
-import { Layout, Input, Spin, Button, Typography } from "antd";
+import { Layout, Input, Spin, Button, Typography, Select, theme } from "antd";
 import { SearchOutlined, EyeOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import "./SearchSidebar.css"; 
 
 const { Sider } = Layout;
 const { Text } = Typography;
+const { Option } = Select;
 
 // ✅ ĐÃ ĐÚNG: Nhận prop isMobile
 const SearchSidebar = ({ isMobile }) => {
   const navigate = useNavigate();
+  const { token } = theme.useToken();
+  
   const {
     searchQuery,
     setSearchQuery,
@@ -45,9 +48,9 @@ const SearchSidebar = ({ isMobile }) => {
     if (searchQuery.trim() === "" && !searchLoading) return null;
 
     const items = [
-      ...searchApprovedEvents.map(item => ({ ...item, resultType: 'Sự kiện', type: 'manage-events' })),
-      ...searchResults.users.map(item => ({ ...item, resultType: 'Người dùng', type: 'profile' })),
-      ...searchResults.posts.map(item => ({ ...item, resultType: 'Bài viết', type: 'post' })),
+      ...searchApprovedEvents.map(item => ({ ...item, resultType: 'E', type: 'events' })),
+      ...searchResults.users.map(item => ({ ...item, resultType: 'U', type: 'profile' })),
+      ...searchResults.posts.map(item => ({ ...item, resultType: 'P', type: 'post' })),
     ];
 
     const displayedItems = items.slice(0, displayLimit);
@@ -77,7 +80,7 @@ const SearchSidebar = ({ isMobile }) => {
               <Link
                 key={`${item.type}-${item.id}`}
                 className="result-item"
-                to={item.type === 'manage-events' ? `/event/${item.id}` : `/${item.type}/${item.id}`} 
+                to={item.type === 'events' ? `/events` : `/${item.type}/${item.id}`} 
                 onClick={() => {}}
               >
                 <span className="result-type-label">{item.resultType}</span>
@@ -152,15 +155,23 @@ const SearchSidebar = ({ isMobile }) => {
         </div>
 
         <div className="category-select">
-          <select
+          <Select
             value={searchCategory}
-            onChange={(e) => setSearchCategory(e.target.value)}
+            onChange={setSearchCategory}
+            style={{ 
+              width: '100%',
+              backgroundColor: token.colorBgContainer,
+            }}
+            size="large"
+            dropdownStyle={{
+              backgroundColor: token.colorBgElevated,
+            }}
           >
-            <option value="all">Tất cả danh mục</option>
-            <option value="events">Sự kiện</option>
-            <option value="users">Người dùng</option>
-            <option value="posts">Bài viết</option>
-          </select>
+            <Option value="all">Tất cả danh mục</Option>
+            <Option value="events">Sự kiện</Option>
+            <Option value="users">Người dùng</Option>
+            <Option value="posts">Bài viết</Option>
+          </Select>
         </div>
 
         {searchLoading && (

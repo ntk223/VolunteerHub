@@ -9,6 +9,7 @@ import Like from './Like.js';
 import Application from './Application.js';
 import File from './File.js';
 import Notification from './Notification.js';
+import PushSubscription from './PushSubscription.js';
 
 // User ↔ Volunteer (1-1)
 User.hasOne(Volunteer, { foreignKey: 'userId', as: 'volunteer' });
@@ -66,6 +67,10 @@ File.belongsTo(User, { foreignKey: 'uploadedBy', as: 'uploader' });
 User.hasMany(Notification, { foreignKey: 'userId', as: 'notifications' });
 Notification.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
+// User ↔ PushSubscription (1-n)
+User.hasMany(PushSubscription, { foreignKey: 'userId', as: 'pushSubscriptions' });
+PushSubscription.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
 export {
   User,
   Volunteer,
@@ -78,4 +83,5 @@ export {
   Like,
   Application,
   Notification,
+  PushSubscription,
 };

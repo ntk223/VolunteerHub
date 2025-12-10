@@ -20,7 +20,7 @@ const Activities = ({ volunteerId }) => {
         
         // Filter các applications đã được accepted và event đã completed
         const acceptedApps = response.data.filter(
-          app => app.status === 'approved' && app.event?.progressStatus === 'completed'
+          app => app.status === 'attended' && app.event?.progressStatus === 'completed'
         );
         
         // Sắp xếp theo thời gian kết thúc event gần nhất

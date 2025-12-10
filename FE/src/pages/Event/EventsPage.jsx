@@ -14,6 +14,7 @@ const EventsPage = () => {
   const [selectedEventId, setSelectedEventId] = useState(null);
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
 
   const selectedEvent = events.find((e) => e.id === selectedEventId) || null;
@@ -22,6 +23,14 @@ const EventsPage = () => {
   const filteredAndSortedEvents = useMemo(() => {
     // Filter approved events
     let result = events.filter((event) => event.approvalStatus === "approved");
+
+    // Filter by category
+    if (categoryFilter !== "all") {
+      result = result.filter((event) => {
+        const eventCategoryId = event.categoryId || event.category?.categoryId || event.category?.id;
+        return eventCategoryId == categoryFilter;
+      });
+    }
 
     // Filter by search text
     if (searchText) {
@@ -66,7 +75,7 @@ const EventsPage = () => {
     });
 
     return result;
-  }, [events, searchText, statusFilter, sortBy]);
+  }, [events, searchText, statusFilter, categoryFilter, sortBy]);
 
   const handleModalAction = async (eventId) => {
     const currentEvent = events.find(e => e.id === eventId);
@@ -100,6 +109,8 @@ const EventsPage = () => {
         onSearchChange={setSearchText}
         sortBy={sortBy}
         onSortChange={setSortBy}
+        categoryFilter={categoryFilter}
+        onCategoryChange={setCategoryFilter}
       />
 
       <Tabs

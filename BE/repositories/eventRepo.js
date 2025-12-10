@@ -147,6 +147,9 @@ class EventRepository {
         const updatedEvent = await Event.update({progressStatus: status}, {
             where: {id: eventId},
         })
+        if (status === 'completed') {
+            await Application.update({status: 'attended'}, { where: { eventId: eventId, status: 'approved' } });
+        }
         if (updatedEvent[0] === 0) {
             throw new ApiError(StatusCodes.NOT_FOUND, "Event not found or no changes made")
         }

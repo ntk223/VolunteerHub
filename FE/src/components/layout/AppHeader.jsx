@@ -42,24 +42,10 @@ const AppHeader = () => {
   } = theme.useToken();
 
   const navItems = [
+    { key: "/events", icon: <ScheduleOutlined />, label: "Sự kiện" },
     { key: "/discuss", icon: <CommentOutlined />, label: "Thảo luận" },
     { key: "/recruitment", icon: <TeamOutlined />, label: "Tuyển thành viên" },
   ];
-  if (user?.role === "admin")
-    navItems.push({ key: "/admin", icon: <AreaChartOutlined />, label: "Admin" });
-  if (user?.role === "manager")
-    navItems.push({
-      key: "/manage-events",
-      icon: <ScheduleOutlined />,
-      label: "Quản lý sự kiện",
-    });
-  if (user?.role === "volunteer") {
-    navItems.push({
-      key: "/manage-applications",
-      icon: <FileTextOutlined style={{ fontSize: 24 }} />,
-      label: <span className="menu-label">Đơn ứng tuyển</span>,
-    });
-  }
   return (
     <Header
       style={{
@@ -71,20 +57,12 @@ const AppHeader = () => {
         height: 64,
         zIndex: 1000, // Đủ cao để đè lên nội dung, không cần thiết phải 2000 trừ khi có Modal đè
 
-        // --- 2. MÀU SẮC & HẬU CẢNH (DARK MODE FRIENDLY) ---
-        // Sử dụng colorBgContainer từ theme, giảm opacity xuống 0.8 để thấy hiệu ứng blur
-        // Nếu muốn đặc hoàn toàn, hãy xóa dòng backgroundColor chứa colorBgContainer và dùng màu hex
         backgroundColor: colorBgContainer, 
         
         // Hiệu ứng mờ nền (kính)
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
-        
-        // Để đảm bảo background hơi trong suốt cho hiệu ứng blur (ghi đè màu đặc bên trên nếu cần)
-        // Lưu ý: Antd colorBgContainer thường là màu đặc (#ffffff hoặc #141414). 
-        // Để blur hoạt động tốt nhất, ta có thể dùng rgba thủ công hoặc chấp nhận màu đặc của Antd.
-        // Ở đây tôi dùng background mặc định của Antd kết hợp opacity nhẹ qua style bổ sung nếu cần, 
-        // nhưng để an toàn và chống tràn chữ tốt nhất, ta giữ nền đặc hoặc bán trong suốt nhẹ:
+
         background: `rgba(${parseInt(colorBgContainer.slice(1, 3), 16)}, ${parseInt(colorBgContainer.slice(3, 5), 16)}, ${parseInt(colorBgContainer.slice(5, 7), 16)}, 0.85)`,
 
         borderBottom: `1px solid ${colorBorderSecondary}`,

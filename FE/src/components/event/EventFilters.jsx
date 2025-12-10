@@ -5,7 +5,22 @@ import { SearchOutlined } from '@ant-design/icons';
 const { Title } = Typography;
 const { Option } = Select;
 
-const EventFilters = ({ searchText, onSearchChange, sortBy, onSortChange }) => {
+const categoryOptions = [
+  { value: 1, label: "Môi trường" },
+  { value: 2, label: "Giáo dục" },
+  { value: 3, label: "Cộng đồng" },
+  { value: 4, label: "Y tế" },
+  { value: 5, label: "Văn hóa - Nghệ thuật" },
+];
+
+const EventFilters = ({ 
+  searchText, 
+  onSearchChange, 
+  sortBy, 
+  onSortChange,
+  categoryFilter,
+  onCategoryChange
+}) => {
   return (
     <div
       style={{
@@ -22,6 +37,20 @@ const EventFilters = ({ searchText, onSearchChange, sortBy, onSortChange }) => {
       </Title>
       
       <Space size="middle">
+        <Select
+          value={categoryFilter}
+          onChange={onCategoryChange}
+          style={{ width: 180 }}
+          placeholder="Danh mục"
+        >
+          <Option value="all">Tất cả danh mục</Option>
+          {categoryOptions.map(cat => (
+            <Option key={cat.value} value={cat.value}>
+              {cat.label}
+            </Option>
+          ))}
+        </Select>
+
         <Select
           value={sortBy}
           onChange={onSortChange}

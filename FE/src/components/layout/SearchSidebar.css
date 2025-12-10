@@ -58,35 +58,33 @@
   margin-bottom: 20px;
 }
 
-.category-select select {
-  width: 100%;
-  padding: 10px 16px;
-  border-radius: 10px;
-  font-size: 14px;
-  cursor: pointer;
-  appearance: none; /* Ẩn mũi tên mặc định */
-  
-  /* Màu sắc theo theme */
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
-  
-  /* Icon mũi tên tuỳ chỉnh (SVG) */
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23999' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-  background-position: right 12px center;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  transition: all 0.3s ease;
+/* Ant Design Select override cho style mượt hơn */
+.category-select .ant-select-selector {
+  border-radius: 12px !important;
+  padding: 4px 12px !important;
+  height: 48px !important;
+  display: flex !important;
+  align-items: center !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
 }
 
-.category-select select:focus {
-  border-color: var(--primary-color);
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(250, 84, 28, 0.2);
+.category-select .ant-select-selector:hover {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 2px 8px rgba(250, 84, 28, 0.1) !important;
+  transform: translateY(-1px);
 }
 
-.category-select select:hover {
-  border-color: var(--primary-color);
+.category-select .ant-select-focused .ant-select-selector {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 3px rgba(250, 84, 28, 0.15) !important;
+}
+
+.category-select .ant-select-arrow {
+  color: var(--text-secondary) !important;
+  font-size: 14px !important;
 }
 
 /* --- SEARCH RESULTS SECTION --- */

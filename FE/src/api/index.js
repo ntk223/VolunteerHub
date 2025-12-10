@@ -24,7 +24,9 @@ api.interceptors.response.use(
   (error) => {
     if (error.response) {
       const { status } = error.response;
-      if (status === 401) {
+      const currentPath = window.location.pathname;
+      const whitelist = ["/auth/login", "/auth/register", "/server-error", "/landing"];
+      if (status === 401 && !whitelist.includes(currentPath)) {
         message.error("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!");
         apiEvents.emit("unauthorized"); // 👈 bắn sự kiện ra ngoài
       }

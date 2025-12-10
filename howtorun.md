@@ -152,7 +152,7 @@ Mở trình duyệt và truy cập: **`http://localhost:3000`**
 
 **Volunteer:**
 - Email: `kk@gmail.com`
-- Password: `1234567`
+- Password: `123456`
 
 ## 🔧 Các lệnh hữu ích
 
