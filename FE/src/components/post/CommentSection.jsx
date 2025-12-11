@@ -2,6 +2,8 @@ import { Input, Button, List, Avatar, Spin, Typography, Dropdown, message, Modal
 import { UserOutlined, MoreOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
+import { formatDistanceToNow } from "date-fns";
+import { vi } from "date-fns/locale";
 
 const { Text } = Typography;
 
@@ -78,23 +80,38 @@ const CommentSection = ({
       <List
         dataSource={comments} // 👈 Dùng 'comments' từ props
         locale={{ emptyText: "Chưa có bình luận nào" }}
-        renderItem={(c) => (
-          <List.Item
-            actions={
-              user && user.id === c.author?.id ? [
-                <Dropdown
-                  menu={{ items: getMenuItems(c) }}
-                  trigger={['click']}
-                  placement="bottomRight"
-                >
-                  <Button type="text" icon={<MoreOutlined />} />
-                </Dropdown>
-              ] : []
-            }
-          >
+        renderItem={(c) => {
+          
+          const isOwner = user?.id && c.author?.id && String(user.id) === String(c.author.id);
+          
+          return (
+            <List.Item
+              actions={
+                isOwner ? [
+                  <Dropdown
+                    key="dropdown"
+                    menu={{ items: getMenuItems(c) }}
+                    trigger={['click']}
+                    placement="bottomRight"
+                  >
+                    <Button type="text" icon={<MoreOutlined />} />
+                  </Dropdown>
+                ] : []
+              }
+            >
             <List.Item.Meta
               avatar={<Avatar src={c.author?.avatarUrl} icon={<UserOutlined />} />}
-              title={<Text strong>{c.author?.name || "Người dùng"}</Text>}
+              title={
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Text strong>{c.author?.name || "Người dùng"}</Text>
+                  <Text type="secondary" style={{ fontSize: '12px' }}>
+                    {c.createdAt && formatDistanceToNow(new Date(c.createdAt), { 
+                      addSuffix: true, 
+                      locale: vi 
+                    })}
+                  </Text>
+                </div>
+              }
               description={
                 editingCommentId === c.id ? (
                   <div>
@@ -122,12 +139,15 @@ const CommentSection = ({
                     </div>
                   </div>
                 ) : (
-                  c.content
+                  <Text style={{ color: 'rgba(0, 0, 0, 0.88)', fontSize: '14px' }}>
+                    {c.content}
+                  </Text>
                 )
               }
             />
           </List.Item>
-        )}
+          );
+        }}
       />
 
       {/* Phần input này giờ được kiểm soát bởi HOOK */}

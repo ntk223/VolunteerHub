@@ -8,7 +8,7 @@ const { Title, Text } = Typography;
 const Activities = ({ volunteerId }) => {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  // console.log("aaaaa", activities)
   useEffect(() => {
     const fetchActivities = async () => {
       if (!volunteerId) return;
@@ -65,7 +65,7 @@ const Activities = ({ volunteerId }) => {
     <Card
       title={
         <span>
-          <ClockCircleOutlined style={{ marginRight: 8 }} />
+          <ClockCircleOutlined style={{ marginRight: 8, color: '#00fd22ff' }} />
           Sự kiện đã tham gia ({activities.length})
         </span>
       }
@@ -82,7 +82,7 @@ const Activities = ({ volunteerId }) => {
             const event = app.event;
             return {
               color: 'blue',
-              dot: <CheckCircleOutlined style={{ fontSize: '16px' }} />,
+              dot: <CheckCircleOutlined style={{ fontSize: '16px', color: '#52c41a' }} />,
               label: (
                 <Text type="secondary" style={{ fontSize: '13px' }}>
                   {event?.endTime ? new Date(event.endTime).toLocaleDateString('vi-VN') : 'N/A'}
@@ -93,13 +93,10 @@ const Activities = ({ volunteerId }) => {
                   <Title level={5} style={{ marginBottom: 4 }}>
                     {event?.title || 'Tên sự kiện'}
                   </Title>
-                  <div style={{ marginBottom: 8 }}>
-                    <Tag color="success">Đã hoàn thành</Tag>
-                    {event?.category && (
+                  <div style={{ fontSize: '13px', color: '#666', lineHeight: 1.6 }}>
+                    {event.category.name && (
                       <Tag color="blue">{event.category.name}</Tag>
                     )}
-                  </div>
-                  <div style={{ fontSize: '13px', color: '#666', lineHeight: 1.6 }}>
                     {event?.startTime && event?.endTime && (
                       <div>
                         <CalendarOutlined style={{ marginRight: 6 }} />
@@ -107,20 +104,7 @@ const Activities = ({ volunteerId }) => {
                         {new Date(event.endTime).toLocaleDateString('vi-VN')}
                       </div>
                     )}
-                    {event?.location && (
-                      <div style={{ marginTop: 4 }}>
-                        <EnvironmentOutlined style={{ marginRight: 6 }} />
-                        {event.location}
-                      </div>
-                    )}
-                    {event?.description && (
-                      <div style={{ marginTop: 4, fontStyle: 'italic' }}>
-                        {event.description.length > 100 
-                          ? event.description.substring(0, 100) + '...' 
-                          : event.description
-                        }
-                      </div>
-                    )}
+
                   </div>
                 </div>
               ),

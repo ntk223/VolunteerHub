@@ -46,7 +46,7 @@
 
 .landing-container p,
 .landing-container span:not([class*="anticon"]) {
-  color: #595959 !important;
+  color: #000000 !important;
 }
 
 /* Buttons */

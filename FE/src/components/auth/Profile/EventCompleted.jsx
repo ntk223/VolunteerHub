@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Timeline, Empty, Card, Typography, Spin, Tag } from 'antd';
-import { TrophyOutlined, CalendarOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import { TrophyOutlined, CalendarOutlined } from '@ant-design/icons';
 import api from '../../../api';
 
 const { Title, Text } = Typography;
@@ -8,7 +8,7 @@ const { Title, Text } = Typography;
 const EventCompleted = ({ userId }) => {
   const [completedEvents, setCompletedEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  console.log(completedEvents)
   useEffect(() => {
     const fetchCompletedEvents = async () => {
       if (!userId) return;
@@ -92,7 +92,6 @@ const EventCompleted = ({ userId }) => {
                   {event.title}
                 </Title>
                 <div style={{ marginBottom: 8 }}>
-                  <Tag color="success">Hoàn thành</Tag>
                   {event.category && (
                     <Tag color="blue">{event.category.name}</Tag>
                   )}
@@ -103,17 +102,6 @@ const EventCompleted = ({ userId }) => {
                     {new Date(event.startTime).toLocaleDateString('vi-VN')} -{' '}
                     {new Date(event.endTime).toLocaleDateString('vi-VN')}
                   </div>
-                  {event.location && (
-                    <div style={{ marginTop: 4 }}>
-                      <EnvironmentOutlined style={{ marginRight: 6 }} />
-                      {event.location}
-                    </div>
-                  )}
-                  {event.applicationsCount > 0 && (
-                    <div style={{ marginTop: 4 }}>
-                      👥 {event.applicationsCount} tình nguyện viên tham gia
-                    </div>
-                  )}
                 </div>
               </div>
             ),

@@ -185,6 +185,9 @@ export default function ManageApplicationsPage() {
         if (status === "cancelled" || status === "rejected" || status === "attended") {
           return <Text type="secondary">-</Text>;
         }
+        // else if (r.event.progressStatus !== "incomplete" ) {
+        //   return <Text type="secondary">Không thể hủy ứng tuyển</Text>;
+        // }
         return (
           <Button 
             size="small" 

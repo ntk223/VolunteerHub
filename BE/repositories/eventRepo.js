@@ -1,4 +1,4 @@
-import {Event, Manager, User, Application, Post} from "../models/Model.js";
+import {Event, Manager, User, Application, Post, Category} from "../models/Model.js";
 import ApiError from "../utils/ApiError.js";
 import { StatusCodes } from "http-status-codes";
 import { fn, col } from "sequelize";
@@ -20,6 +20,9 @@ class EventRepository {
                 model: Application,
                 as: 'applications',
                 attributes: []  // không lấy cột nào của Application, chỉ để COUNT
+                }, {
+                    model: Category,
+                    as: 'category'
                 }
             ],
             group: ['Event.id'],  // nhóm theo Event.id
@@ -149,6 +152,9 @@ class EventRepository {
         })
         if (status === 'completed') {
             await Application.update({status: 'attended'}, { where: { eventId: eventId, status: 'approved' } });
+        }
+        else if (status === 'cancelled') {
+            await Application.update({status: 'rejected'}, { where: { eventId: eventId, status: 'pending' } });
         }
         if (updatedEvent[0] === 0) {
             throw new ApiError(StatusCodes.NOT_FOUND, "Event not found or no changes made")
