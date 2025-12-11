@@ -126,7 +126,7 @@ function AppInitializer() {
                         }
                     >
                         {/* Nested Routes (Children of Home) */}
-                        <Route index element={<Navigate to="discuss" replace />} />
+                        <Route index element={<Navigate to="events" replace />} />
                         
                         {/* 3. Thêm Route cho trang danh sách sự kiện */}
                         <Route
@@ -213,7 +213,7 @@ function AppInitializer() {
                     {/* End Protected Routes */}
 
                     {/* Catch all - 404 */}
-                    <Route path="*" element={<Navigate to="/discuss" replace />} />
+                    <Route path="*" element={<Navigate to="/events" replace />} />
                 </Routes>
             </Router>
         </ConfigProvider>

@@ -1,4 +1,4 @@
-import {Application, User, Volunteer, Event} from "../models/Model.js";
+import {Application, User, Volunteer, Event, Category} from "../models/Model.js";
 import ApiError from "../utils/ApiError.js";
 import {StatusCodes} from "http-status-codes";
 class ApplicationRepository {
@@ -91,8 +91,14 @@ class ApplicationRepository {
                 {
                     model: Event,
                     as: 'event',
-                    attributes: ['id', 'title', 'startTime', 'endTime', 'progressStatus']
-                }
+                    attributes: ['id', 'title', 'startTime', 'endTime', 'progressStatus'],
+                    include: [
+                        {
+                            model: Category,
+                            as: 'category',
+                        }
+                    ]
+                },
             ],
             where: { volunteerId }
         });
