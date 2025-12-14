@@ -2,7 +2,7 @@ import {Comment, User, Post} from "../models/Model.js";
 
 class CommentRepository {
     async createComment(postId, authorId, content) {
-    console.log("Creating comment with:", { postId, authorId, content });
+    // console.log("Creating comment with:", { postId, authorId, content });
     const post = await Post.findByPk(postId);
     if (!post) {
         throw new Error(`Post with ID ${postId} not found`);

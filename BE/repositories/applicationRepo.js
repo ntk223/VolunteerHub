@@ -4,8 +4,8 @@ import {StatusCodes} from "http-status-codes";
 class ApplicationRepository {
     async createApplication(eventId, volunteerId) {
         const existingApplication = await Application.findOne({ where: { eventId, volunteerId } });
-        if (existingApplication && existingApplication.isCancelled === true) {
-            existingApplication.isCancelled = false;
+        if (existingApplication) {
+            existingApplication.isCancelled = !existingApplication.isCancelled;
             await existingApplication.save();
             return existingApplication;
         }
@@ -32,7 +32,7 @@ class ApplicationRepository {
     }
 
     async changeApplicationStatus(applicationId, status) {
-        console.log(applicationId, status);
+        // console.log(applicationId, status);
         const application = await Application.findOne({ 
             include : [
                 { 

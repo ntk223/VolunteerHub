@@ -29,7 +29,7 @@ const Router = express.Router()
  *         description: Trả về access token và thông tin user
  */
 Router.post('/login', authController.login)
-
+//rm ./bao_cao_html jmeter -n -t test1.jmx -l ket_qua_log.jtl -e -o ./bao_cao_html
 /**
  * @swagger
  * /api/auth/register:
