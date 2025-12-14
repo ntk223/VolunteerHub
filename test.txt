@@ -1,0 +1,4 @@
+jmeter -n \
+  -t VolunteerHub.jmx \
+  -l result.jtl \
+  -e -o report

@@ -4,9 +4,10 @@ import { message } from "antd";
 import mitt from "mitt"; // npm install mitt
 
 export const apiEvents = mitt(); // Tạo event emitter
-
+const test = "https://nrgmfdfl-5000.asse.devtunnels.ms/api/"
+const local = "http://localhost:5000/api"
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: local,
   headers: { "Content-Type": "application/json" },
 });
 
