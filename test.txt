@@ -1,4 +1,1 @@
-jmeter -n \
-  -t VolunteerHub.jmx \
-  -l result.jtl \
-  -e -o report
+rm -rf ./report &&rm -rf ./result.jtl&& jmeter -n \-t SummaryReportLoadTest.jmx \-l result.jtl \-e -o report
