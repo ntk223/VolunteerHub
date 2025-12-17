@@ -80,8 +80,14 @@ const RegisterForm = ({ onSwitchToLogin }) => {
     // Mật khẩu
     if (!password) {
       newErrors.password = "Vui lòng nhập mật khẩu.";
-    } else if (password.length < 6) {
-      newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự.";
+    } else if (password.length < 8) {
+      newErrors.password = "Mật khẩu phải có ít nhất 8 ký tự.";
+    } else if (!/[A-Z]/.test(password)) {
+      newErrors.password = "Mật khẩu phải có ít nhất 1 chữ cái in hoa.";
+    } else if (!/[0-9]/.test(password)) {
+      newErrors.password = "Mật khẩu phải có ít nhất 1 chữ số.";
+    } else if (!/[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/]/.test(password)) {
+      newErrors.password = "Mật khẩu phải có ít nhất 1 ký tự đặc biệt.";
     }
     
     // Xác nhận mật khẩu

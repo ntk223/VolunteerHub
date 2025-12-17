@@ -125,7 +125,7 @@ const EventCard = ({ event, isJoined, onCardClick }) => {
             </div>
             <div style={{ marginTop: 8, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Tag color="blue">
-                {event.currentApplied || 0} / {event.capacity || '∞'} TNV
+                {event.currentApplied || 0} / {event.capacity || '∞'} 
               </Tag>
 
               <Space size="small">
