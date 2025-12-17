@@ -37,8 +37,7 @@ const ChangePasswordForm = ({ form, isChangePasswordVisible, setIsChangePassword
             name="oldPassword"
             label="Mật khẩu cũ"
             rules={[
-              { required: true, message: 'Vui lòng nhập mật khẩu cũ' },
-              { min: 6, message: 'Mật khẩu phải có ít nhất 6 ký tự' }
+              { required: true, message: 'Vui lòng nhập mật khẩu cũ' }
             ]}
           >
             <Input.Password prefix={<LockOutlined />} placeholder="Nhập mật khẩu cũ" />
@@ -49,7 +48,10 @@ const ChangePasswordForm = ({ form, isChangePasswordVisible, setIsChangePassword
             label="Mật khẩu mới"
             rules={[
               { required: true, message: 'Vui lòng nhập mật khẩu mới' },
-              { min: 6, message: 'Mật khẩu phải có ít nhất 6 ký tự' }
+              { min: 8, message: 'Mật khẩu phải có ít nhất 8 ký tự' },
+              { pattern: /[A-Z]/, message: 'Mật khẩu phải có ít nhất 1 chữ cái in hoa' },
+              { pattern: /[0-9]/, message: 'Mật khẩu phải có ít nhất 1 chữ số' },
+              { pattern: /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/]/, message: 'Mật khẩu phải có ít nhất 1 ký tự đặc biệt' }
             ]}
           >
             <Input.Password prefix={<LockOutlined />} placeholder="Nhập mật khẩu mới" />
