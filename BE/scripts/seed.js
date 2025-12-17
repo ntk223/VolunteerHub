@@ -2,11 +2,12 @@ import sequelize from "../config/database.js";
 import Category from "../models/Category.js";
 import Event from "../models/Event.js";
 import Post from "../models/Post.js";
+import Notification from "../models/Notification.js";
 const MANAGER_ID = 5; // Sử dụng managerId cố định cho tất cả các sự kiện được tạo
 const USER_ID = 59; // Sử dụng userId cố định cho tất cả các bài đăng được tạo
-const NUM_EVENTS = 200;
-const NUM_RECRUITMENT_POSTS = 150;
-const NUM_DISCUSS_POSTS = 100;
+const NUM_EVENTS = 100;
+const NUM_RECRUITMENT_POSTS = 100;
+const NUM_DISCUSS_POSTS = 50;
 // Seed only Events and Posts
 const seedDatabase = async () => {
   try {
@@ -15,7 +16,7 @@ const seedDatabase = async () => {
     // Clear existing data
     await Post.destroy({ where: {}, force: true });
     await Event.destroy({ where: {}, force: true });
-
+    await Notification.destroy({ where: {}, force: true });
     console.log("✅ Cleared existing Events and Posts");
 
     // 1. Seed Events
