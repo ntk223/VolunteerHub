@@ -8,6 +8,7 @@ const local = "http://localhost:5000/api"
 const api = axios.create({
   baseURL: local,
   headers: { "Content-Type": "application/json" },
+  withCredentials: true, // Cho phép gửi cookie
 });
 
 api.interceptors.request.use(

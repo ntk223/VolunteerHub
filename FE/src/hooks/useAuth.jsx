@@ -1,5 +1,6 @@
 import { useState, createContext, useContext, useEffect } from "react";
 import { apiEvents } from "../api";
+import api from "../api";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -11,7 +12,13 @@ export const AuthProvider = ({ children }) => {
   
   const isAuthenticated = !!user;
   const isAdmin = isAuthenticated && user?.role === "admin";
-  const logout = () => {
+  const logout = async () => {
+    try {
+      // Gọi API logout để xóa cookie trên server
+      await api.post('/auth/logout', null, { withCredentials: true });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
     setUser(null);
     setToken(null);
     localStorage.removeItem("token");
@@ -28,6 +35,8 @@ export const AuthProvider = ({ children }) => {
     login: (userData, authToken) => {
       setUser(userData);
       setToken(authToken);
+      // Vẫn lưu token vào localStorage để tương thích ngược
+      // Cookie sẽ được tự động quản lý bởi browser
       localStorage.setItem("token", authToken);
       localStorage.setItem("user", JSON.stringify(userData));
     },

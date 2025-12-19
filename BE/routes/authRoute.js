@@ -62,4 +62,17 @@ Router.post('/login', authController.login)
  */
 Router.post('/register', validate(userValidator.createUser), authController.register)
 
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     tags:
+ *       - Auth
+ *     summary: Đăng xuất
+ *     responses:
+ *       200:
+ *         description: Đăng xuất thành công
+ */
+Router.post('/logout', authController.logout)
+
 export const authRoute = Router
