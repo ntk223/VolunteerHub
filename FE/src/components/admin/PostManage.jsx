@@ -1,4 +1,4 @@
-import { Table, Tag, Button, message, Space, Avatar, Modal, Select, Card, Typography } from "antd";
+import { Table, Tag, Button, message, Space, Avatar, Modal, Select, Card, Typography, Dropdown } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import { useState, useMemo } from "react";
 import PostPreview from "./PostPreview";
@@ -212,22 +212,55 @@ const handlePreview = (record) => {
           </Select>
         </Space>
         
-        <Button 
-          type="primary" 
-          icon={<DownloadOutlined />}
-          size="large"
-          onClick={() => {
-            try {
-              exportPostsToExcel(filteredPosts);
-              message.success('Đã xuất danh sách bài viết thành công!');
-            } catch (error) {
-              console.error(error);
-              message.error('Lỗi khi xuất file Excel');
-            }
+        <Dropdown
+          menu={{
+            items: [
+              {
+                key: 'xlsx',
+                label: 'Xuất Excel (.xlsx)',
+                onClick: () => {
+                  try {
+                    exportPostsToExcel(filteredPosts, 'xlsx');
+                    message.success('Đã xuất file Excel thành công!');
+                  } catch (error) {
+                    console.error(error);
+                    message.error('Lỗi khi xuất file');
+                  }
+                },
+              },
+              {
+                key: 'csv',
+                label: 'Xuất CSV (.csv)',
+                onClick: () => {
+                  try {
+                    exportPostsToExcel(filteredPosts, 'csv');
+                    message.success('Đã xuất file CSV thành công!');
+                  } catch (error) {
+                    console.error(error);
+                    message.error('Lỗi khi xuất file');
+                  }
+                },
+              },
+              {
+                key: 'json',
+                label: 'Xuất JSON (.json)',
+                onClick: () => {
+                  try {
+                    exportPostsToExcel(filteredPosts, 'json');
+                    message.success('Đã xuất file JSON thành công!');
+                  } catch (error) {
+                    console.error(error);
+                    message.error('Lỗi khi xuất file');
+                  }
+                },
+              },
+            ],
           }}
         >
-          Xuất Excel
-        </Button>
+          <Button type="primary" icon={<DownloadOutlined />} size="large">
+            Xuất dữ liệu
+          </Button>
+        </Dropdown>
       </div>
       
       <Table

@@ -1,4 +1,4 @@
-import { Modal, Table, Tag, Button, Space, Typography, Empty, message } from 'antd';
+import { Modal, Table, Tag, Button, Space, Typography, Empty, message, Dropdown } from 'antd';
 import { DownloadOutlined, PhoneOutlined, MailOutlined } from '@ant-design/icons';
 import { useState, useEffect } from 'react';
 import api from '../../api';
@@ -38,7 +38,7 @@ const VolunteerListModal = ({ visible, onClose, event }) => {
     }
   };
 
-  const exportToExcel = () => {
+  const exportToExcel = (format = 'xlsx') => {
     if (volunteers.length === 0) {
       message.warning('Không có dữ liệu để xuất');
       return;
@@ -81,14 +81,37 @@ const VolunteerListModal = ({ visible, onClose, event }) => {
     const eventSheet = XLSX.utils.aoa_to_sheet(eventInfo);
     XLSX.utils.book_append_sheet(workbook, eventSheet, 'Thông tin sự kiện');
 
-    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    const data = new Blob([excelBuffer], { 
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
-    });
+    const timestamp = new Date().toLocaleDateString('vi-VN').replace(/\//g, '-');
+    const baseFileName = `Danh_sach_tinh_nguyen_vien_${event.title.replace(/[^a-zA-Z0-9]/g, '_')}_${timestamp}`;
     
-    const fileName = `Danh_sach_tinh_nguyen_vien_${event.title.replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toLocaleDateString('vi-VN').replace(/\//g, '-')}.xlsx`;
-    saveAs(data, fileName);
-    message.success('Xuất file Excel thành công!');
+    if (format === 'json') {
+      const jsonData = {
+        eventInfo: {
+          title: event.title,
+          location: event.location || 'N/A',
+          startTime: event.startTime,
+          endTime: event.endTime,
+          totalVolunteers: volunteers.length,
+          exportDate: new Date().toISOString()
+        },
+        volunteers: volunteerData
+      };
+      const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
+      saveAs(blob, `${baseFileName}.json`);
+      message.success('Xuất file JSON thành công!');
+    } else if (format === 'csv') {
+      const csv = XLSX.utils.sheet_to_csv(worksheet);
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      saveAs(blob, `${baseFileName}.csv`);
+      message.success('Xuất file CSV thành công!');
+    } else {
+      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      const data = new Blob([excelBuffer], { 
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+      });
+      saveAs(data, `${baseFileName}.xlsx`);
+      message.success('Xuất file Excel thành công!');
+    }
   };
 
   const columns = [
@@ -175,15 +198,33 @@ const VolunteerListModal = ({ visible, onClose, event }) => {
         <Button key="close" onClick={onClose}>
           Đóng
         </Button>,
-        <Button
+        <Dropdown
           key="export"
-          type="primary"
-          icon={<DownloadOutlined />}
-          onClick={exportToExcel}
           disabled={volunteers.length === 0}
+          menu={{
+            items: [
+              {
+                key: 'xlsx',
+                label: 'Xuất Excel (.xlsx)',
+                onClick: () => exportToExcel('xlsx'),
+              },
+              {
+                key: 'csv',
+                label: 'Xuất CSV (.csv)',
+                onClick: () => exportToExcel('csv'),
+              },
+              {
+                key: 'json',
+                label: 'Xuất JSON (.json)',
+                onClick: () => exportToExcel('json'),
+              },
+            ],
+          }}
         >
-          Xuất Excel
-        </Button>,
+          <Button type="primary" icon={<DownloadOutlined />} disabled={volunteers.length === 0}>
+            Xuất dữ liệu
+          </Button>
+        </Dropdown>,
       ]}
       style={{ top: 20 }}
     >

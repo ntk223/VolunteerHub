@@ -8,8 +8,13 @@ const createPostSchema = Joi.object({
   media: Joi.array().items(Joi.string().uri()),
 });
 
+const updatePostSchema = Joi.object({
+  content: Joi.string().min(5),
+  media: Joi.array().items(Joi.string().uri()).allow(null),
+});
 
 export const postValidator = {
     createPost: createPostSchema,
+    updatePost: updatePostSchema,
 }
 

@@ -2,7 +2,7 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
 // Xuất thống kê tổng quan
-export const exportStatisticsToExcel = (users, posts, events) => {
+export const exportStatisticsToExcel = (users, posts, events, format = 'xlsx') => {
   const workbook = XLSX.utils.book_new();
   
   // Sheet 1: Tổng quan
@@ -51,14 +51,39 @@ export const exportStatisticsToExcel = (users, posts, events) => {
   const topUsersSheet = XLSX.utils.aoa_to_sheet(topUsersData);
   XLSX.utils.book_append_sheet(workbook, topUsersSheet, 'Top người dùng');
   
-  // Xuất file
-  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-  const data = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-  saveAs(data, `Thong_ke_tong_quan_${new Date().toLocaleDateString('vi-VN').replace(/\//g, '-')}.xlsx`);
+  // Xuất file theo định dạng được chọn
+  const timestamp = new Date().toLocaleDateString('vi-VN').replace(/\//g, '-');
+  const baseFileName = `Thong_ke_tong_quan_${timestamp}`;
+  
+  if (format === 'json') {
+    const jsonData = {
+      overview: overviewData.slice(1).map(row => ({ [overviewData[0][0]]: row[0], [overviewData[0][1]]: row[1] })),
+      postTypes: postTypeData.slice(1).map(row => ({ type: row[0], count: row[1] })),
+      topUsers: topUsersData.slice(1).map(row => ({ 
+        name: row[0], 
+        email: row[1], 
+        posts: row[2], 
+        role: row[3], 
+        status: row[4] 
+      }))
+    };
+    const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
+    saveAs(blob, `${baseFileName}.json`);
+  } else if (format === 'csv') {
+    // Tạo CSV từ sheet đầu tiên (Tổng quan)
+    const csv = XLSX.utils.sheet_to_csv(overviewSheet);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, `${baseFileName}.csv`);
+  } else {
+    // Xuất XLSX mặc định
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(data, `${baseFileName}.xlsx`);
+  }
 };
 
 // Xuất danh sách người dùng
-export const exportUsersToExcel = (users) => {
+export const exportUsersToExcel = (users, format = 'xlsx') => {
   const userData = users.map(user => ({
     'Tên': user.name,
     'Email': user.email,
@@ -68,17 +93,29 @@ export const exportUsersToExcel = (users) => {
     'Ngày tạo': user.createdAt ? new Date(user.createdAt).toLocaleDateString('vi-VN') : 'N/A'
   }));
   
-  const worksheet = XLSX.utils.json_to_sheet(userData);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Danh sách người dùng');
+  const timestamp = new Date().toLocaleDateString('vi-VN').replace(/\//g, '-');
+  const baseFileName = `Danh_sach_nguoi_dung_${timestamp}`;
   
-  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-  const data = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-  saveAs(data, `Danh_sach_nguoi_dung_${new Date().toLocaleDateString('vi-VN').replace(/\//g, '-')}.xlsx`);
+  if (format === 'json') {
+    const blob = new Blob([JSON.stringify(userData, null, 2)], { type: 'application/json' });
+    saveAs(blob, `${baseFileName}.json`);
+  } else if (format === 'csv') {
+    const worksheet = XLSX.utils.json_to_sheet(userData);
+    const csv = XLSX.utils.sheet_to_csv(worksheet);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, `${baseFileName}.csv`);
+  } else {
+    const worksheet = XLSX.utils.json_to_sheet(userData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Danh sách người dùng');
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(data, `${baseFileName}.xlsx`);
+  }
 };
 
 // Xuất danh sách bài viết
-export const exportPostsToExcel = (posts) => {
+export const exportPostsToExcel = (posts, format = 'xlsx') => {
   const postData = posts.map(post => ({
     'ID': post.id,
     'Tác giả': post.author?.name || 'N/A',
@@ -91,17 +128,29 @@ export const exportPostsToExcel = (posts) => {
     'Ngày tạo': post.createdAt ? new Date(post.createdAt).toLocaleDateString('vi-VN') : 'N/A'
   }));
   
-  const worksheet = XLSX.utils.json_to_sheet(postData);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Danh sách bài viết');
+  const timestamp = new Date().toLocaleDateString('vi-VN').replace(/\//g, '-');
+  const baseFileName = `Danh_sach_bai_viet_${timestamp}`;
   
-  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-  const data = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-  saveAs(data, `Danh_sach_bai_viet_${new Date().toLocaleDateString('vi-VN').replace(/\//g, '-')}.xlsx`);
+  if (format === 'json') {
+    const blob = new Blob([JSON.stringify(postData, null, 2)], { type: 'application/json' });
+    saveAs(blob, `${baseFileName}.json`);
+  } else if (format === 'csv') {
+    const worksheet = XLSX.utils.json_to_sheet(postData);
+    const csv = XLSX.utils.sheet_to_csv(worksheet);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, `${baseFileName}.csv`);
+  } else {
+    const worksheet = XLSX.utils.json_to_sheet(postData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Danh sách bài viết');
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(data, `${baseFileName}.xlsx`);
+  }
 };
 
 // Xuất danh sách sự kiện
-export const exportEventsToExcel = (events) => {
+export const exportEventsToExcel = (events, format = 'xlsx') => {
   const eventData = events.map(event => ({
     'ID': event.id,
     'Tên sự kiện': event.title,
@@ -115,13 +164,25 @@ export const exportEventsToExcel = (events) => {
     'Ngày tạo': event.createdAt ? new Date(event.createdAt).toLocaleDateString('vi-VN') : 'N/A'
   }));
   
-  const worksheet = XLSX.utils.json_to_sheet(eventData);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Danh sách sự kiện');
+  const timestamp = new Date().toLocaleDateString('vi-VN').replace(/\//g, '-');
+  const baseFileName = `Danh_sach_su_kien_${timestamp}`;
   
-  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-  const data = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-  saveAs(data, `Danh_sach_su_kien_${new Date().toLocaleDateString('vi-VN').replace(/\//g, '-')}.xlsx`);
+  if (format === 'json') {
+    const blob = new Blob([JSON.stringify(eventData, null, 2)], { type: 'application/json' });
+    saveAs(blob, `${baseFileName}.json`);
+  } else if (format === 'csv') {
+    const worksheet = XLSX.utils.json_to_sheet(eventData);
+    const csv = XLSX.utils.sheet_to_csv(worksheet);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, `${baseFileName}.csv`);
+  } else {
+    const worksheet = XLSX.utils.json_to_sheet(eventData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Danh sách sự kiện');
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(data, `${baseFileName}.xlsx`);
+  }
 };
 
 // Helper functions

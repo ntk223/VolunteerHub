@@ -1,4 +1,4 @@
-import { Table, Tag, Button, message, Select, Space, Modal, Tooltip, Typography } from "antd";
+import { Table, Tag, Button, message, Select, Space, Modal, Tooltip, Typography, Dropdown } from "antd";
 import { DownloadOutlined, DeleteOutlined, EyeOutlined, TeamOutlined } from "@ant-design/icons";
 import { useState, useMemo } from "react";
 import { exportEventsToExcel } from "../../utils/excelExport";
@@ -251,21 +251,55 @@ const EventManage = ({ events, changeEventApprovalStatus, deleteEvent }) => {
           <Title level={4} style={{ margin: 0, marginBottom: 4 }}>📅 Danh sách sự kiện</Title>
           <Text type="secondary">Quản lý và kiểm duyệt sự kiện tình nguyện</Text>
         </div>
-        <Button 
-          type="primary" 
-          icon={<DownloadOutlined />}
-          size="large"
-          onClick={() => {
-            try {
-              exportEventsToExcel(filteredEvents);
-              message.success('Xuất file thành công');
-            } catch {
-              message.error('Lỗi xuất file');
-            }
+        <Dropdown
+          menu={{
+            items: [
+              {
+                key: 'xlsx',
+                label: 'Xuất Excel (.xlsx)',
+                onClick: () => {
+                  try {
+                    exportEventsToExcel(filteredEvents, 'xlsx');
+                    message.success('Đã xuất file Excel thành công!');
+                  } catch (error) {
+                    console.error(error);
+                    message.error('Lỗi khi xuất file');
+                  }
+                },
+              },
+              {
+                key: 'csv',
+                label: 'Xuất CSV (.csv)',
+                onClick: () => {
+                  try {
+                    exportEventsToExcel(filteredEvents, 'csv');
+                    message.success('Đã xuất file CSV thành công!');
+                  } catch (error) {
+                    console.error(error);
+                    message.error('Lỗi khi xuất file');
+                  }
+                },
+              },
+              {
+                key: 'json',
+                label: 'Xuất JSON (.json)',
+                onClick: () => {
+                  try {
+                    exportEventsToExcel(filteredEvents, 'json');
+                    message.success('Đã xuất file JSON thành công!');
+                  } catch (error) {
+                    console.error(error);
+                    message.error('Lỗi khi xuất file');
+                  }
+                },
+              },
+            ],
           }}
         >
-          Xuất Excel
-        </Button>
+          <Button type="primary" icon={<DownloadOutlined />} size="large">
+            Xuất dữ liệu
+          </Button>
+        </Dropdown>
       </div>
       
       {/* Thanh lọc trạng thái và danh mục */}

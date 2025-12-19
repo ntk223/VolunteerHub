@@ -6,7 +6,11 @@ const createCommentSchema = Joi.object({
   postId: Joi.number().integer().required(),
 });
 
+const updateCommentSchema = Joi.object({
+  content: Joi.string().min(1).max(1000),
+});
 
 export const commentValidator = {
   createComment: createCommentSchema,
+  updateComment: updateCommentSchema,
 };

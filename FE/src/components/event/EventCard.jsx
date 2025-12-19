@@ -50,7 +50,7 @@ const EventCard = ({ event, isJoined, onCardClick }) => {
             src={event.imgUrl}
             style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s' }}
             onError={(e) => {
-              e.target.src = 'https://via.placeholder.com/300x180?text=No+Image';
+              e.imgUrl = 'https://imgs.search.brave.com/iUXqgKMWbYG7d7_tKjcjT9ZfZPqebRB6t-6A6F7mQTI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzA1Lzk3LzQ3Lzk1/LzM2MF9GXzU5NzQ3/OTU1Nl83YmJRN3Q0/WjhrM3hiQWxvSEZI/VmRaSWl6V0sxUGRP/by5qcGc';
             }}
           />
           
