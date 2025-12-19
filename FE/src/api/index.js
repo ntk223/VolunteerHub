@@ -1,9 +1,8 @@
-// src/api/api.js
 import axios from "axios";
 import { message } from "antd";
-import mitt from "mitt"; // npm install mitt
+import mitt from "mitt";
 
-export const apiEvents = mitt(); // Tạo event emitter
+export const apiEvents = mitt();
 const test = "https://nrgmfdfl-5000.asse.devtunnels.ms/api/"
 const local = "http://localhost:5000/api"
 const api = axios.create({
@@ -29,19 +28,16 @@ api.interceptors.response.use(
       const whitelist = ["/auth/login", "/auth/register", "/server-error", "/landing"];
       if (status === 401 && !whitelist.includes(currentPath)) {
         message.error("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!");
-        apiEvents.emit("unauthorized"); // 👈 bắn sự kiện ra ngoài
+        apiEvents.emit("unauthorized");
       }
     } else {
         const isServerError = error.code === "ERR_NETWORK" || (error.response && error.response.status === 500);
     
         if (isServerError) {
-            // --- ĐOẠN CODE QUAN TRỌNG CẦN THÊM ---
             // Lấy đường dẫn hiện tại
             const currentPath = window.location.pathname;
-
-            // Nếu KHÔNG PHẢI đang ở trang lỗi thì mới chuyển hướng
             if (currentPath !== "/server-error") {
-                // Lưu lại trang cũ để tí back lại (tuỳ chọn)
+                // Lưu lại trang cũ để tí back lại
                 const backUrl = encodeURIComponent(currentPath + window.location.search);
                 window.location.href = `/server-error?backUrl=${backUrl}`;
             }

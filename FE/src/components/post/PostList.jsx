@@ -1,4 +1,4 @@
-import { List, Empty, Spin } from "antd";
+import { List} from "antd";
 import PostCard from "./PostCard";
 
 const PostList = ({posts}) => {

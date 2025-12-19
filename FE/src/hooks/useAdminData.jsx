@@ -135,7 +135,6 @@ export const AdminProvider = ({ children }) => {
     deleteEvent,
     changePostStatus,
     deletePost,
-    // 👈 THÔNG TIN TÌM KIẾM MỚI
     searchResults,
     searchLoading,
     searchError,

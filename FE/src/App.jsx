@@ -4,9 +4,7 @@ import { PostsProvider } from "./hooks/usePosts.jsx";
 import { AdminProvider } from "./hooks/useAdminData.jsx";
 import { SocketProvider } from "./hooks/useSocket.jsx";
 import { SearchProvider } from "./hooks/useSearch.jsx";
-import { EventsProvider } from "./hooks/useEvents.jsx"; // 1. Import EventsProvider
-
-// Import useTheme để lấy trạng thái theme hiện tại
+import { EventsProvider } from "./hooks/useEvents.jsx";
 import { ThemeProvider, useTheme } from "./hooks/useTheme.jsx";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
@@ -21,7 +19,7 @@ import UserPost from "./pages/Profile/UserPost.jsx";
 import OnePost from "./pages/Feed/OnePost.jsx";
 import SearchPage from "./pages/Search/SearchPage.jsx";
 import ManageEvent from "./pages/ManageEvent/ManageEvent.jsx";
-import EventsPage from "./pages/Event/EventsPage.jsx"; // 2. Import EventsPage
+import EventsPage from "./pages/Event/EventsPage.jsx";
 import LandingPage from "./pages/LandingPage/LandingPage.jsx";
 import ServerErrorPage from "./pages/ServerErrorPage/ServerErrorPage.jsx";
 import ManageApplications from "./pages/ManageApplications/ManageApplications";
@@ -38,7 +36,6 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function AppInitializer() {
-    // Lấy biến xác định dark mode từ hook
     const { isDarkMode } = useTheme();
 
     return (
@@ -47,7 +44,6 @@ function AppInitializer() {
             theme={{
                 algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
                 token: {
-                    // Concept "Nhiệt Huyết Tuổi Trẻ" (Coral + Navy Blue)
                     colorPrimary: isDarkMode ? '#FF7A45' : '#FA541C', // Dark: Cam sáng hơn, Light: Cam san hô
                     colorInfo: isDarkMode ? '#177DDC' : '#003A8C', // Dark: Xanh sáng, Light: Navy
                     colorSuccess: '#52C41A', // Xanh lá - Thành công

@@ -7,17 +7,15 @@ import {
   Button,
   Tooltip,
   Grid,
-  theme, // Import theme từ antd
+  theme,
 } from "antd";
 import {
   TeamOutlined,
   UserOutlined,
   ScheduleOutlined,
   CommentOutlined,
-  AreaChartOutlined,
-  FileTextOutlined
 } from "@ant-design/icons";
-import { useAuth } from "../../hooks/useAuth.jsx"; // Đảm bảo đường dẫn này đúng
+import { useAuth } from "../../hooks/useAuth.jsx";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const { Header } = Layout;
@@ -30,7 +28,6 @@ const AppHeader = () => {
   const location = useLocation();
   const screens = useBreakpoint();
   
-  // Lấy các token màu sắc từ Ant Design Theme (Tự động đổi theo Dark/Light mode)
   const {
     token: { 
       colorBgContainer, 
@@ -49,17 +46,15 @@ const AppHeader = () => {
   return (
     <Header
       style={{
-        // --- 1. VỊ TRÍ & LỚP HIỂN THỊ ---
         position: "fixed",
         top: 0,
         left: 0,
         width: "100%",
         height: 64,
-        zIndex: 1000, // Đủ cao để đè lên nội dung, không cần thiết phải 2000 trừ khi có Modal đè
+        zIndex: 1000,
 
         backgroundColor: colorBgContainer, 
         
-        // Hiệu ứng mờ nền (kính)
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
 
@@ -67,11 +62,7 @@ const AppHeader = () => {
 
         borderBottom: `1px solid ${colorBorderSecondary}`,
         boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
-
-        // --- 3. HIỆU ỨNG ---
         transition: "all 0.3s ease",
-
-        // --- 4. BỐ CỤC ---
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
@@ -88,7 +79,7 @@ const AppHeader = () => {
               cursor: "pointer",
               whiteSpace: "nowrap",
               color: colorPrimary, // Dùng token primary
-              fontFamily: "'Segoe UI', Roboto, Helvetica, Arial, sans-serif", // Font an toàn
+              fontFamily: "'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
             }}
             onClick={() => navigate("/")}
           >
@@ -140,9 +131,8 @@ const AppHeader = () => {
                   borderRadius: 12,
                   transition: "all 0.2s",
                   
-                  // Logic màu sắc dùng Token
                   color: isActive ? colorPrimary : colorText,
-                  background: isActive ? colorBgTextHover : "transparent", // colorBgTextHover là màu nền mờ khi hover của Antd
+                  background: isActive ? colorBgTextHover : "transparent",
                 }}
               />
             </Tooltip>
@@ -170,7 +160,7 @@ const AppHeader = () => {
             style={{
               fontSize: 15,
               cursor: "pointer",
-              color: colorText, // Tự động trắng khi Dark Mode, đen khi Light Mode
+              color: colorText,
             }}
             onClick={() => {
               navigate("/profile");

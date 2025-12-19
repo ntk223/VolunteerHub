@@ -3,14 +3,12 @@ import { apiEvents } from "../api";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  // ✅ Khởi tạo trực tiếp từ localStorage
   const savedUser = localStorage.getItem("user");
   const savedToken = localStorage.getItem("token");
 
   const [user, setUser] = useState(savedUser ? JSON.parse(savedUser) : null);
   const [token, setToken] = useState(savedToken || null);
   
-  // ✅ LOGIC KIỂM TRA QUYỀN ADMIN
   const isAuthenticated = !!user;
   const isAdmin = isAuthenticated && user?.role === "admin";
   const logout = () => {

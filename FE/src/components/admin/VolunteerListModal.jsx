@@ -56,7 +56,6 @@ const VolunteerListModal = ({ visible, onClose, event }) => {
     console.log('Volunteer data for Excel:', volunteerData);
     const worksheet = XLSX.utils.json_to_sheet(volunteerData);
     
-    // Tự động điều chỉnh độ rộng cột
     const maxWidth = volunteerData.reduce((w, r) => Math.max(w, r['Họ và tên']?.length || 0), 10);
     worksheet['!cols'] = [
       { wch: 5 },  // STT

@@ -137,7 +137,6 @@ const PushNotificationToggle = () => {
           <Paragraph style={{ margin: 0, fontSize: 12 }} type="secondary">
             <strong>Lưu ý:</strong>
             <ul style={{ margin: '8px 0 0 0', paddingLeft: 20 }}>
-              <li>Thông báo đẩy chỉ hoạt động trên HTTPS hoặc localhost</li>
               <li>Bạn có thể bật/tắt bất kỳ lúc nào</li>
               <li>Mỗi thiết bị cần đăng ký riêng</li>
             </ul>

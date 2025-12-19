@@ -8,7 +8,6 @@ const { Title, Text } = Typography;
 const Activities = ({ volunteerId }) => {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
-  // console.log("aaaaa", activities)
   useEffect(() => {
     const fetchActivities = async () => {
       if (!volunteerId) return;
@@ -18,7 +17,6 @@ const Activities = ({ volunteerId }) => {
         // Lấy danh sách applications của volunteer
         const response = await api.get(`/application/volunteer/${volunteerId}`);
         
-        // Filter các applications đã được accepted và event đã completed
         const acceptedApps = response.data.filter(
           app => app.status === 'attended' && app.event?.progressStatus === 'completed'
         );

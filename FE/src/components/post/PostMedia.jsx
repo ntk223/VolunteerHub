@@ -31,11 +31,6 @@ const PostMedia = ({ media }) => {
     width: "100%",
     overflow: "hidden",
     borderRadius: "8px",
-    // THAY ĐỔI QUAN TRỌNG:
-    // Thay vì set height cố định, ta dùng aspect-ratio.
-    // - 1 ảnh: Tự do (hoặc max-height)
-    // - 2 ảnh: 16/9 (giống Youtube/FB thumbnail)
-    // - 3+ ảnh: 4/3 hoặc 1/1 (Vuông vắn hơn)
     aspectRatio: isSingle ? "auto" : count === 2 ? "16/9" : "4/3",
     gridTemplateColumns: isSingle ? "1fr" : "1fr 1fr",
     gridTemplateRows: count >= 3 ? "1fr 1fr" : "1fr",
@@ -50,14 +45,11 @@ const PostMedia = ({ media }) => {
             const isVideo = item.type === "video";
             const isLast = index === 3;
             const remaining = count - 4;
-
-            // Xử lý ô grid
             const cellStyle = {
               position: "relative",
               width: "100%",
               height: "100%",
               overflow: "hidden",
-              // Nếu có 3 ảnh, ảnh đầu tiên bên trái sẽ cao gấp đôi (span 2 dòng)
               gridRow: count === 3 && index === 0 ? "span 2" : undefined,
             };
 
@@ -69,7 +61,6 @@ const PostMedia = ({ media }) => {
                     <video
                       src={item.src}
                       controls
-                      // QUAN TRỌNG: object-fit: cover giúp video lấp đầy ô grid, mất viền đen
                       style={{
                         width: "100%",
                         height: "100%",
@@ -85,10 +76,9 @@ const PostMedia = ({ media }) => {
                     style={{
                       width: "100%",
                       height: "100%", 
-                      objectFit: "cover", // Cắt ảnh thừa
+                      objectFit: "cover",
                       display: "block",
                     }}
-                    // CSS cho wrapper của Antd cũng phải full
                     wrapperStyle={{ 
                       width: "100%", 
                       height: "100%",
@@ -122,7 +112,6 @@ const PostMedia = ({ media }) => {
           })}
         </Image.PreviewGroup>
 
-        {/* Ảnh ẩn để preview */}
         <div style={{ display: "none" }}>
           {hiddenItems.map((item, i) =>
             item.type === "image" ? <Image key={`h-${i}`} src={item.src} /> : null
