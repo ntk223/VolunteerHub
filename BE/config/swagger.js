@@ -22,8 +22,6 @@ const options = {
       }
     },
   },
-  // glob patterns are resolved from the process cwd when swagger-jsdoc runs.
-  // Use ./routes/*.js so when the app is started from the BE folder the files are found.
   apis: ["./routes/*.js", "./routes/**/*.js"], // đường dẫn đến các route có @swagger
 };
 

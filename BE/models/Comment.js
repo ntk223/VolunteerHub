@@ -7,8 +7,8 @@ const Comment = sequelize.define('Comment', {
         type: DataTypes.BIGINT, 
         allowNull: false,
         references: {
-            model: 'posts', // name of Target model
-            key: 'id', // key in Target model that we're referencing
+            model: 'posts',
+            key: 'id',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
@@ -17,8 +17,8 @@ const Comment = sequelize.define('Comment', {
         type: DataTypes.BIGINT,
         allowNull: false,
         references: {
-            model: 'users', // name of Target model
-            key: 'id', // key in Target model that we're referencing
+            model: 'users',
+            key: 'id',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
