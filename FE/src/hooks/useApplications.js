@@ -45,8 +45,6 @@ export const useApplications = (user) => {
     if (!volunteerId) return false;
 
     try {
-      // Gọi API cancel (dùng route bạn đã có: PATCH /api/application/:id/cancel)
-      // Nhưng cần lấy applicationId trước → cách đơn giản nhất: tìm trong danh sách
       const res = await api.get(`/application/volunteer/${volunteerId}`);
       const app = res.data.find(a => String(a.eventId) === String(eventId) && !a.isCancelled);
 

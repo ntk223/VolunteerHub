@@ -123,7 +123,7 @@ const PostCard = ({ post }) => {
           )}
         </div>
 
-        {/* Event Title - CLICK ĐƯỢC */}
+        {/* Event Title */}
         {event && (
           <div style={{ marginTop: 12, cursor: "pointer" }} onClick={showEventDetail}>
             <Title level={4} style={{ margin: 0, color: "#FA541C" }}>
@@ -188,8 +188,6 @@ const PostCard = ({ post }) => {
           </div>
         )}
       </Card>
-
-      {/* MODAL CHI TIẾT SỰ KIỆN */}
       <EventDetailModal
         visible={isModalVisible}
         event={event}

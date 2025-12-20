@@ -1,15 +1,71 @@
-import {Application, User, Volunteer, Event, Category} from "../models/Model.js";
+import {Application, User, Volunteer, Event, Category, Manager} from "../models/Model.js";
 import ApiError from "../utils/ApiError.js";
 import {StatusCodes} from "http-status-codes";
 class ApplicationRepository {
     async createApplication(eventId, volunteerId) {
-        const existingApplication = await Application.findOne({ where: { eventId, volunteerId } });
+        const existingApplication = await Application.findOne({ 
+            where: { eventId, volunteerId },
+            include: [
+                { 
+                    model: Volunteer, 
+                    as: 'volunteer', 
+                    include: [{ 
+                        model: User, 
+                        as: 'user', 
+                        attributes: ['id', 'name', 'email']
+                    }] 
+                },
+                {
+                    model: Event,
+                    as: 'event',
+                    attributes: ['id', 'title', 'managerId'],
+                    include: [{
+                        model: Manager,
+                        as: 'manager',
+                        include: [{
+                            model: User,
+                            as: 'user',
+                            attributes: ['id', 'name', 'email']
+                        }]
+                    }]
+                }
+            ]
+        });
         if (existingApplication) {
             existingApplication.isCancelled = !existingApplication.isCancelled;
             await existingApplication.save();
             return existingApplication;
         }
-        return await Application.create({ eventId, volunteerId });
+        const newApplication = await Application.create({ eventId, volunteerId });
+        // Lấy lại application với đầy đủ thông tin
+        return await Application.findOne({
+            where: { id: newApplication.id },
+            include: [
+                { 
+                    model: Volunteer, 
+                    as: 'volunteer', 
+                    include: [{ 
+                        model: User, 
+                        as: 'user', 
+                        attributes: ['id', 'name', 'email']
+                    }] 
+                },
+                {
+                    model: Event,
+                    as: 'event',
+                    attributes: ['id', 'title', 'managerId'],
+                    include: [{
+                        model: Manager,
+                        as: 'manager',
+                        include: [{
+                            model: User,
+                            as: 'user',
+                            attributes: ['id', 'name', 'email']
+                        }]
+                    }]
+                }
+            ]
+        });
     }
 
     async getApplicationsByEventId(eventId) {

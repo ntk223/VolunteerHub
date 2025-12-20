@@ -27,7 +27,7 @@ const Statistics = ({ userId }) => {
     };
 
     fetchData();
-  }, [userId, location.pathname]); // chạy lại khi route thay đổi
+  }, [userId, location.pathname]);
 
   if (!statsData.length) return null;
 

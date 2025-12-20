@@ -126,7 +126,7 @@ export default function ManageApplicationsPage() {
       width: "40%",
       render: (ev, record) => {
         if (!ev) {
-          return <Text type="secondary">Event ID: {record.eventId}</Text>;
+          return <Text type="secondary">Sự kiện đã bị xóa: {record.eventId}</Text>;
         }
         
         const startTime = ev.startTime ? new Date(ev.startTime) : null;

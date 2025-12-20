@@ -1,4 +1,4 @@
-import { Card, Col, Row, Statistic, Button, message, Typography } from "antd";
+import { Card, Col, Row, Statistic, Button, message, Typography, Dropdown } from "antd";
 import { DownloadOutlined, UserOutlined, FileTextOutlined, CalendarOutlined } from "@ant-design/icons";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Legend } from "recharts";
 import { exportStatisticsToExcel } from "../../utils/excelExport";
@@ -7,15 +7,6 @@ const { Title, Text } = Typography;
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 const DashboardStatistic = ({ users = [], posts = [], events = [] }) => {
-  const handleExportExcel = () => {
-    try {
-      exportStatisticsToExcel(users, posts, events);
-      message.success('Đã xuất file Excel thành công!');
-    } catch (error) {
-      console.error(error);
-      message.error('Lỗi khi xuất file Excel');
-    }
-  };
   // Thống kê bài viết theo trạng thái
   const postStatusCounts = {
     pending: posts.filter(p => p.status === "pending").length,
@@ -76,14 +67,55 @@ const DashboardStatistic = ({ users = [], posts = [], events = [] }) => {
           <Title level={4} style={{ margin: 0, marginBottom: 4 }}>📊 Thống kê tổng quan</Title>
           <Text type="secondary">Xem tổng quan về người dùng, bài viết và sự kiện</Text>
         </div>
-        <Button 
-          type="primary" 
-          icon={<DownloadOutlined />}
-          onClick={handleExportExcel}
-          size="large"
+        <Dropdown
+          menu={{
+            items: [
+              {
+                key: 'xlsx',
+                label: 'Xuất Excel (.xlsx)',
+                onClick: () => {
+                  try {
+                    exportStatisticsToExcel(users, posts, events, 'xlsx');
+                    message.success('Đã xuất file Excel thành công!');
+                  } catch (error) {
+                    console.error(error);
+                    message.error('Lỗi khi xuất file');
+                  }
+                },
+              },
+              {
+                key: 'csv',
+                label: 'Xuất CSV (.csv)',
+                onClick: () => {
+                  try {
+                    exportStatisticsToExcel(users, posts, events, 'csv');
+                    message.success('Đã xuất file CSV thành công!');
+                  } catch (error) {
+                    console.error(error);
+                    message.error('Lỗi khi xuất file');
+                  }
+                },
+              },
+              {
+                key: 'json',
+                label: 'Xuất JSON (.json)',
+                onClick: () => {
+                  try {
+                    exportStatisticsToExcel(users, posts, events, 'json');
+                    message.success('Đã xuất file JSON thành công!');
+                  } catch (error) {
+                    console.error(error);
+                    message.error('Lỗi khi xuất file');
+                  }
+                },
+              },
+            ],
+          }}
         >
-          Xuất Excel
-        </Button>
+          <Button type="primary" icon={<DownloadOutlined />} size="large">
+            Xuất dữ liệu
+          </Button>
+        </Dropdown>
       </div>
       
       {/* Row 1: Tổng quan */}

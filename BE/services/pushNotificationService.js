@@ -17,7 +17,6 @@ class PushNotificationService {
    */
   async saveSubscription(userId, subscription) {
     try {
-      // Kiểm tra subscription đã tồn tại chưa
       const existing = await PushSubscription.findOne({
         where: { 
           userId,
@@ -26,7 +25,6 @@ class PushNotificationService {
       });
 
       if (existing) {
-        // Update keys nếu subscription đã tồn tại
         await existing.update({
           p256dh: subscription.keys.p256dh,
           auth: subscription.keys.auth,
@@ -34,7 +32,6 @@ class PushNotificationService {
         return existing;
       }
 
-      // Tạo subscription mới
       return await PushSubscription.create({
         userId,
         endpoint: subscription.endpoint,

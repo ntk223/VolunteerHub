@@ -9,7 +9,6 @@ const { Sider } = Layout;
 const { Text } = Typography;
 const { Option } = Select;
 
-// ✅ ĐÃ ĐÚNG: Nhận prop isMobile
 const SearchSidebar = ({ isMobile }) => {
   const navigate = useNavigate();
   const { token } = theme.useToken();

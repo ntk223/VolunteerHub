@@ -18,19 +18,15 @@ export const EventsProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState('upcoming'); // 'upcoming' (mới nhất/sắp tới) hoặc 'popularity' (đông người tham gia)
 
-  // 🔹 State quản lý sự kiện user đã tham gia (để hiển thị nút Join/Joined nhanh)
   const [userJoinedEvents, setUserJoinedEvents] = useState({}); 
 
-  // 🔹 Lấy danh sách sự kiện
   useEffect(() => {
     setLoading(true);
     
     const fetchEvents = async () => {
       try {
-        // API GET /event - lấy tất cả sự kiện
         const res = await api.get(`/event`);
         
-        // Filter chỉ lấy events đã được duyệt
         const approvedEvents = res.data.filter(e => e.approvalStatus === 'approved');
 
         setOriginalEvents(approvedEvents);
@@ -50,7 +46,6 @@ export const EventsProvider = ({ children }) => {
     const fetchUserJoinedStatus = async () => {
       if (!user?.id) return;
       try {
-        // API GET /application/volunteer/:volunteerId - lấy danh sách đơn của volunteer
         const res = await api.get(`/application/volunteer/${user.id}`);
         const applications = res.data;
 
@@ -76,12 +71,11 @@ export const EventsProvider = ({ children }) => {
     if (sortType === 'popularity') {
       return sorted.sort((a, b) => {
         // Sắp xếp theo số lượng người tham gia giảm dần
-        const countA = a.applicationsCount || 0;
-        const countB = b.applicationsCount || 0;
+        const countA = parseInt(a.currentApplied) || 0;
+        const countB = parseInt(b.currentApplied) || 0;
         return countB - countA;
       });
     } else {
-      // 'upcoming' hoặc mặc định: Sắp xếp theo ngày bắt đầu (Gần nhất lên đầu)
       return sorted.sort((a, b) => {
         return new Date(a.startTime) - new Date(b.startTime);
       });
@@ -150,7 +144,6 @@ export const EventsProvider = ({ children }) => {
         return false;
       }
 
-      // API PATCH /application/:id/cancel - hủy đơn
       await api.patch(`/application/${application.id}/cancel`);
 
       // Cập nhật userJoinedEvents map
@@ -176,7 +169,6 @@ export const EventsProvider = ({ children }) => {
     }
   }, [user?.id]);
 
-  // 🔹 (Tùy chọn) Listener real-time nếu có sự kiện mới được tạo
   useEffect(() => {
     const onEventCreated = (e) => {
       const createdEvent = e.detail;
@@ -200,7 +192,7 @@ export const EventsProvider = ({ children }) => {
     changeSortBy,
     joinEvent,
     leaveEvent,
-    userJoinedEvents, // Nếu bạn muốn quản lý map riêng
+    userJoinedEvents,
   };
 
   return <EventsContext.Provider value={value}>{children}</EventsContext.Provider>;

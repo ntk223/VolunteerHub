@@ -9,12 +9,12 @@ const { Text } = Typography;
 
 const CommentSection = ({ 
   postId, 
-  comments,       // 👈 Nhận từ props
-  newComment,     // 👈 Nhận từ props
-  onCommentChange,  // 👈 Nhận từ props
-  onSubmitComment,  // 👈 Nhận từ props
-  onEditComment,    // 👈 Thêm callback để sửa comment
-  onDeleteComment,  // 👈 Thêm callback để xóa comment
+  comments,       
+  newComment,     
+  onCommentChange,  
+  onSubmitComment,  
+  onEditComment,  
+  onDeleteComment,
 }) => {
   const { user } = useAuth();
   const [editingCommentId, setEditingCommentId] = useState(null);
@@ -78,7 +78,7 @@ const CommentSection = ({
   return (
     <>
       <List
-        dataSource={comments} // 👈 Dùng 'comments' từ props
+        dataSource={comments}
         locale={{ emptyText: "Chưa có bình luận nào" }}
         renderItem={(c) => {
           
@@ -150,10 +150,9 @@ const CommentSection = ({
         }}
       />
 
-      {/* Phần input này giờ được kiểm soát bởi HOOK */}
       <Input.TextArea
-        value={newComment} // 👈 Dùng 'newComment' từ props
-        onChange={(e) => onCommentChange(postId, e.target.value)} // 👈 Gọi hàm từ props
+        value={newComment}
+        onChange={(e) => onCommentChange(postId, e.target.value)}
         rows={2}
         placeholder="Viết bình luận..."
       />
@@ -161,7 +160,7 @@ const CommentSection = ({
       <Button
         type="primary"
         size="small"
-        onClick={() => onSubmitComment(postId)} // 👈 Gọi hàm từ props
+        onClick={() => onSubmitComment(postId)}
         style={{ marginTop: 6 }}
       >
         Gửi

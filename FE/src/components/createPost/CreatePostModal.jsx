@@ -28,7 +28,6 @@ export default function CreatePostModal({ visible, onClose }) {
 
   const isManager = user?.role === "manager";
 
-  // --- FIX: Dùng useMemo để tránh tạo lại mảng này mỗi lần render ---
   const allowedTypes = useMemo(() => {
     return isManager
       ? [
@@ -70,7 +69,7 @@ export default function CreatePostModal({ visible, onClose }) {
     } finally {
       if (mountedRef.current) setFetchingEvents(false);
     }
-  }, [form, user.id]); // allowedTypes không cần thiết ở đây vì ta đọc từ form
+  }, [form, user.id]);
 
   // --- Effect Init ---
   useEffect(() => {
@@ -81,7 +80,6 @@ export default function CreatePostModal({ visible, onClose }) {
       setPostType(defaultType);
       form.setFieldsValue({ postType: defaultType });
       
-      // Gọi fetch ngay lập tức
       fetchEvents();
     }
 
@@ -89,10 +87,7 @@ export default function CreatePostModal({ visible, onClose }) {
       mountedRef.current = false;
       if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
     };
-    // FIX: dependency array an toàn vì allowedTypes đã được memoized
   }, [visible, fetchEvents, allowedTypes, form]); 
-
-  // ... (Phần còn lại của component giữ nguyên như cũ)
   
   const handlePostTypeChange = (value) => {
     setPostType(value);

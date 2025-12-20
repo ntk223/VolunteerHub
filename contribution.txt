@@ -1,0 +1,31 @@
+I. Thành viên nhóm
+1. 23021590 - Nguyễn Trung Kiên
+2. 23021713 - Nguyễn Khánh Tùng
+3. 23020517 - Trần Lê Cương
+
+II. Đóng góp của từng thành viên
+1. Nguyễn Trung Kiên (Nhóm trưởng)
+- Thiết kế Database
+- Cấu trúc Codebase của toàn bộ dự án
+- Đảm nhận phần Backend của dự án
+- Frontend:
+    + xây dựng các trang: Thông báo, trang cá nhân, trang giới thiệu, trang báo lỗi, trang không được phép truy cập
+    + Refactor code, chỉnh sửa và tối ưu UI
+    + Tích hợp Cloudiary API để upload file
+
+2. Nguyễn Khánh Tùng
+- Frontend:
+    + Xây dựng layout chung của toàn bộ dự án
+    + Tạo sự kiện, bài viết, bảng tin bài viết
+    + Quản lý sự kiện của Manager
+    + Quản lý đơn ứng tuyển của Volunteer
+- Tạo sample data cho dự án
+
+3. Trần Lê Cương
+- Frontend:
+    + Trang đăng ký, đăng nhập
+    + Trang danh sách sự kiện, chi tiết sự kiện
+    + Chức năng tìm kiếm
+    + Trang quản lý của Admin
+    + Tạo theme sáng tối
+    + Tích hợp Google Maps API

@@ -1,19 +1,16 @@
 /* --- SEARCH SIDEBAR CONTAINER --- */
 .search-sidebar {
   width: 100%;
-  max-width: 250px; /* Tăng nhẹ độ rộng cho thoáng */
+  max-width: 250px;
   padding: 20px;
-  /* Sử dụng màu nền từ biến theme */
   background: var(--sidebar-bg);
   border-radius: 16px;
-  /* Shadow nhẹ nhàng hơn */
   box-shadow: var(--shadow-sm);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  /* Viền tinh tế, tự đổi màu */
   border: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
-  height: fit-content; /* Để không bị kéo dài quá mức */
+  height: fit-content;
 }
 
 /* --- INPUT SEARCH --- */
@@ -28,9 +25,7 @@
   border-radius: 12px !important;
   font-size: 15px !important;
   box-sizing: border-box;
-  
-  /* Màu sắc theo theme */
-  background: var(--bg-color) !important; 
+    background: var(--bg-color) !important; 
   color: var(--text-color) !important;
   border: 1px solid var(--border-color) !important;
   
@@ -38,15 +33,14 @@
   box-shadow: none !important; 
 }
 
-/* Placeholder color adjustments (Optional) */
 .search-input::placeholder {
   color: var(--text-secondary);
 }
 
 .search-input:focus {
   border-color: var(--primary-color) !important;
-  background: var(--sidebar-bg) !important; /* Khi focus thì nền sáng hơn chút (trong dark mode) */
-  box-shadow: 0 0 0 2px rgba(250, 84, 28, 0.2) !important; /* Coral glow */
+  background: var(--sidebar-bg) !important;
+  box-shadow: 0 0 0 2px rgba(250, 84, 28, 0.2) !important;
 }
 
 .search-input:hover {

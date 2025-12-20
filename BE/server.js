@@ -5,6 +5,7 @@ import { errorHandlingMiddleware } from './middlewares/errorHandlingMiddleware.j
 import { corsOptions } from './config/cors.js'
 import { swaggerDocs } from './config/swagger.js'
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 
 import { initSocket } from './config/socket.js'
 import http from 'http'
@@ -19,6 +20,7 @@ const START_SERVER = () => {
     // Thiết lập CORS và các middleware khác
     app.use (cors(corsOptions))
     app.use (express.json())
+    app.use (cookieParser())
     app.use ('/api', APIs)
 
     // Xử lý lỗi tập trung trong ứng dụng

@@ -11,7 +11,6 @@ class FileService {
         try {
             const category = this.getFileCategory(file.mimetype);
 
-            // Bọc upload_stream trong Promise để sử dụng await
             const uploadResult = await new Promise((resolve, reject) => {
                 const stream = cloudinary.uploader.upload_stream(
                     {

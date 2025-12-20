@@ -7,8 +7,8 @@ const Event = sequelize.define("Event", {
         type: DataTypes.BIGINT, 
         allowNull: false,
         references: {
-            model: 'categories', // name of Target model
-            key: 'categoryId', // key in Target model that we're referencing
+            model: 'categories',
+            key: 'categoryId',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
@@ -23,8 +23,8 @@ const Event = sequelize.define("Event", {
         type: DataTypes.BIGINT,
         allowNull: false,
         references: {
-            model: 'managers', // name of Target model
-            key: 'id', // key in Target model that we're referencing
+            model: 'managers',
+            key: 'id',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
@@ -42,6 +42,5 @@ const Event = sequelize.define("Event", {
     paranoid: true,
     underscored: true,
 })
-// console.log(sequelize.config);
 
 export default Event;

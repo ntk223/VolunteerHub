@@ -3,12 +3,17 @@ import ApiError from "../utils/ApiError.js";
 import { StatusCodes } from "http-status-codes";
 
 const verifyTokenMiddleware = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    if (!authHeader) {
-        return next(new ApiError(StatusCodes.UNAUTHORIZED, "No token provided"));
+    // Ưu tiên lấy token từ cookie, nếu không có thì lấy từ header
+    let token = req.cookies?.token;
+    
+    // Nếu không có token trong cookie, kiểm tra Authorization header
+    if (!token) {
+        const authHeader = req.headers['authorization'];
+        if (authHeader) {
+            token = authHeader.split(' ')[1];
+        }
     }
-
-    const token = authHeader.split(' ')[1];
+    
     if (!token) {
         return next(new ApiError(StatusCodes.UNAUTHORIZED, "No token provided"));
     }

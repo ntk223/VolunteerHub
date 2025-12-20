@@ -18,7 +18,7 @@ const EventCompleted = ({ userId }) => {
         // Lấy danh sách sự kiện của manager
         const response = await api.get(`/event/manager/${userId}`);
         
-        // Filter các sự kiện đã hoàn thành (progressStatus === 'completed')
+        // Filter các sự kiện đã hoàn thành
         const completed = response.data.filter(
           event => event.progressStatus === 'completed'
         );
