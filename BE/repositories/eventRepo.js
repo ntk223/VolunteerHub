@@ -12,7 +12,7 @@ class EventRepository {
             where: { managerId: manager.id },
               attributes: {
                 include: [
-                [fn('COUNT', col('applications.volunteer_id')), 'currentApplied']
+                [fn('COUNT', fn('DISTINCT', col('applications.volunteer_id'))), 'currentApplied']
                 ]
             },
             include: [
@@ -25,8 +25,9 @@ class EventRepository {
                     as: 'category'
                 }
             ],
-            group: ['Event.id'],  // nhóm theo Event.id
-            order: [["createdAt", "DESC"]]
+            group: ['Event.id'],  // nhóm theo Event.id và category.id
+            order: [["createdAt", "DESC"]],
+            subQuery: false
         });
     }
 
@@ -56,11 +57,12 @@ class EventRepository {
                 ],
             attributes: {
                 include: [
-                [fn('COUNT', col('applications.volunteer_id')), 'currentApplied'],
-                [fn('COUNT', col('posts.id')), 'postsCount']
+                [fn('COUNT', fn('DISTINCT', col('applications.volunteer_id'))), 'currentApplied'],
+                [fn('COUNT', fn('DISTINCT', col('posts.id'))), 'postsCount']
                 ]
             },
-            group: ['Event.id']
+            group: ['Event.id'],
+            subQuery: false
         });
         return events;
     }

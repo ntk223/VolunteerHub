@@ -71,8 +71,8 @@ export const EventsProvider = ({ children }) => {
     if (sortType === 'popularity') {
       return sorted.sort((a, b) => {
         // Sắp xếp theo số lượng người tham gia giảm dần
-        const countA = a.applicationsCount || 0;
-        const countB = b.applicationsCount || 0;
+        const countA = parseInt(a.currentApplied) || 0;
+        const countB = parseInt(b.currentApplied) || 0;
         return countB - countA;
       });
     } else {
